@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class PlaneController : MonoBehaviour
 {
+    private Rigidbody rb;
     [Header("Plane Stats")]
-
     [SerializeField]
     [Tooltip("How much the throttle ramps up or down")]
     private float throttleIncrement = 0.1f;
@@ -19,7 +19,7 @@ public class PlaneController : MonoBehaviour
     private float liftForce = 135f;
     private float throttle;
     private float roll, pitch, yaw;
-    private Rigidbody rb;
+    
     // Taking the plane's mass into tweaking its responsiveness
     private float responsibilityModifier
     {
