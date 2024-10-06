@@ -6,17 +6,16 @@ public class CameraController : MonoBehaviour
 {
     [SerializeField]
     [Tooltip("An array of transforms containing the camera positions")]
-    Transform[] povs;
+    private Transform[] povs;
     [SerializeField]
     private float catchSpeed = 10f;
-
     private int camIndex = 0;
     private Vector3 target;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        povs = PlayerController.instance.camPovs;
     }
 
     // Update is called once per frame

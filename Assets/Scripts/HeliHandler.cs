@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HeliController : MonoBehaviour
+public class HeliHandler : MonoBehaviour
 {
     private Rigidbody rb;
     [SerializeField]
