@@ -55,10 +55,19 @@ public partial class @GamepadControls: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": true
                 },
                 {
-                    ""name"": ""Cammovement"",
+                    ""name"": ""moveCam"",
                     ""type"": ""PassThrough"",
                     ""id"": ""781357ee-8172-4e5f-a50f-a7e53e5aa84a"",
                     ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""toggleCam"",
+                    ""type"": ""Button"",
+                    ""id"": ""89bb7773-d740-4aa4-b431-6fbebe6884e9"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -83,7 +92,7 @@ public partial class @GamepadControls: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";DualStickController"",
-                    ""action"": ""Cammovement"",
+                    ""action"": ""moveCam"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -152,6 +161,17 @@ public partial class @GamepadControls: IInputActionCollection2, IDisposable
                     ""action"": ""ACthrottle"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c10fbac4-b85f-46f1-91ca-75e2dbfa7619"",
+                    ""path"": ""<Gamepad>/select"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";DualStickController"",
+                    ""action"": ""toggleCam"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -191,7 +211,8 @@ public partial class @GamepadControls: IInputActionCollection2, IDisposable
         m_Gameplay_ACmovement = m_Gameplay.FindAction("ACmovement", throwIfNotFound: true);
         m_Gameplay_ACyaw = m_Gameplay.FindAction("ACyaw", throwIfNotFound: true);
         m_Gameplay_ACthrottle = m_Gameplay.FindAction("ACthrottle", throwIfNotFound: true);
-        m_Gameplay_Cammovement = m_Gameplay.FindAction("Cammovement", throwIfNotFound: true);
+        m_Gameplay_moveCam = m_Gameplay.FindAction("moveCam", throwIfNotFound: true);
+        m_Gameplay_toggleCam = m_Gameplay.FindAction("toggleCam", throwIfNotFound: true);
     }
 
     ~@GamepadControls()
@@ -261,7 +282,8 @@ public partial class @GamepadControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Gameplay_ACmovement;
     private readonly InputAction m_Gameplay_ACyaw;
     private readonly InputAction m_Gameplay_ACthrottle;
-    private readonly InputAction m_Gameplay_Cammovement;
+    private readonly InputAction m_Gameplay_moveCam;
+    private readonly InputAction m_Gameplay_toggleCam;
     public struct GameplayActions
     {
         private @GamepadControls m_Wrapper;
@@ -269,7 +291,8 @@ public partial class @GamepadControls: IInputActionCollection2, IDisposable
         public InputAction @ACmovement => m_Wrapper.m_Gameplay_ACmovement;
         public InputAction @ACyaw => m_Wrapper.m_Gameplay_ACyaw;
         public InputAction @ACthrottle => m_Wrapper.m_Gameplay_ACthrottle;
-        public InputAction @Cammovement => m_Wrapper.m_Gameplay_Cammovement;
+        public InputAction @moveCam => m_Wrapper.m_Gameplay_moveCam;
+        public InputAction @toggleCam => m_Wrapper.m_Gameplay_toggleCam;
         public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -288,9 +311,12 @@ public partial class @GamepadControls: IInputActionCollection2, IDisposable
             @ACthrottle.started += instance.OnACthrottle;
             @ACthrottle.performed += instance.OnACthrottle;
             @ACthrottle.canceled += instance.OnACthrottle;
-            @Cammovement.started += instance.OnCammovement;
-            @Cammovement.performed += instance.OnCammovement;
-            @Cammovement.canceled += instance.OnCammovement;
+            @moveCam.started += instance.OnMoveCam;
+            @moveCam.performed += instance.OnMoveCam;
+            @moveCam.canceled += instance.OnMoveCam;
+            @toggleCam.started += instance.OnToggleCam;
+            @toggleCam.performed += instance.OnToggleCam;
+            @toggleCam.canceled += instance.OnToggleCam;
         }
 
         private void UnregisterCallbacks(IGameplayActions instance)
@@ -304,9 +330,12 @@ public partial class @GamepadControls: IInputActionCollection2, IDisposable
             @ACthrottle.started -= instance.OnACthrottle;
             @ACthrottle.performed -= instance.OnACthrottle;
             @ACthrottle.canceled -= instance.OnACthrottle;
-            @Cammovement.started -= instance.OnCammovement;
-            @Cammovement.performed -= instance.OnCammovement;
-            @Cammovement.canceled -= instance.OnCammovement;
+            @moveCam.started -= instance.OnMoveCam;
+            @moveCam.performed -= instance.OnMoveCam;
+            @moveCam.canceled -= instance.OnMoveCam;
+            @toggleCam.started -= instance.OnToggleCam;
+            @toggleCam.performed -= instance.OnToggleCam;
+            @toggleCam.canceled -= instance.OnToggleCam;
         }
 
         public void RemoveCallbacks(IGameplayActions instance)
@@ -347,6 +376,7 @@ public partial class @GamepadControls: IInputActionCollection2, IDisposable
         void OnACmovement(InputAction.CallbackContext context);
         void OnACyaw(InputAction.CallbackContext context);
         void OnACthrottle(InputAction.CallbackContext context);
-        void OnCammovement(InputAction.CallbackContext context);
+        void OnMoveCam(InputAction.CallbackContext context);
+        void OnToggleCam(InputAction.CallbackContext context);
     }
 }

@@ -7,22 +7,25 @@ public class HeliHandler : MonoBehaviour
 {
     private GamepadControls gpControls;
     private Rigidbody rb;
+    [Header("Plane Stats")]
     [SerializeField]
-    private float responsiveness = 500f;
+    private float responsiveness;
     [SerializeField]
-    private float throttleIncrement = 0.1f;
+    private float throttleIncrement;
     [SerializeField]
-    private float rotorSpeedMult = 10f;
+    private float rotorSpeedMult;
     [SerializeField]
-    private float maxThrust = 5f;
+    [Tooltip("Maximum engine thrust at 100% throttle")]
+    private float maxThrust;
+    [SerializeField]
+    [Tooltip("Strength of the auto leveling system, determines maximum AOA")]
+    private float levelingStrength;
     [SerializeField]
     private Transform rotorTransform;
-    [SerializeField]
-    [Tooltip("Maximum pitch angle")]
-    private float maxPitch;
     private float throttle, throttleValueTrigger;
     private float roll, pitch, yaw;
     private Vector2 stickValue;
+    private Vector3 levelValue;
     private InputAction throttleTriggerState;
 
     // Taking the plane's mass into tweaking its responsiveness
@@ -79,6 +82,7 @@ public class HeliHandler : MonoBehaviour
         rb.AddTorque(pitch * responsibilityModifier * transform.right);
         rb.AddTorque(-roll * responsibilityModifier * transform.forward);
         rb.AddTorque(yaw * responsibilityModifier * transform.up);
+        AutoLeveling();
     }
     //private void HandleInput()      // Legacy input system
     //{
@@ -107,7 +111,14 @@ public class HeliHandler : MonoBehaviour
         throttle = Mathf.Clamp(throttle, -30f, 100f);
         if (!throttleTriggerState.IsPressed())
         {
+            // Throttle decay mechanic - throttle will gradually move toward a specified amount when idle
             throttle = Mathf.MoveTowards(throttle, 0f, 0.08f);
         }
+    }
+    private void AutoLeveling()
+    {
+        levelValue.x = transform.rotation.x;    // Levels the pitch value
+        levelValue.z = transform.rotation.z;    // Levels the roll 
+        rb.AddTorque(maxThrust * levelingStrength * -levelValue);
     }
 }
