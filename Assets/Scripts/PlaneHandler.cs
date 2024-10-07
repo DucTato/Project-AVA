@@ -101,7 +101,7 @@ public class PlaneHandler : MonoBehaviour
     private void HandleInput()
     {
         roll = stickValue.x;
-        pitch = stickValue.y;
+        pitch = stickValue.y * 1.6f;    // pitching is always more effective 
         throttle += (throttleIncrement * throttleValueTrigger);
         throttle = Mathf.Clamp(throttle, 0f, 100f);
     }
