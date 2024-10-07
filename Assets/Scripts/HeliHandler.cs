@@ -17,9 +17,19 @@ public class HeliHandler : MonoBehaviour
     private float maxThrust = 5f;
     [SerializeField]
     private Transform rotorTransform;
+    [SerializeField]
+    [Tooltip("Maximum pitch angle")]
+    private float maxPitch;
     private float throttle, throttleValueTrigger;
     private float roll, pitch, yaw;
     private Vector2 stickValue;
+    private InputAction throttleTriggerState;
+
+    // Taking the plane's mass into tweaking its responsiveness
+    private float responsibilityModifier
+    {
+        get { return (rb.mass / 10f) * responsiveness; }
+    }
 
     private void Awake()
     {
@@ -32,8 +42,12 @@ public class HeliHandler : MonoBehaviour
         gpControls.Gameplay.ACyaw.performed += context => yaw = context.ReadValue<float>();
         gpControls.Gameplay.ACyaw.canceled += context => yaw = 0f;
 
-        gpControls.Gameplay.ACthrottle.performed += context => throttleValueTrigger = context.ReadValue<float>();
-        gpControls.Gameplay.ACthrottle.canceled += context => throttleValueTrigger = 0f;
+        gpControls.Gameplay.ACthrottle.performed += context => {
+            throttleValueTrigger = context.ReadValue<float>();
+        };
+        gpControls.Gameplay.ACthrottle.canceled += context => { 
+            throttleValueTrigger = 0f;
+        };
     }
     private void OnEnable()
     {
@@ -48,6 +62,7 @@ public class HeliHandler : MonoBehaviour
     {
         yaw = 0f;
         throttle = 0f;
+        throttleTriggerState = gpControls.Gameplay.ACthrottle;
     }
 
     // Update is called once per frame
@@ -61,10 +76,9 @@ public class HeliHandler : MonoBehaviour
         // Update physics in this callback to avoid jittering!
         // Applying forces to the plane
         rb.AddForce(maxThrust * throttle * transform.up);
-
-        rb.AddTorque(pitch * responsiveness * transform.right);
-        rb.AddTorque(-roll * responsiveness * transform.forward);
-        rb.AddTorque(yaw * responsiveness * transform.up);
+        rb.AddTorque(pitch * responsibilityModifier * transform.right);
+        rb.AddTorque(-roll * responsibilityModifier * transform.forward);
+        rb.AddTorque(yaw * responsibilityModifier * transform.up);
     }
     //private void HandleInput()      // Legacy input system
     //{
@@ -90,6 +104,10 @@ public class HeliHandler : MonoBehaviour
         roll = stickValue.x;
         pitch = stickValue.y;
         throttle += (throttleIncrement * throttleValueTrigger);
-        throttle = Mathf.Clamp(throttle, 0f, 100f);
+        throttle = Mathf.Clamp(throttle, -30f, 100f);
+        if (!throttleTriggerState.IsPressed())
+        {
+            throttle = Mathf.MoveTowards(throttle, 0f, 0.08f);
+        }
     }
 }

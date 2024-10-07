@@ -258,11 +258,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e7e1d916cbc91c45879fccf96937d9f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  responsiveness: 500
+  responsiveness: 25
   throttleIncrement: 0.1
   rotorSpeedMult: 10
   maxThrust: 100
   rotorTransform: {fileID: 1248748044}
+  throttle: 0
+  throttleValueTrigger: 0
+  throttlePress:
+    m_Name: Throttle Press
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: c53d367c-80a6-49b7-86d8-84f0797492eb
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
 --- !u!54 &251684570
 Rigidbody:
   m_ObjectHideFlags: 0
