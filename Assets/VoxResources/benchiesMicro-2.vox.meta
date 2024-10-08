@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: f218a7a7ed64ba344a2df97f50e7f865
+guid: aa1e04e12f338a3409264a9687ed1af3
 ScriptedImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -20,7 +20,7 @@ ScriptedImporter:
   originMode: 0
   reduceHierarchy: 1
   generationMode: 1
-  meshGenerationApproach: 1
+  meshGenerationApproach: 0
   overrideAssetMaterials: 0
   overrideMaterials:
   - color: {r: 1, g: 1, b: 1, a: 1}

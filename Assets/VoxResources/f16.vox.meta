@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 3ca04cdf9e7238048ba14be2eaa75944
+guid: b504366e80bcc794c88d8d2a4404c94b
 ScriptedImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -15,7 +15,7 @@ ScriptedImporter:
   scale: 0.1
   indexFormat: 0
   generateLightmapUV: 1
-  generateColliders: 1
+  generateColliders: 0
   chunkSize: 16
   originMode: 0
   reduceHierarchy: 1
