@@ -6,19 +6,40 @@ using UnityEngine;
 [RequireComponent(typeof(MeshRenderer))]
 [RequireComponent(typeof(MeshCollider))]
 
-public class VoxelRenderer : MonoBehaviour
+public class VoxelHolder : MonoBehaviour
 {
+    public static Voxel emptyVoxel = new Voxel() { voxID = 0 };
     public Vector3 voxelPosition;
     private MeshRenderer meshRender;
     private MeshFilter meshFilter;
     private MeshCollider meshCollider;
     private MeshData meshData = new MeshData();
+    private Dictionary<Vector3, Voxel> dictionaryData;
     public void voxelInitialize(Material mat, Vector3 pos)
     {
         // Assigning a material and a position for the voxel position 
         ComponentConfig();
+        // Using a dictionary means less iterating over empty data
+        dictionaryData = new Dictionary<Vector3, Voxel>();
         meshRender.sharedMaterial = mat;
         voxelPosition = pos;
+    }
+    public Voxel this[Vector3 index]
+    {
+        get
+        {
+            if (dictionaryData.ContainsKey(index)) return dictionaryData[index];
+            else return emptyVoxel;
+        }
+        set
+        {
+            if (dictionaryData.ContainsKey(index)) dictionaryData[index] = value;
+            else dictionaryData.Add(index, value);
+        }
+    }
+    public void ClearDictionary()
+    {
+        dictionaryData.Clear();
     }
 
     private void ComponentConfig()
@@ -83,7 +104,15 @@ public class VoxelRenderer : MonoBehaviour
         new Vector3(0, 1, 1),
         new Vector3(1, 1, 1),
     };
-
+    static readonly Vector3[] voxelFaceChecks = new Vector3[6]
+    {
+        new Vector3(0, 0, -1),  // Back
+        new Vector3(0, 0, 1),   // Front
+        new Vector3(-1, 0, 0),  // Left
+        new Vector3(1, 0, 0),   // Right
+        new Vector3(0, -1, 0),  // Bottom
+        new Vector3(0, 1, 0),   // Top
+    };
     static readonly int[,] voxelVertexIndexes = new int[6, 4]
     {
         // A voxel has 6 faces with 4 vertices each
@@ -117,34 +146,43 @@ public class VoxelRenderer : MonoBehaviour
     {
         // Clearing all the data to make sure that we start with a blank state
         meshData.ClearData();
-        Vector3 blockPos = new Vector3(8, 8, 8);
-        Voxel block = new Voxel() { voxID = 1 };
+        Vector3 blockPos;
+        Voxel block;
 
 
         int counter = 0;
         Vector3[] faceVertices = new Vector3[4];
         Vector2[] faceUVs = new Vector2[4];
 
-        // Iterating over each face direction
-        for (int i = 0; i < 6; i++)
+        foreach(KeyValuePair<Vector3, Voxel> kvp in dictionaryData)
         {
-            // Drawing this face
+            if (kvp.Value.voxID == 0) continue;
 
-            // Collecting the appropriate vertices from the default vertices and add the block position
-            for (int j = 0; j < 4; j++)
+            blockPos = kvp.Key;
+            block = kvp.Value;
+            // Iterating over each face direction
+            for (int i = 0; i < 6; i++)
             {
-                faceVertices[j] = voxelVertices[voxelVertexIndexes[i, j]] + blockPos;
-                faceUVs[j] = voxelUVs[j];
-            }
-            for (int j = 0; j < 6; j++)
-            {
-                meshData.vertices.Add(faceVertices[voxelTris[i, j]]);
-                meshData.uvs.Add(faceUVs[voxelTris[i,j]]);
+                if (this[blockPos + voxelFaceChecks[i]].isSolid) continue;  // if this face is facing a solid cube, don't draw
+                // Drawing this face
 
-                meshData.triangles.Add(counter++);
+                // Collecting the appropriate vertices from the default vertices and add the block position
+                for (int j = 0; j < 4; j++)
+                {
+                    faceVertices[j] = voxelVertices[voxelVertexIndexes[i, j]] + blockPos;
+                    faceUVs[j] = voxelUVs[j];
+                }
+                for (int j = 0; j < 6; j++)
+                {
+                    meshData.vertices.Add(faceVertices[voxelTris[i, j]]);
+                    meshData.uvs.Add(faceUVs[voxelTris[i, j]]);
+
+                    meshData.triangles.Add(counter++);
+                }
             }
+            //Debug.Log("Mesh Generated");
         }
-        Debug.Log("Mesh Generated");
+        
     }
     public void UploadMesh()
     {
