@@ -19,6 +19,9 @@ public class PlaneHandler : MonoBehaviour
     private float responsiveness = 10f;
     [SerializeField]
     private float liftForce = 135f;
+    [SerializeField]
+    [Tooltip("Adjust how much pitch the plane should get on top of the base responsiveness")]
+    private float pitchModifier;
     private float throttle, throttleValueTrigger;
     private float roll, pitch, yaw;
     private Vector2 stickValue;
@@ -73,7 +76,7 @@ public class PlaneHandler : MonoBehaviour
         rb.AddForce(maxThrust * throttle * transform.forward);
         // Torque is rotational force
         rb.AddTorque(yaw * responsibilityModifier * transform.up);
-        rb.AddTorque(pitch * responsibilityModifier * transform.right);
+        rb.AddTorque(pitch * pitchModifier * responsibilityModifier * transform.right);
         rb.AddTorque(-roll * responsibilityModifier * transform.forward);
         // Adding lift when the plane is horizontal relative to the ground
         rb.AddForce(rb.velocity.magnitude * liftForce * transform.up);
@@ -101,7 +104,7 @@ public class PlaneHandler : MonoBehaviour
     private void HandleInput()
     {
         roll = stickValue.x;
-        pitch = stickValue.y * 1.6f;    // pitching is always more effective 
+        pitch = stickValue.y;    // pitching is always more effective 
         throttle += (throttleIncrement * throttleValueTrigger);
         throttle = Mathf.Clamp(throttle, 0f, 100f);
     }
