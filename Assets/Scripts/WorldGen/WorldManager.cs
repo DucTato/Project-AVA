@@ -4,11 +4,31 @@ using UnityEngine;
 
 public class WorldManager : MonoBehaviour
 {
+    public VoxelColor[] worldColors;
     public Material worldMaterial;
+    public static WorldManager Instance
+    {
+        get
+        {
+            if (_instance == null) _instance = FindObjectOfType<WorldManager>();
+            return _instance;
+        }
+    }
+    private static WorldManager _instance;
     private VoxelHolder container;
     // Start is called before the first frame update
     void Start()
     {
+        // Check if there're multiple instances of the world manager singleton
+        // Only 1 instance of a world manager class is allowed
+        if (_instance != null)
+        {
+            if (_instance != this) Destroy(this);
+        }
+        else
+        {
+            _instance = this;
+        }
         GameObject temp = new GameObject("Voxel Root");
         temp.transform.parent = transform;
         container = temp.AddComponent<VoxelHolder>();

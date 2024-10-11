@@ -56,6 +56,8 @@ public class VoxelHolder : MonoBehaviour
         public List<Vector3> vertices;
         public List<int> triangles;
         public List<Vector2> uvs;
+        public List<Vector2> uvs2;
+        public List<Color> colors;
 
         public bool initialized;
         public void ClearData()
@@ -65,6 +67,8 @@ public class VoxelHolder : MonoBehaviour
                 vertices = new List<Vector3>();
                 triangles = new List<int>();
                 uvs = new List<Vector2>();
+                uvs2 = new List<Vector2>();
+                colors = new List<Color>();
                 initialized = true;
                 mesh = new Mesh();
                 Debug.Log("Initialization Done");
@@ -74,6 +78,8 @@ public class VoxelHolder : MonoBehaviour
                 vertices.Clear();
                 triangles.Clear();
                 uvs.Clear();
+                uvs2.Clear();
+                colors.Clear();
                 mesh.Clear();
             }
         }
@@ -86,6 +92,10 @@ public class VoxelHolder : MonoBehaviour
             mesh.RecalculateNormals();
             mesh.RecalculateBounds();
             mesh.UploadMeshData(false);
+            // Coloring
+            mesh.SetColors(colors);
+            mesh.SetUVs(2, uvs2);
+            mesh.SetUVs(0, uvs);
         }
     }
     #endregion
@@ -148,7 +158,9 @@ public class VoxelHolder : MonoBehaviour
         meshData.ClearData();
         Vector3 blockPos;
         Voxel block;
-
+        VoxelColor voxelColor;
+        Color colorAlphaValue;
+        Vector2 voxelSmoothness;
 
         int counter = 0;
         Vector3[] faceVertices = new Vector3[4];
@@ -160,6 +172,10 @@ public class VoxelHolder : MonoBehaviour
 
             blockPos = kvp.Key;
             block = kvp.Value;
+            voxelColor = WorldManager.Instance.worldColors[block.voxID - 1];
+            colorAlphaValue = voxelColor.colorValue;
+            colorAlphaValue.a = 1;  // alpha value determines the transparency
+            voxelSmoothness = new Vector2(voxelColor.metallic, voxelColor.smoothness);
             // Iterating over each face direction
             for (int i = 0; i < 6; i++)
             {
@@ -176,8 +192,10 @@ public class VoxelHolder : MonoBehaviour
                 {
                     meshData.vertices.Add(faceVertices[voxelTris[i, j]]);
                     meshData.uvs.Add(faceUVs[voxelTris[i, j]]);
-
                     meshData.triangles.Add(counter++);
+                    // Coloring
+                    meshData.uvs2.Add(voxelSmoothness);
+                    meshData.colors.Add(colorAlphaValue);
                 }
             }
             //Debug.Log("Mesh Generated");
