@@ -2,12 +2,12 @@
 
 public struct Voxel
 {
-    public byte voxID;
+    public int ID;
     public bool isSolid
     {
         get
         {
-            return (voxID != 0);
+            return (ID != 0);
         }
     }
 }

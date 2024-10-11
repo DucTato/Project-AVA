@@ -6,6 +6,10 @@ public class WorldManager : MonoBehaviour
 {
     public VoxelColor[] worldColors;
     public Material worldMaterial;
+    [SerializeField]
+    private WorldSettings worldSettings;
+    public VoxelHolder root;
+    //
     public static WorldManager Instance
     {
         get
@@ -14,11 +18,14 @@ public class WorldManager : MonoBehaviour
             return _instance;
         }
     }
+    public static WorldSettings WorldSettings;
     private static WorldManager _instance;
-    private VoxelHolder container;
+    
     // Start is called before the first frame update
     void Start()
     {
+        WorldSettings = worldSettings;
+        ComputeManager.Instance.Initialize(1);
         // Check if there're multiple instances of the world manager singleton
         // Only 1 instance of a world manager class is allowed
         if (_instance != null)
@@ -31,21 +38,10 @@ public class WorldManager : MonoBehaviour
         }
         GameObject temp = new GameObject("Voxel Root");
         temp.transform.parent = transform;
-        container = temp.AddComponent<VoxelHolder>();
-        container.voxelInitialize(worldMaterial, Vector3.zero);
-        for (int x = 0; x < 20; x++)
-        {
-            for (int z = 0; z < 20; z++)
-            {
-                int randomYHeight = Random.Range(1, 10);
-                for (int y = 0; y < randomYHeight; y++)
-                {
-                    container[new Vector3(x, y, z)] = new Voxel() { voxID = 1 };
-                }
-            }
-        }
-        container.GenerateMesh();
-        container.UploadMesh();
+        root = temp.AddComponent<VoxelHolder>();
+        root.voxelInitialize(worldMaterial, Vector3.zero);
+        ComputeManager.Instance.GenerateVoxelData(ref root);
+      
     }
 
     // Update is called once per frame
@@ -53,4 +49,10 @@ public class WorldManager : MonoBehaviour
     {
         
     }
+}
+[System.Serializable]
+public class WorldSettings
+{
+    public int containerSize = 16;
+    public int maxHeight = 128;
 }

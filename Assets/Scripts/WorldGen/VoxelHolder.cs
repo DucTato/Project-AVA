@@ -8,45 +8,56 @@ using UnityEngine;
 
 public class VoxelHolder : MonoBehaviour
 {
-    public static Voxel emptyVoxel = new Voxel() { voxID = 0 };
-    public Vector3 voxelPosition;
+    // public static Voxel emptyVoxel = new Voxel() { voxID = 0 };
+    public Vector3 rootPosition;
     private MeshRenderer meshRender;
     private MeshFilter meshFilter;
     private MeshCollider meshCollider;
     private MeshData meshData = new MeshData();
-    private Dictionary<Vector3, Voxel> dictionaryData;
+
+    public NoiseBuffer dictionaryData;
     public void voxelInitialize(Material mat, Vector3 pos)
     {
         // Assigning a material and a position for the voxel position 
         ComponentConfig();
         // Using a dictionary means less iterating over empty data
-        dictionaryData = new Dictionary<Vector3, Voxel>();
+        dictionaryData = ComputeManager.Instance.GetNoiseBuffer();
         meshRender.sharedMaterial = mat;
-        voxelPosition = pos;
+        rootPosition = pos;
     }
     public Voxel this[Vector3 index]
     {
         get
         {
-            if (dictionaryData.ContainsKey(index)) return dictionaryData[index];
-            else return emptyVoxel;
+            return dictionaryData[index];
         }
         set
         {
-            if (dictionaryData.ContainsKey(index)) dictionaryData[index] = value;
-            else dictionaryData.Add(index, value);
+            dictionaryData[index] = value;
         }
     }
     public void ClearDictionary()
     {
-        dictionaryData.Clear();
+        ComputeManager.Instance.ClearAndRequeueBuffer(dictionaryData);
     }
-
+    public void RenderMesh()
+    {
+        // Clearing all the data to make sure that we start with a blank state
+        meshData.ClearData();
+        GenerateMesh();
+        UploadMesh();
+    }
     private void ComponentConfig()
     {
         meshFilter = GetComponent<MeshFilter>();
         meshCollider = GetComponent<MeshCollider>();
         meshRender = GetComponent<MeshRenderer>();
+    }
+    public bool checkVoxelIsSolid(Vector3 point)
+    {
+        if (point.y < 0 || (point.x > WorldManager.WorldSettings.containerSize + 2) || (point.z > WorldManager.WorldSettings.containerSize + 2)) return true;
+        else return this[point].isSolid;
+
     }
 
     #region Mesh Data
@@ -71,7 +82,7 @@ public class VoxelHolder : MonoBehaviour
                 colors = new List<Color>();
                 initialized = true;
                 mesh = new Mesh();
-                Debug.Log("Initialization Done");
+                //Debug.Log("Initialization Done");
             }
             else
             {
@@ -85,6 +96,7 @@ public class VoxelHolder : MonoBehaviour
         }
         public void UpdateMesh(bool sharedVertices = false)
         {
+            mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
             mesh.SetVertices(vertices);
             mesh.SetTriangles(triangles, 0, false);
             mesh.SetUVs(0, uvs);
@@ -154,8 +166,7 @@ public class VoxelHolder : MonoBehaviour
     #endregion
     public void GenerateMesh()
     {
-        // Clearing all the data to make sure that we start with a blank state
-        meshData.ClearData();
+        
         Vector3 blockPos;
         Voxel block;
         VoxelColor voxelColor;
@@ -165,42 +176,47 @@ public class VoxelHolder : MonoBehaviour
         int counter = 0;
         Vector3[] faceVertices = new Vector3[4];
         Vector2[] faceUVs = new Vector2[4];
-
-        foreach(KeyValuePair<Vector3, Voxel> kvp in dictionaryData)
+        for (int x = 1; x < WorldManager.WorldSettings.containerSize + 1; x++)
         {
-            if (kvp.Value.voxID == 0) continue;
-
-            blockPos = kvp.Key;
-            block = kvp.Value;
-            voxelColor = WorldManager.Instance.worldColors[block.voxID - 1];
-            colorAlphaValue = voxelColor.colorValue;
-            colorAlphaValue.a = 1;  // alpha value determines the transparency
-            voxelSmoothness = new Vector2(voxelColor.metallic, voxelColor.smoothness);
-            // Iterating over each face direction
-            for (int i = 0; i < 6; i++)
+            for (int y = 0; y < WorldManager.WorldSettings.maxHeight; y++)
             {
-                if (this[blockPos + voxelFaceChecks[i]].isSolid) continue;  // if this face is facing a solid cube, don't draw
-                // Drawing this face
+                for (int z = 1; z < WorldManager.WorldSettings.containerSize + 1; z++)
+                {
+                    //Debug.Log("WorldSettings: " + WorldManager.WorldSettings.containerSize + WorldManager.WorldSettings.maxHeight);
+                    blockPos = new Vector3(x, y, z);
+                    block = this[blockPos];
+                    // Do the check on solid blocks
+                    if (!block.isSolid) continue;
 
-                // Collecting the appropriate vertices from the default vertices and add the block position
-                for (int j = 0; j < 4; j++)
-                {
-                    faceVertices[j] = voxelVertices[voxelVertexIndexes[i, j]] + blockPos;
-                    faceUVs[j] = voxelUVs[j];
-                }
-                for (int j = 0; j < 6; j++)
-                {
-                    meshData.vertices.Add(faceVertices[voxelTris[i, j]]);
-                    meshData.uvs.Add(faceUVs[voxelTris[i, j]]);
-                    meshData.triangles.Add(counter++);
-                    // Coloring
-                    meshData.uvs2.Add(voxelSmoothness);
-                    meshData.colors.Add(colorAlphaValue);
+                    voxelColor = WorldManager.Instance.worldColors[block.ID - 1];
+                    colorAlphaValue = voxelColor.colorValue;
+                    colorAlphaValue.a = 1;  // alpha value determines the transparency
+                    voxelSmoothness = new Vector2(voxelColor.metallic, voxelColor.smoothness);
+                    // Iterating over each face direction
+                    for (int i = 0; i < 6; i++)
+                    {
+                        if (checkVoxelIsSolid(blockPos + voxelFaceChecks[i])) continue;  // if this face is facing a solid cube, don't draw
+                        // Drawing this face
+
+                        // Collecting the appropriate vertices from the default vertices and add the block position
+                        for (int j = 0; j < 4; j++)
+                        {
+                            faceVertices[j] = voxelVertices[voxelVertexIndexes[i, j]] + blockPos;
+                            faceUVs[j] = voxelUVs[j];
+                        }
+                        for (int j = 0; j < 6; j++)
+                        {
+                            meshData.vertices.Add(faceVertices[voxelTris[i, j]]);
+                            meshData.uvs.Add(faceUVs[voxelTris[i, j]]);
+                            meshData.triangles.Add(counter++);
+                            // Coloring
+                            meshData.uvs2.Add(voxelSmoothness);
+                            meshData.colors.Add(colorAlphaValue);
+                        }
+                    }
                 }
             }
-            //Debug.Log("Mesh Generated");
         }
-        
     }
     public void UploadMesh()
     {
