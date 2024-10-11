@@ -108,12 +108,14 @@ public class HeliHandler : MonoBehaviour
         roll = stickValue.x;
         pitch = stickValue.y;
         throttle += (throttleIncrement * throttleValueTrigger);
-        throttle = Mathf.Clamp(throttle, -30f, 100f);
+        throttle = Mathf.Clamp(throttle, -20f, 100f);
         if (!throttleTriggerState.IsPressed())
         {
             // Throttle decay mechanic - throttle will gradually move toward a specified amount when idle
-            throttle = Mathf.MoveTowards(throttle, 0f, 0.08f);
+            throttle = Mathf.MoveTowards(throttle, 0f, 0.01f);
         }
+        if (rb.velocity.y <= 0f) rb.drag = 0.5f;
+        else rb.drag = 1f;
     }
     private void AutoLeveling()
     {
