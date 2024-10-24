@@ -66,7 +66,7 @@ public class VoxelContainer : MonoBehaviour
         public int arraySize;
         public void Initialize()
         {
-            int maxTris = WorldManager.WorldSettings.containerSize * WorldManager.WorldSettings.containerSize * WorldManager.WorldSettings.maxHeight / 4;
+            int maxTris = (WorldManager.WorldSettings.containerSize * WorldManager.WorldSettings.containerSize * WorldManager.WorldSettings.maxHeight) / 4;
             arraySize = maxTris * 3;
             mesh = new Mesh();
 
@@ -92,9 +92,9 @@ public class VoxelContainer : MonoBehaviour
         int[] faceCount = new int[2] { 0, 0 };
         meshBuffer.countBuffer.GetData(faceCount);
         // Get all of the meshData from the buffers to local arrays
-        meshBuffer.vertexBuffer.SetData(meshData.vertices, 0, 0, faceCount[0]);
-        meshBuffer.indexBuffer.SetData(meshData.indices, 0, 0, faceCount[0]);
-        meshBuffer.colorBuffer.SetData(meshData.colors, 0, 0, faceCount[0]);
+        meshBuffer.vertexBuffer.GetData(meshData.vertices, 0, 0, faceCount[0]);
+        meshBuffer.indexBuffer.GetData(meshData.indices, 0, 0, faceCount[0]);
+        meshBuffer.colorBuffer.GetData(meshData.colors, 0, 0, faceCount[0]);
        
         // Assign the mesh
         meshData.mesh = new Mesh();
