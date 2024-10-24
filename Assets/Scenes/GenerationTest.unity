@@ -298,6 +298,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8736036113163304059, guid: 18199412ea45c0747aa894d600224284,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.991852
+      objectReference: {fileID: 0}
+    - target: {fileID: 8736036113163304059, guid: 18199412ea45c0747aa894d600224284,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.12739591
+      objectReference: {fileID: 0}
     - target: {fileID: 8819552416609952742, guid: 18199412ea45c0747aa894d600224284,
         type: 3}
       propertyPath: m_Name
@@ -526,16 +536,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   worldColors:
-  - colorValue: {r: 0.04712126, g: 0.13207549, b: 0.038625833, a: 0}
+  - colorValue:
+      serializedVersion: 2
+      rgba: 1003542
     metallic: 0.2
     smoothness: 0.8
-  - colorValue: {r: 0.4113207, g: 0.22054303, b: 0.051997136, a: 0}
+  - colorValue:
+      serializedVersion: 2
+      rgba: 667218
     metallic: 0.6
     smoothness: 0.2
   worldMaterial: {fileID: 2100000, guid: 46d1a51107e130b42b086662f7f67b26, type: 2}
   worldSettings:
-    containerSize: 128
+    containerSize: 16
     maxHeight: 128
+    renderDistance: 32
+  mainCam: {fileID: 991788114}
+  maxChunks2ProcessPerFrame: 6
+  mainThreadID: 0
+  killThreads: 0
+  performedFirstPass: 0
   root: {fileID: 0}
 --- !u!114 &1477932824
 MonoBehaviour:
@@ -550,8 +570,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   noiseShader: {fileID: 7200000, guid: 60b1cd9314bc1dd40905ae5b7783bf83, type: 3}
-  xThreads: 0
-  yThreads: 0
+  voxelShader: {fileID: 7200000, guid: 2845ac9f3a7893b45aa58072be375e1c, type: 3}
+  seed: 0
+  noiseLayers:
+  - gain: 0.7
+    frequency: 700
+    lacunarity: 3.3
+    persistence: 0.27
+    octaves: 5
+    caveScale: 550
+    caveThreshold: 0.75
+    surfaceVoxelID: 1
+    subSurfaceVoxelID: 2
+  numberOMeshBuffers: 0
 --- !u!1 &1556125541
 GameObject:
   m_ObjectHideFlags: 0
