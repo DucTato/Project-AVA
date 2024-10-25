@@ -20,7 +20,7 @@ ScriptedImporter:
   originMode: 0
   reduceHierarchy: 1
   generationMode: 1
-  meshGenerationApproach: 0
+  meshGenerationApproach: 1
   overrideAssetMaterials: 0
   overrideMaterials:
   - color: {r: 1, g: 1, b: 1, a: 1}

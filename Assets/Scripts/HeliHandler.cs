@@ -112,7 +112,7 @@ public class HeliHandler : MonoBehaviour
         if (!throttleTriggerState.IsPressed())
         {
             // Throttle decay mechanic - throttle will gradually move toward a specified amount when idle
-            throttle = Mathf.MoveTowards(throttle, 0f, 0.01f);
+            throttle = Mathf.MoveTowards(throttle, 30f, 0.01f);
         }
         if (rb.velocity.y <= 0f) rb.drag = 0.5f;
         else rb.drag = 1f;
