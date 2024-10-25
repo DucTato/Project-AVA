@@ -51,7 +51,7 @@ public class CameraController : MonoBehaviour
     void Start()
     {
         // Grabbing the camera Position from the Player Controller singleton
-        povs = PlayerController.instance.camPovs;
+        //povs = PlayerController.instance.camPovs;
     }
 
     // Update is called once per frame
