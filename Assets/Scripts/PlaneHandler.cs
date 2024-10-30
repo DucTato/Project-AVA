@@ -1,274 +1,373 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class PlaneHandler : MonoBehaviour
 {
-    
-    private Rigidbody rb;
-    [Header("Plane Stats")]
-    private Vector3 lastVelocity, controlInput, localGForce;
-    private float throttleInput;
-    private bool isAlive;
     [SerializeField]
-    private float gLimit, gLimitPitch;
+    private float maxThrust;
     [SerializeField]
-    private Vector3 localVelocity, velocity, localAngularVelocity;
+    private float throttleSpeed;
     [SerializeField]
-    private Vector3 effectiveInput;
-
-    [Header("Thrust")]
+    private float gLimit;
     [SerializeField]
-    [Tooltip("Maximum engine thrust at 100% throttle")]
-    private float maxThrust = 200f;
-    [SerializeField]
-    private float throttle, throttleSpeed;
-
-    [Header("Drag")]
-    [SerializeField]
-    private float airBrakeDrag, flapsDrag, inducedDrag;
-    [SerializeField]
-    private AnimationCurve dragRight, dragLeft, dragTop, dragBottom, dragForward, dragBack;
-    [SerializeField]
-    private Vector3 angularDrag;
-
-    [SerializeField]
-    private float angleOfAttack, angleOfAttackYaw;
+    private float gLimitPitch;
 
     [Header("Lift")]
     [SerializeField]
-    private float flapsLiftPower, liftPower, flapsAoABias, flapsRetractSpeed;
+    private float liftPower;
     [SerializeField]
-    private AnimationCurve liftAOACurve, inducedDragCurve, rudderAOACurve, rudderInducedDragCurve;
-
+    AnimationCurve liftAOACurve;
     [SerializeField]
-    private bool AirBrakeDeployed, FlapsDeployed;
-    
+    private float inducedDrag;
+    [SerializeField]
+    AnimationCurve inducedDragCurve;
     [SerializeField]
     private float rudderPower;
+    [SerializeField]
+    AnimationCurve rudderAOACurve;
+    [SerializeField]
+    AnimationCurve rudderInducedDragCurve;
+    [SerializeField]
+    private float flapsLiftPower;
+    [SerializeField]
+    private float flapsAOABias;
+    [SerializeField]
+    private float flapsDrag;
+    [SerializeField]
+    private float flapsRetractSpeed;
 
     [Header("Steering")]
     [SerializeField]
-    private AnimationCurve steeringCurve;
     private Vector3 turnSpeed;
     [SerializeField]
     private Vector3 turnAcceleration;
+    [SerializeField]
+    private AnimationCurve steeringCurve;
 
+    [Header("Drag")]
+    [SerializeField]
+    private AnimationCurve dragForward;
+    [SerializeField]
+    private AnimationCurve dragBack;
+    [SerializeField]
+    private AnimationCurve dragLeft;
+    [SerializeField]
+    private AnimationCurve dragRight;
+    [SerializeField]
+    private AnimationCurve dragTop;
+    [SerializeField]
+    private AnimationCurve dragBottom;
+    [SerializeField]
+    private Vector3 angularDrag;
+    [SerializeField]
+    private float airbrakeDrag;
 
+    [SerializeField]
+    private float Throttle;
+    private float throttleInput;
+    private Vector3 controlInput;
 
-    #region Basic CallBacks
-    private void Awake()
+    private Vector3 lastVelocity;
+  
+
+    public bool Dead { get; private set; }
+
+    public Rigidbody rb { get; private set; }
+    
+    public Vector3 EffectiveInput { get; private set; }
+    public Vector3 Velocity { get; private set; }
+    public Vector3 LocalVelocity { get; private set; }
+    public Vector3 LocalGForce { get; private set; }
+    public Vector3 LocalAngularVelocity { get; private set; }
+    public float AngleOfAttack { get; private set; }
+    public float AngleOfAttackYaw { get; private set; }
+    public bool AirbrakeDeployed { get; private set; }
+
+    [SerializeField]
+    bool flapsDeployed;
+    public bool FlapsDeployed
     {
-        isAlive = true;
-        rb = GetComponent<Rigidbody>();
-        
-
-        //gpControls.Gameplay.ACyaw.performed += context => yaw = context.ReadValue<float>();
-        //gpControls.Gameplay.ACyaw.canceled += context => yaw = 0f;
-
-        //gpControls.Gameplay.ACthrottle.performed += context => throttleValueTrigger = context.ReadValue<float>();
-        //gpControls.Gameplay.ACthrottle.canceled += context => throttleValueTrigger = 0f;
-
+        get
+        {
+            return flapsDeployed;
+        }
+        private set
+        {
+            flapsDeployed = value;
+        }
     }
 
-    
-    // Start is called before the first frame update
     void Start()
     {
-       
+        rb = GetComponent<Rigidbody>();
+        rb.velocity = rb.rotation * new Vector3(0, 0, 200); // 200 = initial speed
     }
 
-    // Update is called once per frame
-    void Update()
+    public void SetThrottleInput(float input)
     {
-        
+        if (Dead) return;
+        throttleInput = input;
     }
-    private void FixedUpdate()
+
+    public void SetControlInput(Vector3 input)
     {
-        // Update physics in this callback to avoid jittering!
-
-        float dt = Time.fixedDeltaTime;
-        // Calculate at start to capture any changes that happened externally
-        CalculateState(dt);
-        CalculateGForce(dt);
-        UpdateFlaps();
-        // Handle player input
-        UpdateThrottle(dt);
-
-        // Update plane's states
-        UpdateThrustValue();
-        UpdateLift();
-
-        if (isAlive)    UpdateSteering(dt);
-
-        UpdateDrag();
-        UpdateAngularDrag();
-        // Calculate again
-
-        CalculateState(dt);
+        if (Dead) return;
+        controlInput = input;
     }
-    #endregion
-    #region Plane Handling
-    private void UpdateFlaps()
+
+    public void ToggleFlaps()
     {
-        if (localVelocity.z > flapsRetractSpeed) FlapsDeployed = false;
+        if (LocalVelocity.z < flapsRetractSpeed)
+        {
+            FlapsDeployed = !FlapsDeployed;
+        }
     }
-    private void CalculateState(float dt, bool firstThisFrame = true)
+
+
+    void Die()
     {
-        var inverseRotation = Quaternion.Inverse(rb.rotation);
-        velocity = rb.velocity;
-        localVelocity = inverseRotation * velocity;
-        localAngularVelocity = inverseRotation * rb.angularVelocity;
+        throttleInput = 0;
+        Throttle = 0;
+        Dead = true;
+    }
+
+    void UpdateThrottle(float dt)
+    {
+        float target = 0;
+        if (throttleInput > 0) target = 1;
+
+        //throttle input is [-1, 1]
+        //throttle is [0, 1]
+        Throttle = Utilities.MoveTo(Throttle, target, throttleSpeed * Mathf.Abs(throttleInput), dt);
+
+        AirbrakeDeployed = Throttle == 0 && throttleInput == -1;
+    }
+
+    void UpdateFlaps()
+    {
+        if (LocalVelocity.z > flapsRetractSpeed)
+        {
+            FlapsDeployed = false;
+        }
+    }
+
+    void CalculateAngleOfAttack()
+    {
+        if (LocalVelocity.sqrMagnitude < 0.1f)
+        {
+            AngleOfAttack = 0;
+            AngleOfAttackYaw = 0;
+            return;
+        }
+
+        AngleOfAttack = Mathf.Atan2(-LocalVelocity.y, LocalVelocity.z);
+        AngleOfAttackYaw = Mathf.Atan2(LocalVelocity.x, LocalVelocity.z);
+    }
+
+    void CalculateGForce(float dt)
+    {
+        var invRotation = Quaternion.Inverse(rb.rotation);
+        var acceleration = (Velocity - lastVelocity) / dt;
+        LocalGForce = invRotation * acceleration;
+        lastVelocity = Velocity;
+    }
+
+    void CalculateState(float dt)
+    {
+        var invRotation = Quaternion.Inverse(rb.rotation);
+        Velocity = rb.velocity;
+        LocalVelocity = invRotation * Velocity;  //transform world velocity into local space
+        LocalAngularVelocity = invRotation * rb.angularVelocity;  //transform into local space
+
         CalculateAngleOfAttack();
     }
-    private void CalculateAngleOfAttack()
-    {
-        angleOfAttack = Mathf.Atan2(-localVelocity.y, localVelocity.z);     // pitch axis
-        angleOfAttackYaw = Mathf.Atan2(localVelocity.x, localVelocity.z);   // yaw axis
-    }
-    private void CalculateGForce(float dt)
-    {
-        var inverseRotation = Quaternion.Inverse(rb.rotation);
-        var accel = (velocity - lastVelocity) / dt;
-        localGForce = inverseRotation * accel;
-        lastVelocity = velocity;
-    }
-    private Vector3 CalculateGForce(Vector3 angularVelocity, Vector3 velocity)
-    {
-        // estimate FUTURE G-FORCE for the G-Force limiter feature
-        /*Velocity = AngularVelocity * Radius
-         *G = Velocity^2 / Radius
-         *G = (Velocity * AngularVelocity * Radius) / Radius
-         *G = Velocity x AngularVelocity
-         */
-        return Vector3.Cross(angularVelocity, velocity);
-    }
-    private Vector3 CalculateGForceLimit(Vector3 input)
-    {
-        return Utilities.Scale6(input, gLimit, gLimitPitch, gLimit, gLimit, gLimit, gLimit);
-    }
-    private float CalculateGLimiter(Vector3 controlInput, Vector3 maxAngularVelocity, bool GLimiterON = false)
-    {
-        // The limiter is inactive when it returns 1f (100% of the pilot's input)
-        if (GLimiterON) return 1f;
-        /*maxInput is the input from the pilot but got 100%-ed
-         * so that the maximum turn rate is in the direction
-         * of the pilot
-         */
-        var maxInput = controlInput.normalized;
-        var limit = CalculateGForceLimit(maxInput);
-        var maxGForce = CalculateGForce(Vector3.Scale(maxInput, maxAngularVelocity), localVelocity);
-        if (maxGForce.magnitude > limit.magnitude)
-        {
-            /*Example:
-             * maxGForce = 16G, limit = 8G
-             * return 8/16 = 0.5 (50% of the input from the pilot)
-             */
-            return limit.magnitude / maxGForce.magnitude;
-        }
-        return 1f;
-    }
-    private void UpdateThrustValue()
-    {
-        rb.AddRelativeForce(throttle * maxThrust * Vector3.forward);    // throttle can be 0 to let players fly without engine power (gliding)
 
-    }
-    private void UpdateDrag()
+    void UpdateThrust()
     {
-        var lv = localVelocity;
-        var lv2 = lv.sqrMagnitude;
-        float airBrakeDrag = AirBrakeDeployed ? this.airBrakeDrag : 0f;
-        float flapsDrag = FlapsDeployed ? this.flapsDrag : 0f;
-        // Calculate the co-efficient of drag depending on the direction 
-        var coefficient = Utilities.Scale6(lv.normalized, dragRight.Evaluate(Mathf.Abs(lv.x)), dragLeft.Evaluate(Mathf.Abs(lv.x)), 
-                                            dragTop.Evaluate(Mathf.Abs(lv.y)), dragBottom.Evaluate(Mathf.Abs(lv.y)), 
-                                            dragForward.Evaluate(Mathf.Abs(lv.z)) + airBrakeDrag + flapsDrag, // extra drag from forward coefficient
-                                            dragBack.Evaluate(Mathf.Abs(lv.z)));
-        var drag = coefficient.magnitude * lv2 * -lv.normalized;    // drag is the opposite direction of velocity
+        rb.AddRelativeForce(Throttle * maxThrust * Vector3.forward);
+    }
+
+    void UpdateDrag()
+    {
+        var lv = LocalVelocity;
+        var lv2 = lv.sqrMagnitude;  //velocity squared
+
+        float airbrakeDrag = AirbrakeDeployed ? this.airbrakeDrag : 0;
+        float flapsDrag = FlapsDeployed ? this.flapsDrag : 0;
+
+        //calculate coefficient of drag depending on direction on velocity
+        var coefficient = Utilities.Scale6(
+            lv.normalized,
+            dragRight.Evaluate(Mathf.Abs(lv.x)), dragLeft.Evaluate(Mathf.Abs(lv.x)),
+            dragTop.Evaluate(Mathf.Abs(lv.y)), dragBottom.Evaluate(Mathf.Abs(lv.y)),
+            dragForward.Evaluate(Mathf.Abs(lv.z)) + airbrakeDrag + flapsDrag,   //include extra drag for forward coefficient
+            dragBack.Evaluate(Mathf.Abs(lv.z))
+        );
+
+        var drag = coefficient.magnitude * lv2 * -lv.normalized;    //drag is opposite direction of velocity
+
         rb.AddRelativeForce(drag);
     }
-    private void UpdateAngularDrag()
-    {
-        var av = localAngularVelocity;
-        var drag = av.sqrMagnitude * -av.normalized;    // drag is the opposite direction of angular velocity
-        rb.AddRelativeForce(Vector3.Scale(drag, angularDrag), ForceMode.Acceleration);
-    }
-    private Vector3 CalculateLift(float AoA, Vector3 rightAxis, float liftPower, AnimationCurve aoaCurve, AnimationCurve inducedDragCurve)
-    {
-        var liftVelocity = Vector3.ProjectOnPlane(localVelocity, rightAxis);
-        var v2 = liftVelocity.sqrMagnitude;    // liftVelocity squared
 
-        var liftCoefficient = aoaCurve.Evaluate(AoA * Mathf.Rad2Deg);   // coefficient varies with AoA
+    Vector3 CalculateLift(float angleOfAttack, Vector3 rightAxis, float liftPower, AnimationCurve aoaCurve, AnimationCurve inducedDragCurve)
+    {
+        var liftVelocity = Vector3.ProjectOnPlane(LocalVelocity, rightAxis);    //project velocity onto YZ plane
+        var v2 = liftVelocity.sqrMagnitude;                                     //square of velocity
+
+        //lift = velocity^2 * coefficient * liftPower
+        //coefficient varies with AOA
+        var liftCoefficient = aoaCurve.Evaluate(angleOfAttack * Mathf.Rad2Deg);
         var liftForce = v2 * liftCoefficient * liftPower;
+
+        //lift is perpendicular to velocity
         var liftDirection = Vector3.Cross(liftVelocity.normalized, rightAxis);
         var lift = liftDirection * liftForce;
 
+        //induced drag varies with square of lift coefficient
         var dragForce = liftCoefficient * liftCoefficient;
-        var dragDirection = - liftVelocity.normalized;
-        var inducedDrag = dragDirection * v2 * dragForce * this.inducedDrag * inducedDragCurve.Evaluate(Mathf.Max(0, localVelocity.z));
+        var dragDirection = -liftVelocity.normalized;
+        var inducedDrag =  v2 * dragForce * this.inducedDrag * inducedDragCurve.Evaluate(Mathf.Max(0, LocalVelocity.z)) * dragDirection;
+
         return lift + inducedDrag;
     }
-    private void UpdateLift()
+
+    void UpdateLift()
     {
-        float flapsLiftPower = FlapsDeployed ? this.flapsLiftPower : 0f;
-        float flapsAOABias = FlapsDeployed ? this.flapsAoABias : 0f;
-        var liftForce = CalculateLift(angleOfAttack + (flapsAOABias * Mathf.Deg2Rad), Vector3.right,
-                                        liftPower + flapsLiftPower, liftAOACurve, inducedDragCurve);
-        var yawForce = CalculateLift(angleOfAttackYaw, Vector3.up, rudderPower, rudderAOACurve, rudderInducedDragCurve);
-        rb.AddRelativeForce(yawForce);
+        if (LocalVelocity.sqrMagnitude < 1f) return;
+
+        float flapsLiftPower = FlapsDeployed ? this.flapsLiftPower : 0;
+        float flapsAOABias = FlapsDeployed ? this.flapsAOABias : 0;
+
+        var liftForce = CalculateLift(
+            AngleOfAttack + (flapsAOABias * Mathf.Deg2Rad), Vector3.right,
+            liftPower + flapsLiftPower,
+            liftAOACurve,
+            inducedDragCurve
+        );
+
+        var yawForce = CalculateLift(AngleOfAttackYaw, Vector3.up, rudderPower, rudderAOACurve, rudderInducedDragCurve);
+
         rb.AddRelativeForce(liftForce);
+        rb.AddRelativeForce(yawForce);
     }
-    private float CalculateSteering(float dt, float angularVelocity, float targetVelocity, float acceleration)
+
+    void UpdateAngularDrag()
+    {
+        var av = LocalAngularVelocity;
+        var drag = av.sqrMagnitude * -av.normalized;    //squared, opposite direction of angular velocity
+        rb.AddRelativeTorque(Vector3.Scale(drag, angularDrag), ForceMode.Acceleration);  //ignore rigidbody mass
+    }
+
+    Vector3 CalculateGForce(Vector3 angularVelocity, Vector3 velocity)
+    {
+        //estiamte G Force from angular velocity and velocity
+        //Velocity = AngularVelocity * Radius
+        //G = Velocity^2 / R
+        //G = (Velocity * AngularVelocity * Radius) / Radius
+        //G = Velocity * AngularVelocity
+        //G = V cross A
+        return Vector3.Cross(angularVelocity, velocity);
+    }
+
+    Vector3 CalculateGForceLimit(Vector3 input)
+    {
+        return Utilities.Scale6(input,
+            gLimit, gLimitPitch,    //pitch down, pitch up
+            gLimit, gLimit,         //yaw
+            gLimit, gLimit          //roll
+        ) * 9.81f;
+    }
+
+    float CalculateGLimiter(Vector3 controlInput, Vector3 maxAngularVelocity)
+    {
+        if (controlInput.magnitude < 0.01f)
+        {
+            return 1;
+        }
+
+        //if the player gives input with magnitude less than 1, scale up their input so that magnitude == 1
+        var maxInput = controlInput.normalized;
+
+        var limit = CalculateGForceLimit(maxInput);
+        var maxGForce = CalculateGForce(Vector3.Scale(maxInput, maxAngularVelocity), LocalVelocity);
+
+        if (maxGForce.magnitude > limit.magnitude)
+        {
+            //example:
+            //maxGForce = 16G, limit = 8G
+            //so this is 8 / 16 or 0.5
+            return limit.magnitude / maxGForce.magnitude;
+        }
+
+        return 1;
+    }
+
+    float CalculateSteering(float dt, float angularVelocity, float targetVelocity, float acceleration)
     {
         var error = targetVelocity - angularVelocity;
         var accel = acceleration * dt;
         return Mathf.Clamp(error, -accel, accel);
     }
-    private void UpdateSteering(float dt)
+
+    void UpdateSteering(float dt)
     {
-        var speed = Mathf.Max(0, localVelocity.z);
+        var speed = Mathf.Max(0, LocalVelocity.z);
         var steeringPower = steeringCurve.Evaluate(speed);
 
-        var gForceScaling = CalculateGLimiter(controlInput, turnSpeed * Mathf.Rad2Deg * steeringPower);
-        var targetAV = Vector3.Scale(controlInput, steeringPower * turnSpeed * gForceScaling);
+        var gForceScaling = CalculateGLimiter(controlInput, Mathf.Deg2Rad * steeringPower * turnSpeed);
 
-        var av = localAngularVelocity * Mathf.Rad2Deg;
+        var targetAV = Vector3.Scale(controlInput,steeringPower * gForceScaling * turnSpeed);
+        var av = LocalAngularVelocity * Mathf.Rad2Deg;
 
-        var correction = new Vector3(CalculateSteering(dt, av.x, turnAcceleration.x, steeringPower),
-                                        CalculateSteering(dt, av.y, turnAcceleration.y, steeringPower),
-                                        CalculateSteering(dt, av.z, turnAcceleration.z, steeringPower));
-        rb.AddRelativeForce(correction * Mathf.Rad2Deg, ForceMode.VelocityChange);  // ignore rigidbody mass
+        var correction = new Vector3(
+            CalculateSteering(dt, av.x, targetAV.x, turnAcceleration.x * steeringPower),
+            CalculateSteering(dt, av.y, targetAV.y, turnAcceleration.y * steeringPower),
+            CalculateSteering(dt, av.z, targetAV.z, turnAcceleration.z * steeringPower)
+        );
 
-        var correctionInput = new Vector3(Mathf.Clamp((targetAV.x - av.x) / turnAcceleration.x, -1, 1),
-                                            Mathf.Clamp((targetAV.y - av.y) / turnAcceleration.y, -1, 1),
-                                            Mathf.Clamp((targetAV.z - av.z) / turnAcceleration.z, -1, 1));
-        var eInput = (correctionInput + controlInput) * gForceScaling;
-        effectiveInput = new Vector3(Mathf.Clamp(eInput.x, -1, 1), Mathf.Clamp(eInput.y, -1, 1),Mathf.Clamp(eInput.z, -1, 1));                               
+        rb.AddRelativeTorque(correction * Mathf.Deg2Rad, ForceMode.VelocityChange);    //ignore rigidbody mass
+
+        var correctionInput = new Vector3(
+            Mathf.Clamp((targetAV.x - av.x) / turnAcceleration.x, -1, 1),
+            Mathf.Clamp((targetAV.y - av.y) / turnAcceleration.y, -1, 1),
+            Mathf.Clamp((targetAV.z - av.z) / turnAcceleration.z, -1, 1)
+        );
+
+        var effectiveInput = (correctionInput + controlInput) * gForceScaling;
+
+        EffectiveInput = new Vector3(
+            Mathf.Clamp(effectiveInput.x, -1, 1),
+            Mathf.Clamp(effectiveInput.y, -1, 1),
+            Mathf.Clamp(effectiveInput.z, -1, 1)
+        );
     }
-    #endregion
-    #region Input Handling
-    public void SetThrottleInput (float inputThrottle)
+
+    void FixedUpdate()
     {
-        if (isAlive) throttleInput = inputThrottle;
+        float dt = Time.fixedDeltaTime;
+
+        //calculate at start, to capture any changes that happened externally
+        CalculateState(dt);
+        CalculateGForce(dt);
+        UpdateFlaps();
+
+        //handle user input
+        UpdateThrottle(dt);
+
+        //apply updates
+        UpdateThrust();
+        UpdateLift();
+
+        if (!Dead)
+        {
+            UpdateSteering(dt);
+        }
+
+        UpdateDrag();
+        UpdateAngularDrag();
+
+        //calculate again, so that other systems can read this plane's state
+        CalculateState(dt);
     }
-    public void SetControlInput (Vector3 input)
-    {
-        if (isAlive) controlInput = input;
-    }
-    public void ToggleFlaps()
-    {
-        if (localVelocity.z < flapsRetractSpeed) FlapsDeployed = !FlapsDeployed;
-    }
-    private void UpdateThrottle(float dt)
-    {
-        /*Throttle input is [-1, 1]
-         * ThrottleValue is [0, 1]
-         */
-        float target = 0;
-        if (throttleInput > 0f) target = 1f;
-        throttle = Utilities.MoveTo(throttle, target, throttleSpeed * Mathf.Abs(throttleInput), dt);
-        AirBrakeDeployed = throttle == 0f && throttle == -1f;
-    }
-    #endregion
 }
