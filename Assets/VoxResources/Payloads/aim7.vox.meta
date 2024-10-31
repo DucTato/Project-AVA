@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: aa1e04e12f338a3409264a9687ed1af3
+guid: ccccd694d048f664cbbca0459de1b4ff
 ScriptedImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -15,12 +15,12 @@ ScriptedImporter:
   scale: 0.1
   indexFormat: 0
   generateLightmapUV: 1
-  generateColliders: 1
+  generateColliders: 0
   chunkSize: 16
   originMode: 0
   reduceHierarchy: 1
   generationMode: 1
-  meshGenerationApproach: 0
+  meshGenerationApproach: 1
   overrideAssetMaterials: 0
   overrideMaterials:
   - color: {r: 1, g: 1, b: 1, a: 1}

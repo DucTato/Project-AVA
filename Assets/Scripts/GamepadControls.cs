@@ -71,6 +71,24 @@ public partial class @GamepadControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ACfireMSL"",
+                    ""type"": ""Button"",
+                    ""id"": ""8314f0b9-281f-4709-b34b-62342160d141"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ACfireGUN"",
+                    ""type"": ""Button"",
+                    ""id"": ""f49f20d4-9ccb-498e-a727-9218457d9f40"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -172,6 +190,28 @@ public partial class @GamepadControls: IInputActionCollection2, IDisposable
                     ""action"": ""toggleCam"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c471bfc8-affa-472b-94e3-f5f483f4f992"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";DualStickController"",
+                    ""action"": ""ACfireMSL"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a25669f7-2a9d-4e80-9404-201131947dec"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";DualStickController"",
+                    ""action"": ""ACfireGUN"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -213,6 +253,8 @@ public partial class @GamepadControls: IInputActionCollection2, IDisposable
         m_Gameplay_ACthrottle = m_Gameplay.FindAction("ACthrottle", throwIfNotFound: true);
         m_Gameplay_moveCam = m_Gameplay.FindAction("moveCam", throwIfNotFound: true);
         m_Gameplay_toggleCam = m_Gameplay.FindAction("toggleCam", throwIfNotFound: true);
+        m_Gameplay_ACfireMSL = m_Gameplay.FindAction("ACfireMSL", throwIfNotFound: true);
+        m_Gameplay_ACfireGUN = m_Gameplay.FindAction("ACfireGUN", throwIfNotFound: true);
     }
 
     ~@GamepadControls()
@@ -284,6 +326,8 @@ public partial class @GamepadControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Gameplay_ACthrottle;
     private readonly InputAction m_Gameplay_moveCam;
     private readonly InputAction m_Gameplay_toggleCam;
+    private readonly InputAction m_Gameplay_ACfireMSL;
+    private readonly InputAction m_Gameplay_ACfireGUN;
     public struct GameplayActions
     {
         private @GamepadControls m_Wrapper;
@@ -293,6 +337,8 @@ public partial class @GamepadControls: IInputActionCollection2, IDisposable
         public InputAction @ACthrottle => m_Wrapper.m_Gameplay_ACthrottle;
         public InputAction @moveCam => m_Wrapper.m_Gameplay_moveCam;
         public InputAction @toggleCam => m_Wrapper.m_Gameplay_toggleCam;
+        public InputAction @ACfireMSL => m_Wrapper.m_Gameplay_ACfireMSL;
+        public InputAction @ACfireGUN => m_Wrapper.m_Gameplay_ACfireGUN;
         public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -317,6 +363,12 @@ public partial class @GamepadControls: IInputActionCollection2, IDisposable
             @toggleCam.started += instance.OnToggleCam;
             @toggleCam.performed += instance.OnToggleCam;
             @toggleCam.canceled += instance.OnToggleCam;
+            @ACfireMSL.started += instance.OnACfireMSL;
+            @ACfireMSL.performed += instance.OnACfireMSL;
+            @ACfireMSL.canceled += instance.OnACfireMSL;
+            @ACfireGUN.started += instance.OnACfireGUN;
+            @ACfireGUN.performed += instance.OnACfireGUN;
+            @ACfireGUN.canceled += instance.OnACfireGUN;
         }
 
         private void UnregisterCallbacks(IGameplayActions instance)
@@ -336,6 +388,12 @@ public partial class @GamepadControls: IInputActionCollection2, IDisposable
             @toggleCam.started -= instance.OnToggleCam;
             @toggleCam.performed -= instance.OnToggleCam;
             @toggleCam.canceled -= instance.OnToggleCam;
+            @ACfireMSL.started -= instance.OnACfireMSL;
+            @ACfireMSL.performed -= instance.OnACfireMSL;
+            @ACfireMSL.canceled -= instance.OnACfireMSL;
+            @ACfireGUN.started -= instance.OnACfireGUN;
+            @ACfireGUN.performed -= instance.OnACfireGUN;
+            @ACfireGUN.canceled -= instance.OnACfireGUN;
         }
 
         public void RemoveCallbacks(IGameplayActions instance)
@@ -378,5 +436,7 @@ public partial class @GamepadControls: IInputActionCollection2, IDisposable
         void OnACthrottle(InputAction.CallbackContext context);
         void OnMoveCam(InputAction.CallbackContext context);
         void OnToggleCam(InputAction.CallbackContext context);
+        void OnACfireMSL(InputAction.CallbackContext context);
+        void OnACfireGUN(InputAction.CallbackContext context);
     }
 }

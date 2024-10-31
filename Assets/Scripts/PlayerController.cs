@@ -10,6 +10,8 @@ public class PlayerController : MonoBehaviour
     private PlaneHandler planeHandler;
     [SerializeField]
     private HeliHandler heliHandler;
+    [SerializeField]
+    private FCS fireControl;
     private GamepadControls gpControls;
     [SerializeField]
     private Vector3 controlInput;
@@ -20,7 +22,6 @@ public class PlayerController : MonoBehaviour
         gpControls = new GamepadControls();
         gpControls.Gameplay.ACmovement.performed += context => { 
             stickValue = context.ReadValue<Vector2>();
-            //controlInput = new Vector3(stickValue.y, controlInput.y, -stickValue.x);
             controlInput.x = stickValue.y;
             controlInput.z = -stickValue.x;
         };
@@ -29,14 +30,19 @@ public class PlayerController : MonoBehaviour
         };
 
         gpControls.Gameplay.ACyaw.performed += context => {
-            //controlInput = new Vector3(controlInput.x, context.ReadValue<float>(), controlInput.z);
+            
             controlInput.y = context.ReadValue<float>();
         };
         gpControls.Gameplay.ACyaw.canceled += context => { 
-            //controlInput = new Vector3(controlInput.x, 0, controlInput.z);
             controlInput.y = 0;
         };
+
         gpControls.Gameplay.ACthrottle.performed += context => { if (planeHandler != null) planeHandler.SetThrottleInput(context.ReadValue<float>()); };
+
+        gpControls.Gameplay.ACfireGUN.performed += context => { fireControl.FireCannon(true); };
+        gpControls.Gameplay.ACfireGUN.canceled += context => { fireControl.FireCannon(false); };
+
+        gpControls.Gameplay.ACfireMSL.performed += context => { fireControl.TryFireMissile(); };
     }
     // Start is called before the first frame update
     void Start()

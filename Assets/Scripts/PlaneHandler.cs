@@ -12,6 +12,8 @@ public class PlaneHandler : MonoBehaviour
     private float gLimit;
     [SerializeField]
     private float gLimitPitch;
+    [SerializeField]
+    private float initialSpeed;
 
     [Header("Lift")]
     [SerializeField]
@@ -101,7 +103,7 @@ public class PlaneHandler : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        rb.velocity = rb.rotation * new Vector3(0, 0, 200); // 200 = initial speed
+        rb.velocity = rb.rotation * new Vector3(0, 0, initialSpeed); // initial speed
     }
 
     public void SetThrottleInput(float input)
