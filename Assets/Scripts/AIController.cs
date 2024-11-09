@@ -71,7 +71,8 @@ public class AIController : MonoBehaviour
     private float reactionDelayDistance;
 
     private Target selfTarget;
-    private PlaneHandler targetPlane;
+    [SerializeField]
+    private Target _currentTarget;
     private FCS fireControl;
     private Vector3 lastInput;
     private bool isRecoveringSpeed;
@@ -101,15 +102,18 @@ public class AIController : MonoBehaviour
     {
         selfTarget = GetComponent<Target>();
         fireControl = GetComponent<FCS>();
-        if (fireControl.currTarget != null)
-        {
-            targetPlane = fireControl.currTarget.GetComponent<PlaneHandler>();
-        }
 
+        TryFindTarget();
         dodgeOffsets = new List<Vector3>();
         inputQueue = new Queue<ControlInput>();
     }
-
+    private void TryFindTarget()
+    {
+        if (fireControl.currTarget != null)
+        {
+            _currentTarget = fireControl.currTarget;
+        }
+    }
     private Vector3 AvoidGround()
     {
         //roll level and pull up
@@ -147,7 +151,7 @@ public class AIController : MonoBehaviour
 
     private Vector3 CalculateSteering(float dt, Vector3 targetPosition)
     {
-        if (fireControl.currTarget != null && targetPlane.Health == 0)
+        if (fireControl.currTarget != null && _currentTarget.Health == 0)
         {
             return new Vector3();
         }
@@ -287,7 +291,7 @@ public class AIController : MonoBehaviour
 
     private void CalculateCannon(float dt)
     {
-        if (targetPlane.Health == 0)
+        if (_currentTarget.Health == 0)
         {
             cannonFiring = false;
             return;
@@ -363,7 +367,12 @@ public class AIController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (PlaneHandler.Dead) return;
+        if (_currentTarget == null || selfTarget.Dead) 
+        { 
+            TryFindTarget();
+            return;
+        }
+        
         var dt = Time.fixedDeltaTime;
 
         Vector3 steering = Vector3.zero;

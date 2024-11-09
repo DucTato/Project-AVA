@@ -106,6 +106,7 @@ public class Missile : MonoBehaviour
             if (other != null && other.gameObject != owner)
             {
                 // Deal damage
+                other.DealDamage(damage);
             }
         }
         // Stop notifying the HUD of this missile

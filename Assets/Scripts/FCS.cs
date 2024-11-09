@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class FCS : MonoBehaviour
@@ -33,18 +34,21 @@ public class FCS : MonoBehaviour
     Transform cannonSpawnPoint;
     [SerializeField]
     GameObject bulletPrefab;
-
+    [SerializeField]
+    private TgtBehaviourType targetingBehaviour;
 
     private Rigidbody rb;
     
-    int missileIndex;
-    List<float> missileReloadTimers;
-    float missileDebounceTimer;
-    Vector3 missileLockDirection;
+    private int missileIndex;
+    private List<float> missileReloadTimers;
+    private HashSet<GameObject> targetsList;
+    private float missileDebounceTimer;
+    private Vector3 missileLockDirection;
+    
 
-    bool cannonFiring;
-    float cannonDebounceTimer;
-    float cannonFiringTimer;
+    private bool cannonFiring;
+    private float cannonDebounceTimer;
+    private float cannonFiringTimer;
     public Target currTarget { get; private set; }
     public bool MissileLock { get; private set; }
     public bool MissileTracking { get; private set; }
@@ -53,6 +57,7 @@ public class FCS : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        targetsList = new HashSet<GameObject>();
         missileReloadTimers = new List<float>(hardpoints.Count);
         foreach (var hp in hardpoints)
         {
@@ -65,7 +70,17 @@ public class FCS : MonoBehaviour
     private void FixedUpdate()
     {
         UpdateWeapons(Time.fixedDeltaTime);
-        currTarget = FindClosestTarget();
+        switch (targetingBehaviour)
+        {
+            case TgtBehaviourType.Player_Allies:
+                currTarget = FindClosestTarget("Enemy");
+                break;
+            case TgtBehaviourType.Enemies:
+                currTarget = GameObject.FindGameObjectWithTag("Player").GetComponent<Target>();
+                //Debug.Log(currTarget);
+                break;
+        }
+        
     }
     public void TryFireMissile()
     {
@@ -145,24 +160,33 @@ public class FCS : MonoBehaviour
         UpdateMissleLock(dt);
         UpdateCannon(dt);
     }
-    private Target FindClosestTarget()
+    private Target FindClosestTarget(string tag)
     {
-        GameObject[] GOs = GameObject.FindGameObjectsWithTag("Enemy");
+
+        targetsList = GameObject.FindGameObjectsWithTag(tag).ToHashSet();
         //GameObject[] GO2s = GameObject.FindGameObjectsWithTag("Enemy mBullet");
-        //GameObject[] GOs = GO1s.Concat(GO2s).ToArray();
+        
         Target closest = null;
         float distance = lockRange + 1000f;
         Vector3 position = transform.position;
-        foreach (GameObject go in GOs)
+        foreach (GameObject t in targetsList)
         {
-            Vector3 diff = go.transform.position - position;
+            if (t == null) targetsList.Remove(t);
+            Vector3 diff = t.transform.position - position;
             float curDistance = diff.magnitude;
             if (curDistance < distance)
             {
-                closest = go.GetComponent<Target>();
+                closest = t.GetComponent<Target>();
                 distance = curDistance;
             }
         }
         return closest;
     }
+    private enum TgtBehaviourType
+    {
+        Player_Allies,
+        Enemies
+    }
 }
+
+

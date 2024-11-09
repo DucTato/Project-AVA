@@ -19,6 +19,7 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         instance = this;
+
         gpControls = new GamepadControls();
         gpControls.Gameplay.ACmovement.performed += context => { 
             stickValue = context.ReadValue<Vector2>();
