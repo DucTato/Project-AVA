@@ -21,13 +21,13 @@ public class Missile : MonoBehaviour
     [SerializeField]
     private new MeshRenderer renderer;
     public Target target;
-    private Rigidbody rb;
+    
 
     private GameObject owner;
     private bool exploded;
     private Vector3 lastPosition;
     private float timer;
-
+    public Rigidbody rb { get; private set; }
 
     
     // Start is called before the first frame update

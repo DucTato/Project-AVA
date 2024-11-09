@@ -14,8 +14,8 @@ public class FCS : MonoBehaviour
     float missileDebounceTime;
     [SerializeField]
     GameObject missilePrefab;
-    [SerializeField]
-    Target target;
+    //[SerializeField]
+    //Target currTarget;
     [SerializeField]
     float lockRange;
     [SerializeField]
@@ -45,6 +45,7 @@ public class FCS : MonoBehaviour
     bool cannonFiring;
     float cannonDebounceTimer;
     float cannonFiringTimer;
+    public Target currTarget { get; private set; }
     public bool MissileLock { get; private set; }
     public bool MissileTracking { get; private set; }
     public bool MissileLocked { get; private set; } 
@@ -64,7 +65,7 @@ public class FCS : MonoBehaviour
     private void FixedUpdate()
     {
         UpdateWeapons(Time.fixedDeltaTime);
-        target = FindClosestTarget();
+        currTarget = FindClosestTarget();
     }
     public void TryFireMissile()
     {
@@ -88,9 +89,9 @@ public class FCS : MonoBehaviour
         // Default neutral position is forward
         Vector3 targetDir = Vector3.forward;
         MissileTracking = false;
-        if (target != null && !target.IsDead)
+        if (currTarget != null && !currTarget.IsDead)
         {
-            var error = target.Position - rb.position;
+            var error = currTarget.Position - rb.position;
             var errorDir = Quaternion.Inverse(rb.rotation) * error.normalized;  //Transform into local space
             if (error.magnitude <= lockRange && Vector3.Angle(Vector3.forward, errorDir) <= lockAngle)
             {
@@ -101,7 +102,7 @@ public class FCS : MonoBehaviour
         }
         // missile lock either rotates towards the target or towards the neutral position
         missileLockDirection = Vector3.RotateTowards(missileLockDirection, targetDir, Mathf.Deg2Rad * lockSpeed * dt, 0);
-        MissileLocked = target != null && MissileTracking && Vector3.Angle(missileLockDirection, targetDir) < lockSpeed * dt;
+        MissileLocked = currTarget != null && MissileTracking && Vector3.Angle(missileLockDirection, targetDir) < lockSpeed * dt;
         if (MissileLocked) Debug.Log("Target Locked");
     }
     private void UpdateCannon(float dt)
@@ -117,7 +118,7 @@ public class FCS : MonoBehaviour
     private void FireMissile(int index)
     {
         var missileGO = Instantiate(missilePrefab, hardpoints[index].position, hardpoints[index].rotation);
-        missileGO.GetComponent<Missile>().Launch(transform.gameObject, MissileLocked ? target : null);
+        missileGO.GetComponent<Missile>().Launch(transform.gameObject, MissileLocked ? currTarget : null);
     }
     private void UpdateWeaponCooldown(float dt)
     {

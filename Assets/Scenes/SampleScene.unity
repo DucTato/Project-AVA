@@ -2281,6 +2281,8 @@ MonoBehaviour:
   gLimit: 0
   gLimitPitch: 0
   initialSpeed: 0
+  health: 0
+  maxHealth: 0
   liftPower: 0
   liftAOACurve:
     serializedVersion: 2
@@ -4781,6 +4783,7 @@ GameObject:
   - component: {fileID: 2013346420}
   - component: {fileID: 2013346421}
   - component: {fileID: 2013346422}
+  - component: {fileID: 2013346423}
   m_Layer: 0
   m_Name: Eagle
   m_TagString: Untagged
@@ -4872,7 +4875,7 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 1, y: 0.69, z: 3.55}
-  m_Center: {x: 0, y: 0.73, z: -0.5}
+  m_Center: {x: 0, y: 0.45, z: -0.5}
 --- !u!114 &2013346421
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4890,6 +4893,8 @@ MonoBehaviour:
   gLimit: 4
   gLimitPitch: 8
   initialSpeed: 100
+  health: 0
+  maxHealth: 100
   liftPower: 150
   liftAOACurve:
     serializedVersion: 2
@@ -5240,7 +5245,6 @@ MonoBehaviour:
   missileDebounceTime: 0.125
   missilePrefab: {fileID: 3176959281366231767, guid: dfd5db799a3fef14dbdca5529c682ea1,
     type: 3}
-  target: {fileID: 0}
   lockRange: 2000
   lockSpeed: 30
   lockAngle: 45
@@ -5250,6 +5254,51 @@ MonoBehaviour:
   cannonSpawnPoint: {fileID: 1792869425}
   bulletPrefab: {fileID: 8993259690404078279, guid: b730886381d0b5c4fb270843256c18f2,
     type: 3}
+--- !u!114 &2013346423
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2013346415}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87afdcc8a2144ad48ba158d9b91e0977, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PlaneHandler: {fileID: 0}
+  steeringSpeed: 0
+  minSpeed: 0
+  maxSpeed: 0
+  recoverSpeedMin: 0
+  recoverSpeedMax: 0
+  groundCollisionMask:
+    serializedVersion: 2
+    m_Bits: 0
+  groundCollisionDistance: 0
+  groundAvoidanceAngle: 0
+  groundAvoidanceMinSpeed: 0
+  groundAvoidanceMaxSpeed: 0
+  pitchUpThreshold: 0
+  fineSteeringAngle: 0
+  rollFactor: 0
+  yawFactor: 0
+  canUseMissiles: 0
+  canUseCannon: 0
+  missileLockFiringDelay: 0
+  missileFiringCooldown: 0
+  missileMinRange: 0
+  missileMaxRange: 0
+  missileMaxFireAngle: 0
+  bulletSpeed: 0
+  cannonRange: 0
+  cannonMaxFireAngle: 0
+  cannonBurstLength: 0
+  cannonBurstCooldown: 0
+  minMissileDodgeDistance: 0
+  reactionDelayMin: 0
+  reactionDelayMax: 0
+  reactionDelayDistance: 0
 --- !u!1 &2015706523
 GameObject:
   m_ObjectHideFlags: 3

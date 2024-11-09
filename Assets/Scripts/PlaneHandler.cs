@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PlaneHandler : MonoBehaviour
 {
+    [Header("Basic stats")]
     [SerializeField]
     private float maxThrust;
     [SerializeField]
@@ -14,6 +15,8 @@ public class PlaneHandler : MonoBehaviour
     private float gLimitPitch;
     [SerializeField]
     private float initialSpeed;
+    [SerializeField]
+    private float health, maxHealth;
 
     [Header("Lift")]
     [SerializeField]
@@ -85,6 +88,39 @@ public class PlaneHandler : MonoBehaviour
     public float AngleOfAttack { get; private set; }
     public float AngleOfAttackYaw { get; private set; }
     public bool AirbrakeDeployed { get; private set; }
+    public float MaxHealth
+    {
+        get
+        {
+            return maxHealth;
+        }
+    }
+    public float Health
+    {
+        get
+        {
+            return health;
+        }
+        private set
+        {
+            health = Mathf.Clamp(value, 0, maxHealth);
+
+            // Damage FX
+            //if (health <= MaxHealth * .5f && health > 0)
+            //{
+            //    damageEffect.SetActive(true);
+            //}
+            //else
+            //{
+            //    damageEffect.SetActive(false);
+            //}
+
+            if (health == 0 && MaxHealth != 0 && !Dead)
+            {
+                Die();
+            }
+        }
+    }
 
     [SerializeField]
     bool flapsDeployed;
@@ -104,6 +140,7 @@ public class PlaneHandler : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         rb.velocity = rb.rotation * new Vector3(0, 0, initialSpeed); // initial speed
+        health = maxHealth;
     }
 
     public void SetThrottleInput(float input)
