@@ -209,8 +209,12 @@ public class PlaneHUD : MonoBehaviour
 
     Vector3 TransformToHUDSpace(Vector3 worldSpace)
     {
+        // Not accounting for dynamic resolution scaling
         var screenSpace = camera.WorldToScreenPoint(worldSpace);
         return screenSpace - new Vector3(camera.pixelWidth / 2, camera.pixelHeight / 2);
+        //var screenSpace = camera.WorldToScreenPoint(worldSpace);
+        //var finalSP = new Vector3(screenSpace.x / GetComponent<Canvas>().scaleFactor, screenSpace.y / GetComponent<Canvas>().scaleFactor);
+        //return finalSP;
     }
 
     void UpdateHUDCenter()
@@ -373,7 +377,7 @@ public class PlaneHUD : MonoBehaviour
         }
     }
 
-    void FixedUpdate()
+    void LateUpdate()
     {
         if (plane == null) return;
         if (camera == null) return;

@@ -78,6 +78,7 @@ public class PlayerController : MonoBehaviour
     }
     private void HandleInputs()
     {
+        if (autoPilot.enabled) return;
         if (planeHandler != null)
         {
             planeHandler.SetControlInput(controlInput);
