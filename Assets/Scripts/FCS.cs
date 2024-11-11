@@ -52,7 +52,14 @@ public class FCS : MonoBehaviour
     public Target currTarget { get; private set; }
     public bool MissileLock { get; private set; }
     public bool MissileTracking { get; private set; }
-    public bool MissileLocked { get; private set; } 
+    public bool MissileLocked { get; private set; }
+    public Vector3 MissileLockDirection
+    {
+        get
+        {
+            return rb.rotation * missileLockDirection;
+        }
+    }
     // Start is called before the first frame update
     void Start()
     {

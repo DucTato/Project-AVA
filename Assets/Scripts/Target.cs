@@ -6,12 +6,21 @@ public class Target : MonoBehaviour
 {
     [SerializeField]
     private float health, maxHealth;
+    [SerializeField]
+    private new string name;
     const float sortInterval = 0.5f;
     private float sortTimer;
     public bool IsDead { get; private set; }
     public Vector3 Position {get { return rb.position; } }
     public Vector3 Velocity {get { return rb.velocity; } }
     public bool Dead { get; private set; }
+    public string Name
+    {
+        get
+        {
+            return name;
+        }
+    }
     public float MaxHealth
     {
         get

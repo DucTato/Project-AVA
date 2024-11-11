@@ -67,13 +67,12 @@ public class PlaneHandler : MonoBehaviour
     [SerializeField]
     private float airbrakeDrag;
 
-    [SerializeField]
-    private float Throttle;
+    
     private float throttleInput;
     private Vector3 controlInput;
 
     private Vector3 lastVelocity;
-    private bool Dead;
+    
 
     
 
@@ -87,7 +86,8 @@ public class PlaneHandler : MonoBehaviour
     public float AngleOfAttack { get; private set; }
     public float AngleOfAttackYaw { get; private set; }
     public bool AirbrakeDeployed { get; private set; }
-    
+    public float Throttle { get; private set; }
+    public bool Dead { get; private set; }
 
     [SerializeField]
     bool flapsDeployed;
