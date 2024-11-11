@@ -64,7 +64,7 @@ public class PlaneHUD : MonoBehaviour
 
     [SerializeField]
     List<Graphic> missileWarningGraphics;
-
+    [SerializeField]
     PlaneHandler plane;
     FCS fireControl;
     //Target target;
@@ -116,6 +116,7 @@ public class PlaneHUD : MonoBehaviour
             aiController = plane.GetComponent<AIController>();
             planeTransform = plane.GetComponent<Transform>();
             selfTarget = plane.GetComponent<Target>();
+            fireControl = plane.GetComponent<FCS>();
         }
 
         if (compass != null)
@@ -372,7 +373,7 @@ public class PlaneHUD : MonoBehaviour
         }
     }
 
-    void LateUpdate()
+    void FixedUpdate()
     {
         if (plane == null) return;
         if (camera == null) return;

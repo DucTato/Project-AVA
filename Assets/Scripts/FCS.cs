@@ -16,7 +16,7 @@ public class FCS : MonoBehaviour
     [SerializeField]
     GameObject missilePrefab;
     //[SerializeField]
-    //Target currTarget;
+    //Target currentTarget;
     [SerializeField]
     float lockRange;
     [SerializeField]
@@ -49,6 +49,7 @@ public class FCS : MonoBehaviour
     private bool cannonFiring;
     private float cannonDebounceTimer;
     private float cannonFiringTimer;
+    //public Target currTarget { get {return currentTarget; } private set { currentTarget = value; Debug.Log(currentTarget); } }
     public Target currTarget { get; private set; }
     public bool MissileLock { get; private set; }
     public bool MissileTracking { get; private set; }
