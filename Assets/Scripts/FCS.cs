@@ -64,6 +64,8 @@ public class FCS : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        if (gameObject.CompareTag("Enemy")) targetingBehaviour = TgtBehaviourType.Enemies;
+
         rb = GetComponent<Rigidbody>();
         targetsList = new HashSet<GameObject>();
         missileReloadTimers = new List<float>(hardpoints.Count);

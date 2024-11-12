@@ -66,8 +66,9 @@ public class PlaneHandler : MonoBehaviour
     private Vector3 angularDrag;
     [SerializeField]
     private float airbrakeDrag;
-
-    
+    [Header("Miscs")]
+    [SerializeField]
+    private ACAnimation anim;
     private float throttleInput;
     private Vector3 controlInput;
 
@@ -146,7 +147,7 @@ public class PlaneHandler : MonoBehaviour
         //throttle input is [-1, 1]
         //throttle is [0, 1]
         Throttle = Utilities.MoveTo(Throttle, target, throttleSpeed * Mathf.Abs(throttleInput), dt);
-
+        anim.SetEnginePowerVisual(Throttle);
         AirbrakeDeployed = Throttle == 0 && throttleInput == -1;
     }
 

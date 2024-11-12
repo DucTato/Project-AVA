@@ -446,7 +446,7 @@ public class AIController : MonoBehaviour
         }
         else
         {
-            SteerToTarget(dt, fireControl.currTarget.Position);
+            SteerToTarget(dt, _currentTarget.Position);
         }
 
         CalculateWeapons(dt);

@@ -20,6 +20,8 @@ public class Missile : MonoBehaviour
     private LayerMask collisionMask;
     [SerializeField]
     private new MeshRenderer renderer;
+    [SerializeField]
+    private GameObject explosionFX;
     public Target target;
     
 
@@ -99,6 +101,7 @@ public class Missile : MonoBehaviour
         exploded = true;
         // Explosion FX
         //Debug.Log("BOOM!");
+        explosionFX.SetActive(true);
         var hits = Physics.OverlapSphere(rb.position, damageRadius, collisionMask.value);
         foreach (var hit in hits)
         {
