@@ -20,7 +20,9 @@ public class PlaneHUD : MonoBehaviour
     [SerializeField]
     Bar throttleBar;
     [SerializeField]
-    Transform hudCenter;
+    private Transform hudCenter;
+    [SerializeField]
+    private Transform stillComponents;
     [SerializeField]
     Transform velocityMarker;
     [SerializeField]
@@ -236,12 +238,16 @@ public class PlaneHUD : MonoBehaviour
         if (hudPos.z > 0)
         {
             hudCenterGO.SetActive(true);
+            stillComponents.gameObject.SetActive(true);
+
             hudCenter.localPosition = new Vector3(hudPos.x, hudPos.y, 0);
+            stillComponents.localPosition = hudCenter.localPosition;
             hudCenter.localEulerAngles = new Vector3(0, 0, -rotation.z);
         }
         else
         {
             hudCenterGO.SetActive(false);
+            stillComponents.gameObject.SetActive(false);
         }
     }
 
