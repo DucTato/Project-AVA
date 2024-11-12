@@ -37,6 +37,15 @@ public partial class @GamepadControls: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
+                    ""name"": ""moveCam"",
+                    ""type"": ""PassThrough"",
+                    ""id"": ""781357ee-8172-4e5f-a50f-a7e53e5aa84a"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": ""StickDeadzone"",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
                     ""name"": ""ACyaw"",
                     ""type"": ""Value"",
                     ""id"": ""f54342a2-601c-417c-9046-e5bc8d4aebc4"",
@@ -53,15 +62,6 @@ public partial class @GamepadControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
-                },
-                {
-                    ""name"": ""moveCam"",
-                    ""type"": ""PassThrough"",
-                    ""id"": ""781357ee-8172-4e5f-a50f-a7e53e5aa84a"",
-                    ""expectedControlType"": ""Vector2"",
-                    ""processors"": ""StickDeadzone"",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
                 },
                 {
                     ""name"": ""toggleCam"",
@@ -88,6 +88,15 @@ public partial class @GamepadControls: IInputActionCollection2, IDisposable
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ACcycleTgt"",
+                    ""type"": ""Button"",
+                    ""id"": ""1d0b1c9c-a45a-4500-885a-a62be71b3d16"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": ""Tap,Hold"",
                     ""initialStateCheck"": false
                 }
             ],
@@ -212,6 +221,17 @@ public partial class @GamepadControls: IInputActionCollection2, IDisposable
                     ""action"": ""ACfireGUN"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d367b4e7-6ec1-4dc8-bfca-ddca67a1ec7f"",
+                    ""path"": ""<Gamepad>/buttonNorth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";DualStickController"",
+                    ""action"": ""ACcycleTgt"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -249,12 +269,13 @@ public partial class @GamepadControls: IInputActionCollection2, IDisposable
         // Gameplay
         m_Gameplay = asset.FindActionMap("Gameplay", throwIfNotFound: true);
         m_Gameplay_ACmovement = m_Gameplay.FindAction("ACmovement", throwIfNotFound: true);
+        m_Gameplay_moveCam = m_Gameplay.FindAction("moveCam", throwIfNotFound: true);
         m_Gameplay_ACyaw = m_Gameplay.FindAction("ACyaw", throwIfNotFound: true);
         m_Gameplay_ACthrottle = m_Gameplay.FindAction("ACthrottle", throwIfNotFound: true);
-        m_Gameplay_moveCam = m_Gameplay.FindAction("moveCam", throwIfNotFound: true);
         m_Gameplay_toggleCam = m_Gameplay.FindAction("toggleCam", throwIfNotFound: true);
         m_Gameplay_ACfireMSL = m_Gameplay.FindAction("ACfireMSL", throwIfNotFound: true);
         m_Gameplay_ACfireGUN = m_Gameplay.FindAction("ACfireGUN", throwIfNotFound: true);
+        m_Gameplay_ACcycleTgt = m_Gameplay.FindAction("ACcycleTgt", throwIfNotFound: true);
     }
 
     ~@GamepadControls()
@@ -322,23 +343,25 @@ public partial class @GamepadControls: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_Gameplay;
     private List<IGameplayActions> m_GameplayActionsCallbackInterfaces = new List<IGameplayActions>();
     private readonly InputAction m_Gameplay_ACmovement;
+    private readonly InputAction m_Gameplay_moveCam;
     private readonly InputAction m_Gameplay_ACyaw;
     private readonly InputAction m_Gameplay_ACthrottle;
-    private readonly InputAction m_Gameplay_moveCam;
     private readonly InputAction m_Gameplay_toggleCam;
     private readonly InputAction m_Gameplay_ACfireMSL;
     private readonly InputAction m_Gameplay_ACfireGUN;
+    private readonly InputAction m_Gameplay_ACcycleTgt;
     public struct GameplayActions
     {
         private @GamepadControls m_Wrapper;
         public GameplayActions(@GamepadControls wrapper) { m_Wrapper = wrapper; }
         public InputAction @ACmovement => m_Wrapper.m_Gameplay_ACmovement;
+        public InputAction @moveCam => m_Wrapper.m_Gameplay_moveCam;
         public InputAction @ACyaw => m_Wrapper.m_Gameplay_ACyaw;
         public InputAction @ACthrottle => m_Wrapper.m_Gameplay_ACthrottle;
-        public InputAction @moveCam => m_Wrapper.m_Gameplay_moveCam;
         public InputAction @toggleCam => m_Wrapper.m_Gameplay_toggleCam;
         public InputAction @ACfireMSL => m_Wrapper.m_Gameplay_ACfireMSL;
         public InputAction @ACfireGUN => m_Wrapper.m_Gameplay_ACfireGUN;
+        public InputAction @ACcycleTgt => m_Wrapper.m_Gameplay_ACcycleTgt;
         public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -351,15 +374,15 @@ public partial class @GamepadControls: IInputActionCollection2, IDisposable
             @ACmovement.started += instance.OnACmovement;
             @ACmovement.performed += instance.OnACmovement;
             @ACmovement.canceled += instance.OnACmovement;
+            @moveCam.started += instance.OnMoveCam;
+            @moveCam.performed += instance.OnMoveCam;
+            @moveCam.canceled += instance.OnMoveCam;
             @ACyaw.started += instance.OnACyaw;
             @ACyaw.performed += instance.OnACyaw;
             @ACyaw.canceled += instance.OnACyaw;
             @ACthrottle.started += instance.OnACthrottle;
             @ACthrottle.performed += instance.OnACthrottle;
             @ACthrottle.canceled += instance.OnACthrottle;
-            @moveCam.started += instance.OnMoveCam;
-            @moveCam.performed += instance.OnMoveCam;
-            @moveCam.canceled += instance.OnMoveCam;
             @toggleCam.started += instance.OnToggleCam;
             @toggleCam.performed += instance.OnToggleCam;
             @toggleCam.canceled += instance.OnToggleCam;
@@ -369,6 +392,9 @@ public partial class @GamepadControls: IInputActionCollection2, IDisposable
             @ACfireGUN.started += instance.OnACfireGUN;
             @ACfireGUN.performed += instance.OnACfireGUN;
             @ACfireGUN.canceled += instance.OnACfireGUN;
+            @ACcycleTgt.started += instance.OnACcycleTgt;
+            @ACcycleTgt.performed += instance.OnACcycleTgt;
+            @ACcycleTgt.canceled += instance.OnACcycleTgt;
         }
 
         private void UnregisterCallbacks(IGameplayActions instance)
@@ -376,15 +402,15 @@ public partial class @GamepadControls: IInputActionCollection2, IDisposable
             @ACmovement.started -= instance.OnACmovement;
             @ACmovement.performed -= instance.OnACmovement;
             @ACmovement.canceled -= instance.OnACmovement;
+            @moveCam.started -= instance.OnMoveCam;
+            @moveCam.performed -= instance.OnMoveCam;
+            @moveCam.canceled -= instance.OnMoveCam;
             @ACyaw.started -= instance.OnACyaw;
             @ACyaw.performed -= instance.OnACyaw;
             @ACyaw.canceled -= instance.OnACyaw;
             @ACthrottle.started -= instance.OnACthrottle;
             @ACthrottle.performed -= instance.OnACthrottle;
             @ACthrottle.canceled -= instance.OnACthrottle;
-            @moveCam.started -= instance.OnMoveCam;
-            @moveCam.performed -= instance.OnMoveCam;
-            @moveCam.canceled -= instance.OnMoveCam;
             @toggleCam.started -= instance.OnToggleCam;
             @toggleCam.performed -= instance.OnToggleCam;
             @toggleCam.canceled -= instance.OnToggleCam;
@@ -394,6 +420,9 @@ public partial class @GamepadControls: IInputActionCollection2, IDisposable
             @ACfireGUN.started -= instance.OnACfireGUN;
             @ACfireGUN.performed -= instance.OnACfireGUN;
             @ACfireGUN.canceled -= instance.OnACfireGUN;
+            @ACcycleTgt.started -= instance.OnACcycleTgt;
+            @ACcycleTgt.performed -= instance.OnACcycleTgt;
+            @ACcycleTgt.canceled -= instance.OnACcycleTgt;
         }
 
         public void RemoveCallbacks(IGameplayActions instance)
@@ -432,11 +461,12 @@ public partial class @GamepadControls: IInputActionCollection2, IDisposable
     public interface IGameplayActions
     {
         void OnACmovement(InputAction.CallbackContext context);
+        void OnMoveCam(InputAction.CallbackContext context);
         void OnACyaw(InputAction.CallbackContext context);
         void OnACthrottle(InputAction.CallbackContext context);
-        void OnMoveCam(InputAction.CallbackContext context);
         void OnToggleCam(InputAction.CallbackContext context);
         void OnACfireMSL(InputAction.CallbackContext context);
         void OnACfireGUN(InputAction.CallbackContext context);
+        void OnACcycleTgt(InputAction.CallbackContext context);
     }
 }

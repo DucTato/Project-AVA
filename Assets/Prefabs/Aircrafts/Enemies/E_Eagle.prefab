@@ -139,6 +139,7 @@ MonoBehaviour:
   - {fileID: 6787989365350119769}
   - {fileID: 746842346500866989}
   missileReloadTime: 5
+  fcsUpdateInterval: 3
   missileDebounceTime: 0.125
   missilePrefab: {fileID: 3176959281366231767, guid: dfd5db799a3fef14dbdca5529c682ea1,
     type: 3}
@@ -151,6 +152,7 @@ MonoBehaviour:
   cannonSpawnPoint: {fileID: 8297051623607003410}
   bulletPrefab: {fileID: 8993259690404078279, guid: b730886381d0b5c4fb270843256c18f2,
     type: 3}
+  tgtIndex: 0
   targetingBehaviour: 1
 --- !u!114 &1296485042234425307
 MonoBehaviour:
@@ -577,6 +579,7 @@ MonoBehaviour:
   engineLight: []
   abMaxVal: 0
   engLightMaxVal: 0
+  heatHaze: {fileID: 0}
 --- !u!1 &1580221327209983188
 GameObject:
   m_ObjectHideFlags: 0

@@ -98,12 +98,24 @@ public class AIController : MonoBehaviour
     private const float dodgeUpdateInterval = 0.25f;
     private float dodgeTimer;
 
+    private void OnEnable()
+    {
+        fireControl = GetComponent<FCS>();
+        if (gameObject.CompareTag("Enemy")) 
+        { 
+            fireControl.targetingBehaviour = FCS.TgtBehaviourType.Enemies;
+            fireControl.lockRange = Mathf.Infinity;
+        }
+        else fireControl.targetingBehaviour = FCS.TgtBehaviourType.Player_Allies;
+    }
+    private void OnDisable()
+    {
+        if (gameObject.CompareTag("Player")) fireControl.targetingBehaviour = FCS.TgtBehaviourType.Player;
+    }
     void Start()
     {
         selfTarget = GetComponent<Target>();
-        fireControl = GetComponent<FCS>();
-
-        TryFindTarget();
+        
         dodgeOffsets = new List<Vector3>();
         inputQueue = new Queue<ControlInput>();
     }
@@ -367,12 +379,12 @@ public class AIController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        TryFindTarget();
         if (_currentTarget == null || selfTarget.Dead) 
         { 
-            TryFindTarget();
+            
             return;
         }
-        
         var dt = Time.fixedDeltaTime;
 
         Vector3 steering = Vector3.zero;

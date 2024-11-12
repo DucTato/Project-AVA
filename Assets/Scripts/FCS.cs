@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class FCS : MonoBehaviour
@@ -10,15 +9,15 @@ public class FCS : MonoBehaviour
     [SerializeField]
     List<Transform> hardpoints;
     [SerializeField]
-    float missileReloadTime;
+    float missileReloadTime, fcsUpdateInterval;
     [SerializeField]
     float missileDebounceTime;
     [SerializeField]
     GameObject missilePrefab;
     //[SerializeField]
     //Target currentTarget;
-    [SerializeField]
-    float lockRange;
+    
+    public float lockRange;
     [SerializeField]
     float lockSpeed;
     [SerializeField]
@@ -35,17 +34,19 @@ public class FCS : MonoBehaviour
     [SerializeField]
     GameObject bulletPrefab;
     [SerializeField]
-    private TgtBehaviourType targetingBehaviour;
+    private int tgtIndex;
+
+    public TgtBehaviourType targetingBehaviour;
 
     private Rigidbody rb;
     
     private int missileIndex;
     private List<float> missileReloadTimers;
     private HashSet<GameObject> targetsList;
-    private float missileDebounceTimer;
+    private float missileDebounceTimer, fcsUpdateIntervalTimer;
     private Vector3 missileLockDirection;
-    
 
+    private string currentTag;
     private bool cannonFiring;
     private float cannonDebounceTimer;
     private float cannonFiringTimer;
@@ -64,8 +65,19 @@ public class FCS : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if (gameObject.CompareTag("Enemy")) targetingBehaviour = TgtBehaviourType.Enemies;
-
+        switch (targetingBehaviour)
+        {
+            case TgtBehaviourType.Player_Allies:
+                currentTag = "Enemy";
+                break;
+            case TgtBehaviourType.Enemies:
+                currentTag = "Player";
+                //Debug.Log(currTarget);
+                break;
+            default:
+                currentTag = "Enemy";
+                break;
+        }
         rb = GetComponent<Rigidbody>();
         targetsList = new HashSet<GameObject>();
         missileReloadTimers = new List<float>(hardpoints.Count);
@@ -79,36 +91,9 @@ public class FCS : MonoBehaviour
     // Update is called once per frame
     private void FixedUpdate()
     {
-        UpdateWeapons(Time.fixedDeltaTime);
-        switch (targetingBehaviour)
-        {
-            case TgtBehaviourType.Player_Allies:
-                currTarget = FindClosestTarget("Enemy");
-                break;
-            case TgtBehaviourType.Enemies:
-                currTarget = GameObject.FindGameObjectWithTag("Player").GetComponent<Target>();
-                //Debug.Log(currTarget);
-                break;
-        }
-        
+        UpdateWeapons(Time.fixedDeltaTime);        
     }
-    public void TryFireMissile()
-    {
-        // try all available missile
-        for (int i = 0; i < hardpoints.Count; i++)
-        {
-            var index = (missileIndex + i) % hardpoints.Count;
-            if (missileDebounceTimer == 0 && missileReloadTimers[index] == 0)
-            {
-                FireMissile(index);
-                missileIndex = (index + 1) % hardpoints.Count;
-                missileReloadTimers[index] = missileReloadTime;
-                missileDebounceTimer = missileDebounceTime;
-                // update animation
-                break;
-            }
-        }
-    }
+    
     private void UpdateMissleLock(float dt)
     {
         // Default neutral position is forward
@@ -160,6 +145,33 @@ public class FCS : MonoBehaviour
             }
         }
     }
+    private void UpdateFCS(float dt, string tag)
+    {
+        fcsUpdateIntervalTimer = Mathf.Max(0, fcsUpdateIntervalTimer - dt);
+        if (fcsUpdateIntervalTimer == 0) 
+        {
+            fcsUpdateIntervalTimer = fcsUpdateInterval;
+            targetsList = GameObject.FindGameObjectsWithTag(tag).ToHashSet();
+        }
+        if (currTarget == null) currTarget = FindClosestTarget(currentTag);
+    }
+    public void TryFireMissile()
+    {
+        // try all available missile
+        for (int i = 0; i < hardpoints.Count; i++)
+        {
+            var index = (missileIndex + i) % hardpoints.Count;
+            if (missileDebounceTimer == 0 && missileReloadTimers[index] == 0)
+            {
+                FireMissile(index);
+                missileIndex = (index + 1) % hardpoints.Count;
+                missileReloadTimers[index] = missileReloadTime;
+                missileDebounceTimer = missileDebounceTime;
+                // update animation
+                break;
+            }
+        }
+    }
     public void FireCannon(bool input)
     {
         cannonFiring = input;
@@ -169,11 +181,18 @@ public class FCS : MonoBehaviour
         UpdateWeaponCooldown(dt);
         UpdateMissleLock(dt);
         UpdateCannon(dt);
+        UpdateFCS(dt, currentTag);
+    }
+    public void CycleTarget()
+    {
+        List<GameObject> targets = targetsList.ToList();
+        if (tgtIndex >= targets.Count) tgtIndex = 0;
+        currTarget = targets[tgtIndex++].GetComponent<Target>();
     }
     private Target FindClosestTarget(string tag)
     {
 
-        targetsList = GameObject.FindGameObjectsWithTag(tag).ToHashSet();
+        
         //GameObject[] GO2s = GameObject.FindGameObjectsWithTag("Enemy mBullet");
         
         Target closest = null;
@@ -192,8 +211,9 @@ public class FCS : MonoBehaviour
         }
         return closest;
     }
-    private enum TgtBehaviourType
+    public enum TgtBehaviourType
     {
+        Player,
         Player_Allies,
         Enemies
     }

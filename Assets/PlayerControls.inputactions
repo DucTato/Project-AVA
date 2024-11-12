@@ -15,6 +15,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "moveCam",
+                    "type": "PassThrough",
+                    "id": "781357ee-8172-4e5f-a50f-a7e53e5aa84a",
+                    "expectedControlType": "Vector2",
+                    "processors": "StickDeadzone",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "ACyaw",
                     "type": "Value",
                     "id": "f54342a2-601c-417c-9046-e5bc8d4aebc4",
@@ -31,15 +40,6 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
-                },
-                {
-                    "name": "moveCam",
-                    "type": "PassThrough",
-                    "id": "781357ee-8172-4e5f-a50f-a7e53e5aa84a",
-                    "expectedControlType": "Vector2",
-                    "processors": "StickDeadzone",
-                    "interactions": "",
-                    "initialStateCheck": false
                 },
                 {
                     "name": "toggleCam",
@@ -66,6 +66,15 @@
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "ACcycleTgt",
+                    "type": "Button",
+                    "id": "1d0b1c9c-a45a-4500-885a-a62be71b3d16",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "Tap,Hold",
                     "initialStateCheck": false
                 }
             ],
@@ -188,6 +197,17 @@
                     "processors": "",
                     "groups": ";DualStickController",
                     "action": "ACfireGUN",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d367b4e7-6ec1-4dc8-bfca-ddca67a1ec7f",
+                    "path": "<Gamepad>/buttonNorth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";DualStickController",
+                    "action": "ACcycleTgt",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

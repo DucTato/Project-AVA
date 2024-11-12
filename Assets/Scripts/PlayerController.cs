@@ -1,3 +1,4 @@
+using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -18,6 +19,8 @@ public class PlayerController : MonoBehaviour
     
     [SerializeField]
     private new Camera camera;
+    [SerializeField]
+    private CinemachineFreeLook freeLookCam;
     private GamepadControls gpControls;
     [SerializeField]
     private Vector3 controlInput;
@@ -34,8 +37,19 @@ public class PlayerController : MonoBehaviour
             controlInput.x = stickValue.y;
             controlInput.z = -stickValue.x;
         };
-        gpControls.Gameplay.ACmovement.canceled += context => { stickValue = Vector2.zero;
-            controlInput = Vector3.zero;
+        
+
+        gpControls.Gameplay.moveCam.performed += context =>
+        {
+            if (context.ReadValue<Vector2>() != Vector2.zero)
+            {
+                freeLookCam.gameObject.SetActive(true);
+                //Debug.Log("Look cam ON");
+            }
+            else
+            {
+                freeLookCam.gameObject.SetActive(false);
+            }
         };
 
         gpControls.Gameplay.ACyaw.performed += context => {
@@ -52,10 +66,23 @@ public class PlayerController : MonoBehaviour
         gpControls.Gameplay.ACfireGUN.canceled += context => { fireControl.FireCannon(false); };
 
         gpControls.Gameplay.ACfireMSL.performed += context => { fireControl.TryFireMissile(); };
+
+        gpControls.Gameplay.ACcycleTgt.performed += context => {
+            if (context.duration < 0.8f) fireControl.CycleTarget();
+            else
+            {
+                freeLookCam.gameObject.SetActive(true);
+                if (fireControl.currTarget != null) freeLookCam.m_LookAt = fireControl.currTarget.transform;
+                //Debug.Log("Following current target");
+            }
+        };
+        gpControls.Gameplay.ACcycleTgt.canceled += context => { freeLookCam.gameObject.SetActive(false); };
     }
     // Start is called before the first frame update
     void Start()
     {
+        camera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
+        hudController = GameObject.FindGameObjectWithTag("UICanvas").GetComponent<PlaneHUD>();
         SetPlane(planeHandler);
         PlayerID = gameObject.GetInstanceID();
     }
