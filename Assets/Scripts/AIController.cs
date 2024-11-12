@@ -378,7 +378,7 @@ public class AIController : MonoBehaviour
         Vector3 steering = Vector3.zero;
         float throttle;
         bool emergency = false;
-        Vector3 targetPosition = fireControl.currTarget.Position;
+        Vector3 targetPosition = _currentTarget.Position;
 
         var velocityRot = Quaternion.LookRotation(PlaneHandler.rb.velocity.normalized);
         var ray = new Ray(PlaneHandler.rb.position, velocityRot * Quaternion.Euler(groundAvoidanceAngle, 0, 0) * Vector3.forward);

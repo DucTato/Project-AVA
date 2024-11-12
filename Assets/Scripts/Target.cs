@@ -10,6 +10,7 @@ public class Target : MonoBehaviour
     private new string name;
     const float sortInterval = 0.5f;
     private float sortTimer;
+    private int objID;
     public bool IsDead { get; private set; }
     public Vector3 Position {get { return rb.position; } }
     public Vector3 Velocity {get { return rb.velocity; } }
@@ -37,7 +38,6 @@ public class Target : MonoBehaviour
         private set
         {
             health = Mathf.Clamp(value, 0, maxHealth);
-
             // Damage FX
             //if (health <= MaxHealth * .5f && health > 0)
             //{
@@ -62,6 +62,7 @@ public class Target : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         health = maxHealth;
         incomingMissiles = new List<Missile>();
+        objID = gameObject.GetInstanceID();
     }
 
     // Update is called once per frame
@@ -83,6 +84,18 @@ public class Target : MonoBehaviour
         }
 
         return null;
+    }
+    public void NotifyMissileLaunched(Missile missile, bool value)
+    {
+        if (value)
+        {
+            incomingMissiles.Add(missile);
+            SortIncomingMissiles();
+        }
+        else
+        {
+            incomingMissiles.Remove(missile);
+        }
     }
     private void SortIncomingMissiles()
     {
@@ -106,5 +119,9 @@ public class Target : MonoBehaviour
     public void DealDamage(float dmg)
     {
         Health -= dmg;
+        if (objID == PlayerController.instance.PlayerID)
+        {
+            PlayerController.instance.hudController.DisplayHP();
+        }
     }
 }

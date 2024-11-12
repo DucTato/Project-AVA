@@ -60,13 +60,16 @@ public class PlaneHUD : MonoBehaviour
     [SerializeField]
     float bulletSpeed;
     [SerializeField]
+    private float hpUpTime;
+    [SerializeField]
     GameObject aiMessage;
+    [SerializeField]
+    private GameObject mslWarning;
 
     [SerializeField]
     List<Graphic> missileWarningGraphics;
-    [SerializeField]
-    PlaneHandler plane;
-    FCS fireControl;
+    private PlaneHandler plane;
+    private FCS fireControl;
     //Target target;
     AIController aiController;
     Target selfTarget;
@@ -84,7 +87,9 @@ public class PlaneHUD : MonoBehaviour
     GameObject targetArrowGO;
     GameObject missileArrowGO;
 
-    float lastUpdateTime;
+    private float lastUpdateTime;
+    private float HPupTimer, alphaValue;
+    private bool hideHP;
 
     const float metersToKnots = 1.94384f;
     const float metersToFeet = 3.28084f;
@@ -100,6 +105,9 @@ public class PlaneHUD : MonoBehaviour
         reticleGO = reticle.gameObject;
         targetArrowGO = targetArrow.gameObject;
         missileArrowGO = missileArrow.gameObject;
+        HPupTimer = 0f;
+        alphaValue = 1f;
+        hideHP = true;
     }
 
     public void SetPlane(PlaneHandler plane)
@@ -161,7 +169,10 @@ public class PlaneHUD : MonoBehaviour
             dialog.SetActive(!dialog.activeSelf);
         }
     }
-
+    public void DisplayHP()
+    {
+        HPupTimer = hpUpTime;
+    }
     void UpdateVelocityMarker()
     {
         var velocity = planeTransform.forward;
@@ -234,10 +245,26 @@ public class PlaneHUD : MonoBehaviour
         }
     }
 
-    void UpdateHealth()
+    private void UpdateHealth()
     {
-        healthBar.SetValue(selfTarget.Health / selfTarget.MaxHealth);
-        healthText.text = string.Format("{0:0}", selfTarget.Health);
+        if (HPupTimer > 0) 
+        { 
+            HPupTimer -= Time.deltaTime;
+            hideHP = false;
+            alphaValue = 1f;
+            healthBar.SetAlpha(alphaValue);
+            healthBar.SetValue(selfTarget.Health / selfTarget.MaxHealth);
+            healthText.text = string.Format("{0:0}", selfTarget.Health + "%");
+        } 
+        else
+        {
+            hideHP = true;
+        }
+        if (hideHP)
+        {
+            alphaValue = Mathf.MoveTowards(alphaValue, 0f, 0.5f * Time.deltaTime);
+            healthBar.SetAlpha(alphaValue);
+        }
     }
 
     void UpdateWeapons()
@@ -342,7 +369,7 @@ public class PlaneHUD : MonoBehaviour
             //
             var missileDir = (incomingMissile.rb.position - plane.rb.position).normalized;
             var missileAngle = Vector3.Angle(cameraTransform.forward, missileDir);
-
+            mslWarning.SetActive(true);
             if (missileAngle > missileArrowThreshold)
             {
                 missileArrowGO.SetActive(true);
@@ -366,7 +393,7 @@ public class PlaneHUD : MonoBehaviour
         else
         {
             missileArrowGO.SetActive(false);
-
+            mslWarning.SetActive(false);
             foreach (var graphic in missileWarningGraphics)
             {
                 graphic.color = normalColor;

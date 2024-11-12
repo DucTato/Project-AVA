@@ -8,14 +8,14 @@ public class PlayerController : MonoBehaviour
 {
     // Adding a PlayerController Singleton
     public static PlayerController instance;
+    public PlaneHUD hudController;
     [SerializeField]
     private PlaneHandler planeHandler;
     [SerializeField]
     private HeliHandler heliHandler;
     [SerializeField]
     private FCS fireControl;
-    [SerializeField]
-    private PlaneHUD hudController;
+    
     [SerializeField]
     private new Camera camera;
     private GamepadControls gpControls;
@@ -23,6 +23,7 @@ public class PlayerController : MonoBehaviour
     private Vector3 controlInput;
     private Vector2 stickValue;
     private AIController autoPilot;
+    public int PlayerID { get; private set; }
     private void Awake()
     {
         instance = this;
@@ -56,6 +57,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         SetPlane(planeHandler);
+        PlayerID = gameObject.GetInstanceID();
     }
 
     // Update is called once per frame
@@ -78,9 +80,11 @@ public class PlayerController : MonoBehaviour
     }
     private void HandleInputs()
     {
-        if (autoPilot.enabled) return;
+        if (Input.GetKeyDown(KeyCode.Space)) autoPilot.enabled = !autoPilot.enabled;
+        
         if (planeHandler != null)
         {
+            if (autoPilot.enabled) return;
             planeHandler.SetControlInput(controlInput);
         }
     }

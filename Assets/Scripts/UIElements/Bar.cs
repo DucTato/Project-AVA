@@ -1,6 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.UIElements;
+using Image = UnityEngine.UI.Image;
 
 public class Bar : MonoBehaviour
 {
@@ -16,7 +19,6 @@ public class Bar : MonoBehaviour
     FillDirection fillDirection;
     [SerializeField]
     RectTransform fill;
-
     public void SetValue(float value)
     {
         if (fillDirection == FillDirection.Right)
@@ -38,6 +40,13 @@ public class Bar : MonoBehaviour
         {
             fill.anchorMin = new Vector2(0, 1 - value);
             fill.anchorMax = new Vector2(1, 1);
+        }
+    }
+    public void SetAlpha(float value)
+    {
+        foreach (Graphic img in GetComponentsInChildren<Graphic>())
+        {
+            img.color = new Color (img.color.r, img.color.g, img.color.b, value);
         }
     }
 }

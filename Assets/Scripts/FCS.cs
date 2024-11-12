@@ -126,7 +126,7 @@ public class FCS : MonoBehaviour
         // missile lock either rotates towards the target or towards the neutral position
         missileLockDirection = Vector3.RotateTowards(missileLockDirection, targetDir, Mathf.Deg2Rad * lockSpeed * dt, 0);
         MissileLocked = currTarget != null && MissileTracking && Vector3.Angle(missileLockDirection, targetDir) < lockSpeed * dt;
-        if (MissileLocked) Debug.Log("Target Locked");
+        //if (MissileLocked) Debug.Log("Target Locked");
     }
     private void UpdateCannon(float dt)
     {

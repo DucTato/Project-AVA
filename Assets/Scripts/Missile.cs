@@ -64,10 +64,10 @@ public class Missile : MonoBehaviour
         lastPosition = rb.position;
         timer = lifeTime;
         // Notify the target
-        //if (target != null)
-        //{
-        //    target.
-        //}
+        if (target != null)
+        {
+            target.NotifyMissileLaunched(this, true);
+        }
     }
     private void TrackTarget(float dt)
     {
@@ -98,7 +98,7 @@ public class Missile : MonoBehaviour
         renderer.enabled = false;
         exploded = true;
         // Explosion FX
-        Debug.Log("BOOM!");
+        //Debug.Log("BOOM!");
         var hits = Physics.OverlapSphere(rb.position, damageRadius, collisionMask.value);
         foreach (var hit in hits)
         {
@@ -110,7 +110,7 @@ public class Missile : MonoBehaviour
             }
         }
         // Stop notifying the HUD of this missile
-        //if (target!= null) target.
+        if (target != null) target.NotifyMissileLaunched(this, false);
     }
     private void CheckCollision()
     {
