@@ -110,6 +110,7 @@ public class Missile : MonoBehaviour
             {
                 // Deal damage
                 other.DealDamage(damage);
+                other.ApplyBurns();
             }
         }
         // Stop notifying the HUD of this missile

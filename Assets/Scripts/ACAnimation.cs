@@ -21,17 +21,7 @@ public class ACAnimation : MonoBehaviour
         abMaxVal = afterBurners[0].startLifetime;
         engLightMaxVal = engineLight[0].intensity;
     }
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    
     public void SetEnginePowerVisual(float powValue)
     {
         if (powValue >= 0.8f) heatHaze.enabled = true; 
