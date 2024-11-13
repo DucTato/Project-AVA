@@ -1,9 +1,8 @@
 using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.InputSystem.XR;
+
 
 public class PlayerController : MonoBehaviour
 {
@@ -61,6 +60,7 @@ public class PlayerController : MonoBehaviour
         };
 
         gpControls.Gameplay.ACthrottle.performed += context => { if (planeHandler != null) planeHandler.SetThrottleInput(context.ReadValue<float>()); };
+        gpControls.Gameplay.ACthrottle.canceled += context => { if (planeHandler != null) planeHandler.SetThrottleInput(0f); };
 
         gpControls.Gameplay.ACfireGUN.performed += context => { fireControl.FireCannon(true); };
         gpControls.Gameplay.ACfireGUN.canceled += context => { fireControl.FireCannon(false); };

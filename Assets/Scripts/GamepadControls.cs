@@ -47,18 +47,18 @@ public partial class @GamepadControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""ACyaw"",
-                    ""type"": ""Value"",
+                    ""type"": ""PassThrough"",
                     ""id"": ""f54342a2-601c-417c-9046-e5bc8d4aebc4"",
-                    ""expectedControlType"": ""Axis"",
+                    ""expectedControlType"": ""Analog"",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
                 },
                 {
                     ""name"": ""ACthrottle"",
-                    ""type"": ""PassThrough"",
+                    ""type"": ""Value"",
                     ""id"": ""636f1987-e23c-410a-bf20-f560c1dd3d94"",
-                    ""expectedControlType"": ""Analog"",
+                    ""expectedControlType"": ""Axis"",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
@@ -137,7 +137,7 @@ public partial class @GamepadControls: IInputActionCollection2, IDisposable
                 {
                     ""name"": ""negative"",
                     ""id"": ""2be54c3d-1a8d-4b6c-bcf3-6cc26d729b96"",
-                    ""path"": ""<Gamepad>/leftShoulder"",
+                    ""path"": ""<Gamepad>/leftTrigger"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";DualStickController"",
@@ -148,7 +148,7 @@ public partial class @GamepadControls: IInputActionCollection2, IDisposable
                 {
                     ""name"": ""positive"",
                     ""id"": ""1dd4ec88-97a8-4b6f-bf44-6c4350590ee6"",
-                    ""path"": ""<Gamepad>/rightShoulder"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";DualStickController"",
@@ -170,7 +170,7 @@ public partial class @GamepadControls: IInputActionCollection2, IDisposable
                 {
                     ""name"": ""negative"",
                     ""id"": ""346aec30-0af4-4d44-ae71-0322ebae49ef"",
-                    ""path"": ""<Gamepad>/leftTrigger"",
+                    ""path"": ""<Gamepad>/leftShoulder"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";DualStickController"",
@@ -181,7 +181,7 @@ public partial class @GamepadControls: IInputActionCollection2, IDisposable
                 {
                     ""name"": ""positive"",
                     ""id"": ""f78bcf33-7076-426f-85df-eef1306a0ddb"",
-                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""path"": ""<Gamepad>/rightShoulder"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";DualStickController"",

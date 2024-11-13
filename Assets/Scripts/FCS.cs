@@ -151,6 +151,7 @@ public class FCS : MonoBehaviour
         if (fcsUpdateIntervalTimer == 0) 
         {
             fcsUpdateIntervalTimer = fcsUpdateInterval;
+            targetsList.Clear();
             targetsList = GameObject.FindGameObjectsWithTag(tag).ToHashSet();
         }
         if (currTarget == null) currTarget = FindClosestTarget(currentTag);
@@ -200,7 +201,11 @@ public class FCS : MonoBehaviour
         Vector3 position = transform.position;
         foreach (GameObject t in targetsList)
         {
-            if (t == null) targetsList.Remove(t);
+            if (t == null) 
+            {
+                continue;
+            }
+            
             Vector3 diff = t.transform.position - position;
             float curDistance = diff.magnitude;
             if (curDistance < distance)
