@@ -71,12 +71,16 @@ public class PlayerController : MonoBehaviour
             if (context.duration < 0.8f) fireControl.CycleTarget();
             else
             {
+                if (fireControl.currTarget == null) return;
                 freeLookCam.gameObject.SetActive(true);
-                if (fireControl.currTarget != null) freeLookCam.m_LookAt = fireControl.currTarget.transform;
+                freeLookCam.m_LookAt = fireControl.currTarget.transform;
                 //Debug.Log("Following current target");
             }
         };
-        gpControls.Gameplay.ACcycleTgt.canceled += context => { freeLookCam.gameObject.SetActive(false); };
+        gpControls.Gameplay.ACcycleTgt.canceled += context => {
+            freeLookCam.gameObject.SetActive(false);
+            freeLookCam.m_LookAt = transform;
+        };
     }
     // Start is called before the first frame update
     void Start()

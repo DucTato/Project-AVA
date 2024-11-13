@@ -34,6 +34,7 @@ public class FCS : MonoBehaviour
     [SerializeField]
     GameObject bulletPrefab;
     [SerializeField]
+    private ParticleSystem muzzleFX;
     private int tgtIndex;
 
     public TgtBehaviourType targetingBehaviour;
@@ -123,6 +124,7 @@ public class FCS : MonoBehaviour
             var spread = Random.insideUnitCircle * cannonSpread;
             var bulletGO = Instantiate(bulletPrefab, cannonSpawnPoint.position, cannonSpawnPoint.rotation * Quaternion.Euler(spread.x, spread.y, 0));
             bulletGO.GetComponent<Bullet>().Fire(transform.gameObject);
+            muzzleFX.Play();
         }
     }
     private void FireMissile(int index)
@@ -154,7 +156,7 @@ public class FCS : MonoBehaviour
             targetsList.Clear();
             targetsList = GameObject.FindGameObjectsWithTag(tag).ToHashSet();
         }
-        if (currTarget == null) currTarget = FindClosestTarget(currentTag);
+        if (currTarget == null || currTarget.IsDead) currTarget = FindClosestTarget();
     }
     public void TryFireMissile()
     {
@@ -190,12 +192,9 @@ public class FCS : MonoBehaviour
         if (tgtIndex >= targets.Count) tgtIndex = 0;
         currTarget = targets[tgtIndex++].GetComponent<Target>();
     }
-    private Target FindClosestTarget(string tag)
-    {
-
-        
+    private Target FindClosestTarget()
+    {        
         //GameObject[] GO2s = GameObject.FindGameObjectsWithTag("Enemy mBullet");
-        
         Target closest = null;
         float distance = lockRange + 1000f;
         Vector3 position = transform.position;

@@ -16,7 +16,7 @@ public class ACAnimation : MonoBehaviour
     private void Awake()
     {
         engineLight = GetComponentsInChildren<Light>();
-        afterBurners = GetComponentsInChildren<ParticleSystem>();
+        //afterBurners = GetComponentsInChildren<ParticleSystem>();
         heatHaze = GetComponentInChildren<VisualEffect>();
         abMaxVal = afterBurners[0].startLifetime;
         engLightMaxVal = engineLight[0].intensity;

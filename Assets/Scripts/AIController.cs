@@ -380,7 +380,7 @@ public class AIController : MonoBehaviour
     private void FixedUpdate()
     {
         TryFindTarget();
-        if (_currentTarget == null || selfTarget.Dead) 
+        if (_currentTarget == null || selfTarget.IsDead) 
         { 
             
             return;

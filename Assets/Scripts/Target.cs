@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class Target : MonoBehaviour
 {
@@ -8,13 +9,16 @@ public class Target : MonoBehaviour
     private float health, maxHealth;
     [SerializeField]
     private new string name;
+    [SerializeField]
+    private GameObject smokeCloudPrefab, fireCloudPrefab;
+    [SerializeField]
+    private Vector3[] damagePoints = new Vector3[4];
     const float sortInterval = 0.5f;
     private float sortTimer;
     private int objID;
     public bool IsDead { get; private set; }
     public Vector3 Position {get { return rb.position; } }
     public Vector3 Velocity {get { return rb.velocity; } }
-    public bool Dead { get; private set; }
     public string Name
     {
         get
@@ -38,17 +42,8 @@ public class Target : MonoBehaviour
         private set
         {
             health = Mathf.Clamp(value, 0, maxHealth);
-            // Damage FX
-            //if (health <= MaxHealth * .5f && health > 0)
-            //{
-            //    damageEffect.SetActive(true);
-            //}
-            //else
-            //{
-            //    damageEffect.SetActive(false);
-            //}
-
-            if (health == 0 && maxHealth != 0 && !Dead)
+            
+            if (health == 0 && maxHealth != 0 && !IsDead)
             {
                 Die();
             }
@@ -63,6 +58,13 @@ public class Target : MonoBehaviour
         health = maxHealth;
         incomingMissiles = new List<Missile>();
         objID = gameObject.GetInstanceID();
+        // Generate random position for a maximum of 4 damage points
+        for (int i = 0; i < damagePoints.Length; i++)
+        {
+            float randomX = Random.Range(GetComponent<BoxCollider>().bounds.min.x, GetComponent<BoxCollider>().bounds.max.x);
+            float randomZ = Random.Range(GetComponent<BoxCollider>().bounds.min.z, GetComponent<BoxCollider>().bounds.max.z);
+            damagePoints[i] = new Vector3(randomX, GetComponent<BoxCollider>().bounds.max.y, randomZ);
+        }
     }
 
     // Update is called once per frame
@@ -113,8 +115,14 @@ public class Target : MonoBehaviour
     private void Die()
     {
         GetComponent<PlaneHandler>()?.ToggleDeadState();
-        Dead = true;
-        Destroy(gameObject);
+        IsDead = true;
+        GameObject smoke = Instantiate(smokeCloudPrefab, damagePoints[Random.Range(0, damagePoints.Length)], transform.rotation, transform);
+        GameObject fire = Instantiate(fireCloudPrefab, damagePoints[Random.Range(0, damagePoints.Length)], transform.rotation, transform);
+        smoke.GetComponent<ParticleSystem>().Play();
+        fire.GetComponent<ParticleSystem>().Play();
+        tag = "Dead";
+        //Debug.Log(gameObject + " taken out");
+        
     }
     public void DealDamage(float dmg)
     {
@@ -122,6 +130,29 @@ public class Target : MonoBehaviour
         if (objID == PlayerController.instance.PlayerID)
         {
             PlayerController.instance.hudController.DisplayHP();
+        }
+        // Damage FX
+        if (dmg > 30f)
+        {
+            GameObject smoke = Instantiate(smokeCloudPrefab, damagePoints[Random.Range(0, damagePoints.Length)], transform.rotation, transform);
+            GameObject fire = Instantiate(fireCloudPrefab, damagePoints[Random.Range(0, damagePoints.Length)], transform.rotation, transform);
+            var smokePS = smoke.GetComponent<ParticleSystem>().main;
+            smokePS.playOnAwake = false;
+            smoke.GetComponent<ParticleSystem>().Stop();
+            smokePS.duration = 5f;
+            smokePS.loop = false;
+            smokePS.stopAction = ParticleSystemStopAction.Destroy;
+            smokePS.simulationSpace = ParticleSystemSimulationSpace.Local;
+            smoke.GetComponent<ParticleSystem>().Play();
+
+            var firePS = fire.GetComponent<ParticleSystem>().main;
+            firePS.playOnAwake = false;
+            fire.GetComponent<ParticleSystem>().Stop();
+            firePS.duration = 5f;
+            firePS.loop = false;
+            firePS.simulationSpace = ParticleSystemSimulationSpace.Local;
+            firePS.stopAction = ParticleSystemStopAction.Destroy;
+            smoke.GetComponent<ParticleSystem>().Play();
         }
     }
 }
