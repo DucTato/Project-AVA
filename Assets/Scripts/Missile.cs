@@ -50,12 +50,10 @@ public class Missile : MonoBehaviour
             else Explode();
         }
         if (exploded) return;
+        // set speed to the direction of travel
+        rb.velocity = rb.rotation * new Vector3(0, 0, speed);
         CheckCollision();
         TrackTarget(Time.fixedDeltaTime);
-        // set speed to the direction of travel
-        //rb.velocity = rb.rotation * new Vector3(0, 0, speed);
-        rb.velocity = rb.rotation * new Vector3(0, 0, speed);
-        
         
     }
     public void Launch(GameObject owner, Target target)
@@ -94,11 +92,11 @@ public class Missile : MonoBehaviour
     private void Explode()
     {
         if (exploded) return;
-
+        exploded = true;
         timer = lifeTime;
         rb.isKinematic = true;
         renderer.enabled = false;
-        exploded = true;
+        
         // Explosion FX
         //Debug.Log("BOOM!");
         explosionFX.SetActive(true);

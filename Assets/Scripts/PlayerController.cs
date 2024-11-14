@@ -8,7 +8,7 @@ public class PlayerController : MonoBehaviour
 {
     // Adding a PlayerController Singleton
     public static PlayerController instance;
-    public PlaneHUD hudController;
+    public AircraftHUD hudController;
     [SerializeField]
     private PlaneHandler planeHandler;
     [SerializeField]
@@ -86,7 +86,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         camera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
-        hudController = GameObject.FindGameObjectWithTag("UICanvas").GetComponent<PlaneHUD>();
+        hudController = GameObject.FindGameObjectWithTag("UICanvas").GetComponent<AircraftHUD>();
         SetPlane(planeHandler);
         PlayerID = gameObject.GetInstanceID();
     }

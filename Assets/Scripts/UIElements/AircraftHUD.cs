@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlaneHUD : MonoBehaviour
+public class AircraftHUD : MonoBehaviour
 {
     [SerializeField]
     float updateRate;
@@ -67,6 +67,8 @@ public class PlaneHUD : MonoBehaviour
     GameObject aiMessage;
     [SerializeField]
     private GameObject mslWarning;
+    [SerializeField] 
+    private GameObject avionics;
 
     [SerializeField]
     List<Graphic> missileWarningGraphics;
@@ -164,18 +166,15 @@ public class PlaneHUD : MonoBehaviour
         }
     }
 
-    public void ToggleHelpDialogs()
+    public void ToggleAvionics(bool value)
     {
-        foreach (var dialog in helpDialogs)
-        {
-            dialog.SetActive(!dialog.activeSelf);
-        }
+        avionics.SetActive(value);
     }
     public void DisplayHP()
     {
         HPupTimer = hpUpTime;
     }
-    void UpdateVelocityMarker()
+    private void UpdateVelocityMarker()
     {
         var velocity = planeTransform.forward;
 
@@ -197,24 +196,24 @@ public class PlaneHUD : MonoBehaviour
         }
     }
 
-    void UpdateAirspeed()
+    private void UpdateAirspeed()
     {
         var speed = plane.LocalVelocity.z * metersToKnots;
         airspeed.text = string.Format("{0:0}", speed);
     }
 
-    void UpdateAOA()
+    private void UpdateAOA()
     {
         aoaIndicator.text = string.Format("{0:0.0} AOA", plane.AngleOfAttack * Mathf.Rad2Deg);
     }
 
-    void UpdateGForce()
+    private void UpdateGForce()
     {
         var gforce = plane.LocalGForce.y / 9.81f;
         gforceIndicator.text = string.Format("{0:0.0} G", gforce);
     }
 
-    void UpdateAltitude()
+    private void UpdateAltitude()
     {
         var altitude = plane.rb.position.y * metersToFeet;
         this.altitude.text = string.Format("{0:0}", altitude);
@@ -230,7 +229,7 @@ public class PlaneHUD : MonoBehaviour
         //return finalSP;
     }
 
-    void UpdateHUDCenter()
+    private void UpdateHUDCenter()
     {
         var rotation = cameraTransform.localEulerAngles;
         var hudPos = TransformToHUDSpace(cameraTransform.position + planeTransform.forward);
@@ -273,7 +272,7 @@ public class PlaneHUD : MonoBehaviour
         }
     }
 
-    void UpdateWeapons()
+    private void UpdateWeapons()
     {
         if (fireControl.currTarget == null)
         {
@@ -365,7 +364,7 @@ public class PlaneHUD : MonoBehaviour
         }
     }
 
-    void UpdateWarnings()
+    private void UpdateWarnings()
     {
         var incomingMissile = selfTarget.GetIncomingMissile();
 

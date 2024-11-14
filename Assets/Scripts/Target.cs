@@ -63,7 +63,8 @@ public class Target : MonoBehaviour
         {
             float randomX = Random.Range(GetComponentInChildren<MeshFilter>().mesh.bounds.min.x, GetComponentInChildren<MeshFilter>().mesh.bounds.max.x);
             float randomZ = Random.Range(GetComponentInChildren<MeshFilter>().mesh.bounds.min.z, GetComponentInChildren<MeshFilter>().mesh.bounds.max.z);
-            damagePoints[i] = new Vector3(randomX, GetComponentInChildren<MeshFilter>().mesh.bounds.max.y, randomZ);
+            //damagePoints[i] = new Vector3(randomX, GetComponentInChildren<MeshFilter>().mesh.bounds.max.y, randomZ);
+            damagePoints[i] = new Vector3(randomX, 0f, randomZ);
         }
     }
 
@@ -124,16 +125,22 @@ public class Target : MonoBehaviour
     }
     private void Die()
     {
+        if (objID == PlayerController.instance.PlayerID)
+        {
+            PlayerController.instance.hudController.ToggleAvionics(false);
+        }
+
         GetComponent<PlaneHandler>()?.ToggleDeadState();
         IsDead = true;
         GameObject smokeFX = Instantiate(smokeCloudPrefab, transform.position + damagePoints[Random.Range(0, damagePoints.Length)], transform.rotation, transform);
         GameObject fireFX = Instantiate(fireCloudPrefab, transform.position + damagePoints[Random.Range(0, damagePoints.Length)], transform.rotation, transform);
         smokeFX.GetComponent<ParticleSystem>().Play();
         fireFX.GetComponent<ParticleSystem>().Play();
+
         tag = "Dead";
-        //Debug.Log(gameObject + " taken out");
+
         // Increasing drag to make game object fall faster
-        rb.drag = -0.5f;
+        rb.drag = -0.2f;
     }
     public void DealDamage(float dmg)
     {
@@ -146,8 +153,8 @@ public class Target : MonoBehaviour
     public void ApplyBurns()
     {
         
-        GameObject smoke = Instantiate(smokeCloudPrefab, transform.position + damagePoints[Random.Range(0, damagePoints.Length)], transform.rotation, transform);
-        GameObject fire = Instantiate(fireCloudPrefab, transform.position + damagePoints[Random.Range(0, damagePoints.Length)], transform.rotation, transform);
+        GameObject smoke = Instantiate(smokeCloudPrefab, transform.position + damagePoints[Random.Range(0, damagePoints.Length)], Quaternion.identity, transform);
+        GameObject fire = Instantiate(fireCloudPrefab, transform.position + damagePoints[Random.Range(0, damagePoints.Length)], Quaternion.identity, transform);
         var smokePS = smoke.GetComponent<ParticleSystem>().main;
         smokePS.playOnAwake = false;
         smoke.GetComponent<ParticleSystem>().Stop();

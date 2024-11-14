@@ -9,8 +9,10 @@ public class ACAnimation : MonoBehaviour
     private ParticleSystem[] afterBurners;
     [SerializeField]
     private Light[] engineLight;
+    
+    private float engLightMaxIntensity;
     [SerializeField]
-    private float abMaxVal, engLightMaxVal;
+    private float abMaxVal;
     [SerializeField]
     private VisualEffect heatHaze;
     private void Awake()
@@ -18,8 +20,10 @@ public class ACAnimation : MonoBehaviour
         engineLight = GetComponentsInChildren<Light>();
         //afterBurners = GetComponentsInChildren<ParticleSystem>();
         heatHaze = GetComponentInChildren<VisualEffect>();
+#pragma warning disable CS0618 // Type or member is obsolete
         abMaxVal = afterBurners[0].startLifetime;
-        engLightMaxVal = engineLight[0].intensity;
+#pragma warning restore CS0618 // Type or member is obsolete
+        engLightMaxIntensity = engineLight[0].intensity;
     }
     
     public void SetEnginePowerVisual(float powValue)
@@ -28,8 +32,15 @@ public class ACAnimation : MonoBehaviour
         else heatHaze.enabled = false;
         // power value is the % of engine's max power
         Mathf.Clamp(powValue, 0.0f, 1.0f);
-        foreach (Light light in engineLight) light.intensity = powValue * engLightMaxVal;
+        foreach (Light light in engineLight) light.intensity = powValue * engLightMaxIntensity;
         //
-        foreach (ParticleSystem ab in afterBurners) ab.startLifetime = powValue * abMaxVal;
+        foreach (ParticleSystem ab in afterBurners)
+        {
+            if (powValue <= 0) ab.Stop();
+            else ab.Play();
+#pragma warning disable CS0618 // Type or member is obsolete
+            ab.startLifetime = powValue * abMaxVal;
+#pragma warning restore CS0618 // Type or member is obsolete
+        }
     }
 }

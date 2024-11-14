@@ -123,7 +123,7 @@ public class AIController : MonoBehaviour
     {
         if (fireControl.currTarget != null)
         {
-            _currentTarget = fireControl.currTarget;
+            _currentTarget = fireControl.currTarget.IsDead ? null : fireControl.currTarget;
         }
     }
     private Vector3 AvoidGround()
@@ -146,12 +146,12 @@ public class AIController : MonoBehaviour
 
     private Vector3 GetTargetPosition()
     {
-        if (fireControl.currTarget == null)
+        if (_currentTarget == null)
         {
             return PlaneHandler.rb.position;
         }
 
-        var targetPosition = fireControl.currTarget.Position;
+        var targetPosition = _currentTarget.Position;
 
         if (Vector3.Distance(targetPosition, PlaneHandler.rb.position) < cannonRange)
         {
@@ -163,7 +163,7 @@ public class AIController : MonoBehaviour
 
     private Vector3 CalculateSteering(float dt, Vector3 targetPosition)
     {
-        if (fireControl.currTarget != null && _currentTarget.Health == 0)
+        if (_currentTarget != null && _currentTarget.Health == 0)
         {
             return new Vector3();
         }

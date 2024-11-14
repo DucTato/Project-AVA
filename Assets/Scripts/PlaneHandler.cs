@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class PlaneHandler : MonoBehaviour
 {
     [Header("Basic stats")]
@@ -69,10 +70,14 @@ public class PlaneHandler : MonoBehaviour
     [Header("Miscs")]
     [SerializeField]
     private ACAnimation anim;
+    [SerializeField]
+    private GameObject explosionFX;
+    private GameObject aircraftBody;
     private float throttleInput;
     private Vector3 controlInput;
 
     private Vector3 lastVelocity;
+    private Vector3 lastPosition;
     
 
     
@@ -108,7 +113,13 @@ public class PlaneHandler : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         rb.velocity = rb.rotation * new Vector3(0, 0, initialSpeed); // initial speed
-        
+        foreach (Transform child in transform.GetComponentsInChildren<Transform>())
+        {
+            if (child.gameObject.CompareTag("DisableOnDeath"))
+            {
+                aircraftBody = child.gameObject;
+            }
+        }
     }
 
     public void SetThrottleInput(float input)
@@ -349,8 +360,37 @@ public class PlaneHandler : MonoBehaviour
             Mathf.Clamp(effectiveInput.z, -1, 1)
         );
     }
-
-    void FixedUpdate()
+    private void CheckCollision()
+    {
+        // using raycast to check for collisions
+        var currentPosition = rb.position;
+        var error = currentPosition - lastPosition;
+        // ray is pointed in the direction that the missile is flying
+        var ray = new Ray(lastPosition, error.normalized);
+        if (Physics.Raycast(ray, out RaycastHit hit, error.magnitude))
+        {
+            GameObject other = hit.collider.gameObject;
+            if (other.gameObject != gameObject)
+            {
+                rb.position = hit.point;
+            }
+        }
+        lastPosition = currentPosition;
+    }
+    private void Explode()
+    {
+        // If a plane collides with the ground it should explode
+        GetComponent<Target>().DealDamage(9999999);
+        Instantiate(explosionFX, transform.position, transform.rotation);
+        aircraftBody.SetActive(false);
+        ToggleDeadState();
+        rb.isKinematic = true;
+    }
+    private void Update()
+    {
+        CheckCollision();
+    }
+    private void FixedUpdate()
     {
         float dt = Time.fixedDeltaTime;
 
@@ -376,5 +416,13 @@ public class PlaneHandler : MonoBehaviour
 
         //calculate again, so that other systems can read this plane's state
         CalculateState(dt);
+        //CheckCollision();
+    }
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject != gameObject)
+        {
+            Explode();
+        }
     }
 }
