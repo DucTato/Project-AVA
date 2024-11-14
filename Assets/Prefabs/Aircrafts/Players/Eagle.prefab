@@ -1290,6 +1290,7 @@ MonoBehaviour:
   missileDebounceTime: 0.125
   missilePrefab: {fileID: 3176959281366231767, guid: dfd5db799a3fef14dbdca5529c682ea1,
     type: 3}
+  currentTarget: {fileID: 0}
   lockRange: 2000
   lockSpeed: 30
   lockAngle: 45
@@ -1323,6 +1324,7 @@ MonoBehaviour:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
+  rewardPoint: 100
 --- !u!114 &3648941794331984632
 MonoBehaviour:
   m_ObjectHideFlags: 0

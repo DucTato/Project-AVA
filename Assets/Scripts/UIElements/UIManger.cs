@@ -1,77 +1,85 @@
+using NaughtyAttributes;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class AircraftHUD : MonoBehaviour
+public class UIManager : MonoBehaviour
 {
-    [SerializeField]
+    [Header("AVIONICS")]
+    [SerializeField] [Foldout("Avionics")]
     float updateRate;
-    [SerializeField]
+    [SerializeField][Foldout("Avionics")]
     Color normalColor;
-    [SerializeField]
+    [SerializeField][Foldout("Avionics")]
     Color lockColor;
-    [SerializeField]
+    [SerializeField][Foldout("Avionics")]
     List<GameObject> helpDialogs;
-    [SerializeField]
+    [SerializeField][Foldout("Avionics")]
     Compass compass;
-    [SerializeField]
+    [SerializeField][Foldout("Avionics")]
     PitchLadder pitchLadder;
-    [SerializeField]
+    [SerializeField][Foldout("Avionics")]
     Bar throttleBar;
-    [SerializeField]
+    [SerializeField][Foldout("Avionics")]
     private Transform hudCenter;
-    [SerializeField]
+    [SerializeField][Foldout("Avionics")]
     private Transform stillComponents;
-    [SerializeField]
+    [SerializeField][Foldout("Avionics")]
     Transform velocityMarker;
-    [SerializeField]
+    [SerializeField][Foldout("Avionics")]
     Text airspeed;
-    [SerializeField]
+    [SerializeField][Foldout("Avionics")]
     Text aoaIndicator;
-    [SerializeField]
+    [SerializeField][Foldout("Avionics")]
     Text gforceIndicator;
-    [SerializeField]
+    [SerializeField][Foldout("Avionics")]
     Text altitude;
-    [SerializeField]
+    [SerializeField][Foldout("Avionics")]
     Bar healthBar;
-    [SerializeField]
+    [SerializeField][Foldout("Avionics")]
     Text healthText;
-    [SerializeField]
+    [SerializeField][Foldout("Avionics")]
     Transform targetBox;
-    [SerializeField]
+    [SerializeField][Foldout("Avionics")]
     Text targetName;
-    [SerializeField]
+    [SerializeField][Foldout("Avionics")]
     Text targetRange;
-    [SerializeField]
+    [SerializeField][Foldout("Avionics")]
     Transform missileLock;
-    [SerializeField]
+    [SerializeField][Foldout("Avionics")]
     Transform reticle;
-    [SerializeField]
+    [SerializeField][Foldout("Avionics")]
     RectTransform reticleLine;
-    [SerializeField]
+    [SerializeField][Foldout("Avionics")]
     RectTransform targetArrow;
-    [SerializeField]
+    [SerializeField][Foldout("Avionics")]
     RectTransform missileArrow;
-    [SerializeField]
+    [SerializeField][Foldout("Avionics")]
     float targetArrowThreshold;
-    [SerializeField]
+    [SerializeField][Foldout("Avionics")]
     float missileArrowThreshold;
-    [SerializeField]
+    [SerializeField][Foldout("Avionics")]
     float cannonRange;
-    [SerializeField]
+    [SerializeField][Foldout("Avionics")]
     float bulletSpeed;
-    [SerializeField]
+    [SerializeField][Foldout("Avionics")]
     private float hpUpTime;
-    [SerializeField]
+    [SerializeField][Foldout("Avionics")]
     GameObject aiMessage;
-    [SerializeField]
+    [SerializeField][Foldout("Avionics")]
     private GameObject mslWarning;
-    [SerializeField] 
+    [SerializeField][Foldout("Avionics")]
     private GameObject avionics;
-
-    [SerializeField]
+    [SerializeField][Foldout("Avionics")]
     List<Graphic> missileWarningGraphics;
+    
+    [Header("MISCS")]
+    [SerializeField][Foldout("Miscs")]
+    private Bar progressBar;
+    [SerializeField][Foldout("Miscs")]
+    private TextMeshProUGUI currentTargetInfo;
     private PlaneHandler plane;
     private FCS fireControl;
     //Target target;
@@ -97,7 +105,7 @@ public class AircraftHUD : MonoBehaviour
 
     const float metersToKnots = 1.94384f;
     const float metersToFeet = 3.28084f;
-
+    #region CallBacks
     void Start()
     {
         hudCenterGO = hudCenter.gameObject;
@@ -113,6 +121,46 @@ public class AircraftHUD : MonoBehaviour
         alphaValue = 1f;
         hideHP = true;
     }
+    void LateUpdate()
+    {
+        if (plane == null) return;
+        if (camera == null) return;
+
+        float degreesToPixels = camera.pixelHeight / camera.fieldOfView;
+
+        throttleBar.SetValue(plane.Throttle);
+
+        if (!plane.Dead)
+        {
+            UpdateVelocityMarker();
+            UpdateHUDCenter();
+        }
+        else
+        {
+            hudCenterGO.SetActive(false);
+            velocityMarkerGO.SetActive(false);
+        }
+
+        if (aiController != null)
+        {
+            aiMessage.SetActive(aiController.enabled);
+        }
+
+        UpdateAirspeed();
+        UpdateAltitude();
+        UpdateHealth();
+        UpdateWeapons();
+        UpdateWarnings();
+
+        //update these elements at reduced rate to make reading them easier
+        if (Time.time > lastUpdateTime + (1f / updateRate))
+        {
+            UpdateAOA();
+            UpdateGForce();
+            lastUpdateTime = Time.time;
+        }
+    }
+    #endregion
 
     public void SetPlane(PlaneHandler plane)
     {
@@ -165,7 +213,7 @@ public class AircraftHUD : MonoBehaviour
             pitchLadder.SetCamera(camera);
         }
     }
-
+    #region Avionics
     public void ToggleAvionics(bool value)
     {
         avionics.SetActive(value);
@@ -408,44 +456,17 @@ public class AircraftHUD : MonoBehaviour
             compass.UpdateColor(normalColor);
         }
     }
-
-    void LateUpdate()
+    #endregion
+    #region GameHUD
+    public void SetProgressBar(float current, float maxValue)
     {
-        if (plane == null) return;
-        if (camera == null) return;
-
-        float degreesToPixels = camera.pixelHeight / camera.fieldOfView;
-
-        throttleBar.SetValue(plane.Throttle);
-
-        if (!plane.Dead)
-        {
-            UpdateVelocityMarker();
-            UpdateHUDCenter();
-        }
-        else
-        {
-            hudCenterGO.SetActive(false);
-            velocityMarkerGO.SetActive(false);
-        }
-
-        if (aiController != null)
-        {
-            aiMessage.SetActive(aiController.enabled);
-        }
-
-        UpdateAirspeed();
-        UpdateAltitude();
-        UpdateHealth();
-        UpdateWeapons();
-        UpdateWarnings();
-
-        //update these elements at reduced rate to make reading them easier
-        if (Time.time > lastUpdateTime + (1f / updateRate))
-        {
-            UpdateAOA();
-            UpdateGForce();
-            lastUpdateTime = Time.time;
-        }
+        progressBar.SetValue(current / maxValue);
     }
+    public void SetCurrentTargetInfo(Target target)
+    {
+        if (target == null) currentTargetInfo.text = " ";
+        else currentTargetInfo.text = target.Name + " " + target.rewardPoint + "Pt";
+    }
+    #endregion
+
 }

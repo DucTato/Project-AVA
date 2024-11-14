@@ -15,10 +15,11 @@ public class Target : MonoBehaviour
     private Vector3[] damagePoints = new Vector3[4];
     const float sortInterval = 0.5f;
     private float sortTimer;
-    private int objID;
+    public int rewardPoint;
     public bool IsDead { get; private set; }
     public Vector3 Position {get { return rb.position; } }
     public Vector3 Velocity {get { return rb.velocity; } }
+
     public string Name
     {
         get
@@ -57,7 +58,6 @@ public class Target : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         health = maxHealth;
         incomingMissiles = new List<Missile>();
-        objID = gameObject.GetInstanceID();
         // Generate random position for a maximum of 4 damage points
         for (int i = 0; i < damagePoints.Length; i++)
         {
@@ -125,11 +125,18 @@ public class Target : MonoBehaviour
     }
     private void Die()
     {
-        if (objID == PlayerController.instance.PlayerID)
+        if (PlayerController.instance.CheckIsPlayer(gameObject))
         {
+            // if this is the player
+            // Disable the plane HUD
             PlayerController.instance.hudController.ToggleAvionics(false);
         }
-
+        else
+        {
+            // if this is not the player
+            // Add points for the player
+            GameManager.instance.AddPoint(rewardPoint);
+        }
         GetComponent<PlaneHandler>()?.ToggleDeadState();
         IsDead = true;
         GameObject smokeFX = Instantiate(smokeCloudPrefab, transform.position + damagePoints[Random.Range(0, damagePoints.Length)], transform.rotation, transform);
@@ -145,7 +152,7 @@ public class Target : MonoBehaviour
     public void DealDamage(float dmg)
     {
         Health -= dmg;
-        if (objID == PlayerController.instance.PlayerID)
+        if (PlayerController.instance.CheckIsPlayer(gameObject))
         {
             PlayerController.instance.hudController.DisplayHP();
         }        
