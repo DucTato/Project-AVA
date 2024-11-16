@@ -76,10 +76,13 @@ public class UIManager : MonoBehaviour
     List<Graphic> missileWarningGraphics;
     
     [Header("MISCS")]
-    [SerializeField][Foldout("Miscs")]
+    [SerializeField, Foldout("Miscs")]
     private Bar progressBar;
-    [SerializeField][Foldout("Miscs")]
+    [SerializeField, Foldout("Miscs")]
     private TextMeshProUGUI currentTargetInfo;
+    [SerializeField, Foldout("Miscs")]
+    private GameObject deathPanel, gameInfo, winPanel;
+
     private PlaneHandler plane;
     private FCS fireControl;
     //Target target;
@@ -120,6 +123,8 @@ public class UIManager : MonoBehaviour
         HPupTimer = 0f;
         alphaValue = 1f;
         hideHP = true;
+        SetDeathScreen(false);
+        SetWinScreen(false);
     }
     void LateUpdate()
     {
@@ -467,6 +472,15 @@ public class UIManager : MonoBehaviour
         if (target == null) currentTargetInfo.text = " ";
         else currentTargetInfo.text = target.Name + " " + target.rewardPoint + "Pt";
     }
+    public void SetDeathScreen(bool value)
+    {
+        deathPanel.SetActive(value);
+        gameInfo.SetActive(!value);
+    }
+    public void SetWinScreen(bool value)
+    {
+        winPanel.SetActive(value);
+    }
     #endregion
-
+    
 }

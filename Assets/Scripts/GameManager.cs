@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviour
         { 
             currentPoint = value;
             SetCurrentProgress();
+            if (currentPoint == maxPoint) StartWinProcedure();
         }
     }
     #region CallBacks
@@ -46,4 +47,13 @@ public class GameManager : MonoBehaviour
     {
         CurrentPoint += point;
     }
+    public void StartWinProcedure()
+    {
+        hudController.SetWinScreen(true); 
+    }
+    public void StartDeathProcedure()
+    {
+        hudController.SetDeathScreen(true);
+    }
+    
 }

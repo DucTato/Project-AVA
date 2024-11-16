@@ -52,6 +52,7 @@ public class Target : MonoBehaviour
     }
     private Rigidbody rb;
     private List<Missile> incomingMissiles;
+    #region CallBacks
     // Start is called before the first frame update
     void Start()
     {
@@ -89,6 +90,7 @@ public class Target : MonoBehaviour
             }
         }
     }
+    #endregion
     public Missile GetIncomingMissile()
     {
         if (incomingMissiles.Count > 0)
@@ -130,6 +132,7 @@ public class Target : MonoBehaviour
             // if this is the player
             // Disable the plane HUD
             PlayerController.instance.hudController.ToggleAvionics(false);
+            GameManager.instance.StartDeathProcedure();
         }
         else
         {
@@ -148,6 +151,7 @@ public class Target : MonoBehaviour
 
         // Increasing drag to make game object fall faster
         rb.drag = -0.2f;
+        rb.angularDrag = -0.2f;
     }
     public void DealDamage(float dmg)
     {
