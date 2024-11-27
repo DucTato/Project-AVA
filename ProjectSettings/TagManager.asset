@@ -8,6 +8,9 @@ TagManager:
   - UICanvas
   - Dead
   - DisableOnDeath
+  - TerrainGenerator
+  - Voxel
+  - Terrain
   layers:
   - Default
   - TransparentFX
