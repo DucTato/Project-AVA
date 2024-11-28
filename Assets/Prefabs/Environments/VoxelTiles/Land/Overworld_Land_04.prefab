@@ -90,7 +90,7 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: b419542364c5f4846b4b92b00ade03a3,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 6897016905830514025}
+      addedObject: {fileID: 2094737262239826461}
   m_SourcePrefab: {fileID: 100100000, guid: b419542364c5f4846b4b92b00ade03a3, type: 3}
 --- !u!1 &2728446472771350375 stripped
 GameObject:
@@ -98,24 +98,31 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 2962253983050699318}
   m_PrefabAsset: {fileID: 0}
---- !u!65 &6897016905830514025
-BoxCollider:
+--- !u!114 &2094737262239826461
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2728446472771350375}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 3.2, y: 1, z: 3.2}
-  m_Center: {x: 0, y: 0.5, z: 0}
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a97bfc4b6a179e4484e1ea26bb15c84, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  upNeighbours:
+  - {fileID: -824216554730249598, guid: 345357d8ec9b2f14292cee1f3eb34f35, type: 3}
+  - {fileID: 2094737262239826461}
+  - {fileID: -5667949447875194664, guid: b2e75b976169e384c90fe058330c2a9e, type: 3}
+  downNeighbours:
+  - {fileID: -824216554730249598, guid: 345357d8ec9b2f14292cee1f3eb34f35, type: 3}
+  - {fileID: 2094737262239826461}
+  - {fileID: -5667949447875194664, guid: b2e75b976169e384c90fe058330c2a9e, type: 3}
+  leftNeighbours:
+  - {fileID: -824216554730249598, guid: 345357d8ec9b2f14292cee1f3eb34f35, type: 3}
+  - {fileID: 2094737262239826461}
+  - {fileID: -5667949447875194664, guid: b2e75b976169e384c90fe058330c2a9e, type: 3}
+  rightNeighbours:
+  - {fileID: -824216554730249598, guid: 345357d8ec9b2f14292cee1f3eb34f35, type: 3}
+  - {fileID: 2094737262239826461}
+  - {fileID: -5667949447875194664, guid: b2e75b976169e384c90fe058330c2a9e, type: 3}
