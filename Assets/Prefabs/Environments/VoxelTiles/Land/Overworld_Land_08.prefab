@@ -83,6 +83,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Overworld_Land_08
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: c71d35347ee7cc04ea682ae5040ee43e,
+        type: 3}
+      propertyPath: m_TagString
+      value: Terrain
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

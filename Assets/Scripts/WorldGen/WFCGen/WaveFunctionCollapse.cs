@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class WaveFunctionCollapse : MonoBehaviour
 {
+    public GameObject Terrain;
     [SerializeField]
     private int dimensions;
     [SerializeField]
@@ -24,11 +25,12 @@ public class WaveFunctionCollapse : MonoBehaviour
     {
         gridComponents = new List<Cell>();
         InitializeGrid();
+        Terrain = new GameObject("Terrain");
     }
     #endregion
     private void InitializeGrid()
     {
-        // Populate grid with all the possible tiles
+        // Populate grid with cells that contain tiles
         for (int y = 0; y < dimensions; y++)
         {
             for (int x = 0; x < dimensions; x++)
@@ -56,7 +58,6 @@ public class WaveFunctionCollapse : MonoBehaviour
         int randIndex = UnityEngine.Random.Range(0, tempGrid.Count);
         Cell cell2Collapse = tempGrid[randIndex];
         cell2Collapse.collapsed = true;
-
         try
         {
             Tile selectedTile = cell2Collapse.tileOptions[UnityEngine.Random.Range(0, cell2Collapse.tileOptions.Length)];
@@ -153,7 +154,11 @@ public class WaveFunctionCollapse : MonoBehaviour
         }
         gridComponents = newGenCell;
         if (++iteration < dimensions * dimensions) StartCoroutine(CheckEntropy());
-        else Debug.Log("Done building!");
+        else 
+        { 
+            
+            MergeTile();
+        }
     }
     private void CheckValidity(List<Tile> optionList, List<Tile> validOption)
     {
@@ -165,6 +170,14 @@ public class WaveFunctionCollapse : MonoBehaviour
                 optionList.RemoveAt(x);
             }
         }
+    }
+    private void MergeTile()
+    {
+        foreach (GameObject builtTile in GameObject.FindGameObjectsWithTag("Terrain"))
+        {
+            builtTile.transform.parent = Terrain.transform;
+        }
+        Debug.Log("Done building!");
     }
 
 }
