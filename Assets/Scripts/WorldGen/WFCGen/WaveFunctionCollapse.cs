@@ -153,6 +153,7 @@ public class WaveFunctionCollapse : MonoBehaviour
         }
         gridComponents = newGenCell;
         if (++iteration < dimensions * dimensions) StartCoroutine(CheckEntropy());
+        else Debug.Log("Done building!");
     }
     private void CheckValidity(List<Tile> optionList, List<Tile> validOption)
     {
