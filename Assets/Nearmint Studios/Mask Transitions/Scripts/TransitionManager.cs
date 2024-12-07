@@ -28,6 +28,7 @@ namespace MaskTransitions
         [SerializeField] private RectTransform transitionCanvas;
         [SerializeField] private Image parentMaskImage;
         [SerializeField] private CutoutMaskUI cutoutMask;
+        [SerializeField] private GameObject initialMask;
 
         private void Awake()
         {
@@ -41,6 +42,7 @@ namespace MaskTransitions
 
         private void Start()
         {
+            
             // Assign the transition sprite and color
             parentMaskImage.sprite = transitionImage;
             cutoutMask.sprite = transitionImage;
@@ -112,6 +114,7 @@ namespace MaskTransitions
         #region Transition Without Scene Load
         public void PlayTransition(float transitionTime, float startDelay = 0f)
         {
+            initialMask.SetActive(false);
             StartCoroutine(PlayTransitionWithDelay(transitionTime, startDelay));
         }
 
@@ -131,6 +134,7 @@ namespace MaskTransitions
         #region Transition With Scene Load 
         public void LoadLevel(string sceneName, float delay = 0f)
         {
+            initialMask.SetActive(false);
             StartCoroutine(LoadLevelWithWait(sceneName, delay));
         }
 
@@ -157,10 +161,12 @@ namespace MaskTransitions
         #region Play Partial Transitions
         public void PlayStartHalfTransition(float transitionTime, float startDelay = 0f)
         {
+            initialMask.SetActive(false);
             StartCoroutine(PlayStartHalfTransitionWithDelay(transitionTime, startDelay));
         }
         public void PlayEndHalfTransition(float transitionTime, float startDelay = 0f)
         {
+            initialMask.SetActive(false);
             StartCoroutine(PlayEndHalfTransitionWithDelay(transitionTime, startDelay));
         }
         IEnumerator PlayStartHalfTransitionWithDelay(float transitionTime, float startDelay)

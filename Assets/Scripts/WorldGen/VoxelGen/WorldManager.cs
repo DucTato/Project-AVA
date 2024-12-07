@@ -201,10 +201,10 @@ public class WorldManager : MonoBehaviour
             }
         }
         // Force cleanup editor memmory
-        #region UNITY_EDITOR
-        EditorUtility.UnloadUnusedAssetsImmediate();
-        GC.Collect();
-        #endregion
+        //#region UNITY_EDITOR
+        //EditorUtility.UnloadUnusedAssetsImmediate();
+        //GC.Collect();
+        //#endregion
     }
 }
 [System.Serializable]

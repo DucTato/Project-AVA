@@ -6,10 +6,11 @@ using UnityEngine.EventSystems;
 public class Panel : MonoBehaviour
 {
     [SerializeField]
-    private GameObject firstOption, previousPanel;
+    private GameObject firstOption, previousPanel, childPanel;
     private void OnEnable()
     {
         EventSystem.current.SetSelectedGameObject(firstOption);
+        if (childPanel!= null ) childPanel.SetActive(false);
     }
     public GameObject GetPrevious()
     {

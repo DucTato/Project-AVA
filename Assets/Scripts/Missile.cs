@@ -19,7 +19,7 @@ public class Missile : MonoBehaviour
     [SerializeField]
     private LayerMask collisionMask;
     [SerializeField]
-    private new MeshRenderer renderer;
+    private MeshRenderer renderer;
     [SerializeField]
     private GameObject explosionFX;
     public Target target;
