@@ -19,7 +19,9 @@ public class Missile : MonoBehaviour
     [SerializeField]
     private LayerMask collisionMask;
     [SerializeField]
+#pragma warning disable CS0108 // Member hides inherited member; missing new keyword
     private MeshRenderer renderer;
+#pragma warning restore CS0108 // Member hides inherited member; missing new keyword
     [SerializeField]
     private GameObject explosionFX;
     public Target target;

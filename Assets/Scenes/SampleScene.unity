@@ -1539,7 +1539,6 @@ GameObject:
   - component: {fileID: 354122787}
   - component: {fileID: 354122789}
   - component: {fileID: 354122788}
-  - component: {fileID: 354122791}
   - component: {fileID: 354122790}
   m_Layer: 5
   m_Name: WinTxt
@@ -1677,27 +1676,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animationSpdMult: 0.8
---- !u!95 &354122791
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 354122786}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 6b2c25585fc9f5a43b3796c975c454f1, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
+  textGraphics:
+  - {fileID: 354122788}
 --- !u!1 &378450425
 GameObject:
   m_ObjectHideFlags: 3
@@ -4729,7 +4709,6 @@ GameObject:
   - component: {fileID: 1050559485}
   - component: {fileID: 1050559488}
   - component: {fileID: 1050559487}
-  - component: {fileID: 1050559486}
   - component: {fileID: 1050559489}
   m_Layer: 5
   m_Name: MSLWarning
@@ -4757,27 +4736,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 104}
   m_SizeDelta: {x: 70, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!95 &1050559486
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1050559484}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 6b2c25585fc9f5a43b3796c975c454f1, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &1050559487
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4889,6 +4847,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animationSpdMult: 3
+  textGraphics:
+  - {fileID: 1050559487}
 --- !u!1 &1081330958
 GameObject:
   m_ObjectHideFlags: 0
@@ -6797,7 +6757,6 @@ GameObject:
   - component: {fileID: 1631969504}
   - component: {fileID: 1631969503}
   - component: {fileID: 1631969505}
-  - component: {fileID: 1631969506}
   - component: {fileID: 1631969507}
   m_Layer: 5
   m_Name: AI
@@ -6923,27 +6882,6 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!95 &1631969506
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1631969501}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 6b2c25585fc9f5a43b3796c975c454f1, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &1631969507
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6957,6 +6895,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animationSpdMult: 1
+  textGraphics:
+  - {fileID: 1631969505}
 --- !u!1 &1662933565
 GameObject:
   m_ObjectHideFlags: 0

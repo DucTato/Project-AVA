@@ -95,7 +95,7 @@ public class MenuUIController : MonoBehaviour
     public void OnStartGameButton()
     {
         // Switch scene
-        TransitionManager.Instance.LoadLevel("WorldBuilder_Land");
+        TransitionManager.Instance.LoadLevel("Mission_Land");
     }
     public void OnSetupAircraftButton()
     {

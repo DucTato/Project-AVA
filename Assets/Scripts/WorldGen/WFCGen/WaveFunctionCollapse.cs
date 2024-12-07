@@ -1,33 +1,55 @@
+using Cinemachine;
+using NaughtyAttributes;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 
 public class WaveFunctionCollapse : MonoBehaviour
 {
+    [Foldout("World Gen")]
     public GameObject Terrain;
-    [SerializeField]
+    [SerializeField, Foldout("World Gen")]
+    private GameObject Water;
+    [SerializeField, Foldout("World Gen")]
     private int dimensions;
-    [SerializeField]
+    [SerializeField, Foldout("World Gen")]
     private Tile[] tileObjects;
-    [SerializeField]
+    [SerializeField, Foldout("World Gen")]
     private List<Cell> gridComponents;
-    [SerializeField]
+    [SerializeField, Foldout("World Gen")]
     private Cell cellObject;
-    [SerializeField]
+    [SerializeField, Foldout("World Gen")]
     private Tile backupTile;
-
     private int iteration;
+    [SerializeField, Foldout("UI Handler")]
+    private CinemachineVirtualCamera virtualCam;
+    [SerializeField, Foldout("UI Handler")]
+    private TextMeshProUGUI waitTxt, doneTxt;
 
+    private bool RaiseWater;
     #region CallBacks
     private void Awake()
     {
         gridComponents = new List<Cell>();
         InitializeGrid();
         Terrain = new GameObject("Terrain");
+        StartCoroutine(WaitAndDo(3f));
+        waitTxt.gameObject.SetActive(true);
+        doneTxt.gameObject.SetActive(false);
+    }
+    private void Update()
+    {
+        if (RaiseWater)
+        {
+            Water.transform.position = Vector3.MoveTowards(Water.transform.position, new Vector3(100.8f, 0f, 100.8f), Time.deltaTime * 5f);
+            if (Water.transform.position.y >= 0f) Destroy(gameObject);
+        }
     }
     #endregion
+    #region World Generation
     private void InitializeGrid()
     {
         // Populate grid with cells that contain tiles
@@ -37,6 +59,15 @@ public class WaveFunctionCollapse : MonoBehaviour
             {
                 Cell newCell = Instantiate(cellObject, new Vector3(x * 9.6f, 0, y * 9.6f), Quaternion.identity);
                 newCell.CreateCell(false, tileObjects);
+                if (x == dimensions / 2 && x == y)
+                {
+                    newCell.GetComponentInChildren<CinemachineFreeLook>().Priority = 2;
+                    newCell.gameObject.name = "WorldCenter";
+                }
+                else
+                {
+                    newCell.transform.parent = transform ;
+                }
                 gridComponents.Add(newCell);
             }
         }
@@ -178,6 +209,20 @@ public class WaveFunctionCollapse : MonoBehaviour
             builtTile.transform.parent = Terrain.transform;
         }
         Debug.Log("Done building!");
+        RaiseWater = true;
+        DoneBuildingPrompt();
     }
-
+    #endregion
+    #region UI/UX Handler
+    private IEnumerator WaitAndDo(float time)
+    {
+        yield return new WaitForSeconds(time);
+        virtualCam.Priority = 0;
+    }
+    private void DoneBuildingPrompt()
+    {
+        waitTxt.gameObject.SetActive(false);
+        doneTxt.gameObject.SetActive(true);
+    }
+    #endregion
 }
