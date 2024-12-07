@@ -21,6 +21,8 @@ public class MenuUIController : MonoBehaviour
         switchON.SetActive(false);
         switchOFF.SetActive(true);
         TransitionManager.Instance.PlayEndHalfTransition(1.2f);
+        // Hide that mouse input if a controller is detected
+        if (Input.GetJoystickNames().Length > 0 ) Cursor.lockState = CursorLockMode.Locked;
     }
 
     // Update is called once per frame
