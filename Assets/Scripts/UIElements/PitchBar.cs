@@ -11,7 +11,7 @@ public class PitchBar : MonoBehaviour
     Image image;
     List<Transform> transforms;
 
-    void Start()
+    void OnEnable()
     {
         image = GetComponent<Image>();
         transforms = new List<Transform>();

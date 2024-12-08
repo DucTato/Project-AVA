@@ -26,10 +26,10 @@ public class PlayerController : MonoBehaviour
     private Vector2 stickValue;
     private AIController autoPilot;
     public int PlayerID { get; private set; }
+    #region CallBacks
     private void Awake()
     {
         instance = this;
-
         gpControls = new GamepadControls();
         gpControls.Gameplay.ACmovement.performed += context => { 
             stickValue = context.ReadValue<Vector2>();
@@ -86,9 +86,9 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         camera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
-        hudController = GameObject.FindGameObjectWithTag("UICanvas").GetComponent<UIManager>();
+        //hudController = GameObject.FindGameObjectWithTag("UICanvas").GetComponent<UIManager>();
         SetPlane(planeHandler);
-        PlayerID = gameObject.GetInstanceID();
+        PlayerID = planeHandler.gameObject.GetInstanceID();
     }
 
     // Update is called once per frame
@@ -96,6 +96,15 @@ public class PlayerController : MonoBehaviour
     {
         HandleInputs();
     }
+    private void OnEnable()
+    {
+        gpControls.Gameplay.Enable();
+    }
+    private void OnDisable()
+    {
+        gpControls.Gameplay.Disable();
+    }
+    #endregion
     private void SetPlane(PlaneHandler plane)
     {
         this.planeHandler = plane;
@@ -119,17 +128,19 @@ public class PlayerController : MonoBehaviour
             planeHandler.SetControlInput(controlInput);
         }
     }
-    private void OnEnable()
-    {
-        gpControls.Gameplay.Enable();
-    }
-    private void OnDisable()
-    {
-        gpControls.Gameplay.Disable();
-    }
+    
     public bool CheckIsPlayer(GameObject go)
     {
         if (go.GetInstanceID() == PlayerID) return true;
         else return false; 
+    }
+    public void SetUpPlayer(GameObject obj)
+    {
+        planeHandler = obj.GetComponent<PlaneHandler>();
+        fireControl = obj.GetComponent<FCS>();
+        freeLookCam = obj.GetComponentInChildren<CinemachineFreeLook>();
+        autoPilot = obj.GetComponent<AIController>();
+        hudController = GameManager.instance.hudController;
+
     }
 }

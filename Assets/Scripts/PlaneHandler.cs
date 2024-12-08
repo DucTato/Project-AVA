@@ -109,7 +109,7 @@ public class PlaneHandler : MonoBehaviour
         }
     }
 
-    void Start()
+    private void Start()
     {
         rb = GetComponent<Rigidbody>();
         rb.velocity = rb.rotation * new Vector3(0, 0, initialSpeed); // initial speed
@@ -422,6 +422,7 @@ public class PlaneHandler : MonoBehaviour
     {
         if (collision.gameObject != gameObject)
         {
+            Debug.Log("Collided with " +collision.gameObject.name);
             Explode();
         }
     }

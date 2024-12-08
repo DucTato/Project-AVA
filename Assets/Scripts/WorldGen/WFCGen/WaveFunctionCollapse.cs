@@ -26,19 +26,19 @@ public class WaveFunctionCollapse : MonoBehaviour
     private int iteration;
     [SerializeField, Foldout("UI Handler")]
     private CinemachineVirtualCamera virtualCam;
-    [SerializeField, Foldout("UI Handler")]
-    private TextMeshProUGUI waitTxt, doneTxt;
 
     private bool RaiseWater;
     #region CallBacks
     private void Awake()
     {
         gridComponents = new List<Cell>();
-        InitializeGrid();
+        //InitializeGrid();
         Terrain = new GameObject("Terrain");
-        StartCoroutine(WaitAndDo(3f));
-        waitTxt.gameObject.SetActive(true);
-        doneTxt.gameObject.SetActive(false);
+        StartCoroutine(WaitAndDo(8f));
+    }
+    private void Start()
+    {
+        InitializeGrid();
     }
     private void Update()
     {
@@ -63,6 +63,7 @@ public class WaveFunctionCollapse : MonoBehaviour
                 {
                     newCell.GetComponentInChildren<CinemachineFreeLook>().Priority = 2;
                     newCell.gameObject.name = "WorldCenter";
+                    GameManager.instance.SetWorldCenter(newCell.gameObject);
                 }
                 else
                 {
@@ -210,7 +211,9 @@ public class WaveFunctionCollapse : MonoBehaviour
         }
         Debug.Log("Done building!");
         RaiseWater = true;
-        DoneBuildingPrompt();
+        // Done building world, start placing down enemies and updating the ui status
+        GameManager.instance.StartPlacingEnemies();
+        GameManager.instance.UpdateLoadingScreen();
     }
     #endregion
     #region UI/UX Handler
@@ -218,11 +221,6 @@ public class WaveFunctionCollapse : MonoBehaviour
     {
         yield return new WaitForSeconds(time);
         virtualCam.Priority = 0;
-    }
-    private void DoneBuildingPrompt()
-    {
-        waitTxt.gameObject.SetActive(false);
-        doneTxt.gameObject.SetActive(true);
     }
     #endregion
 }

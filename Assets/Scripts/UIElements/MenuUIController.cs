@@ -28,7 +28,12 @@ public class MenuUIController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            switchOFF.SetActive(false);
+            switchON.SetActive(true);
+            currPanel = mainmenuPanel;
+        }
     }
     #region Input Handler
     public void OnStartButton(InputAction.CallbackContext ctx)
@@ -38,7 +43,6 @@ public class MenuUIController : MonoBehaviour
             switchOFF.SetActive(false);
             switchON.SetActive(true);
             currPanel = mainmenuPanel;
-           
         }
     }
     public void OnCancelButton(InputAction.CallbackContext ctx)
