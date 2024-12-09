@@ -3,30 +3,37 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using Random = UnityEngine.Random;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
     public event EventHandler<EventArguments> OnGetWorldCenter;
-    public event EventHandler<EventArgs> OnStartGame;
+    public event EventHandler<EventArguments> OnStartGame;
     [SerializeField, Foldout("Enemies")]
     private int currentEnemies, maxEnemies;
     [SerializeField, Foldout("Enemies")]
     private GameObject[] Enemies;
     [SerializeField, Foldout("Enemies")]
     private float spawnRadius, spawnInterval;
+    [SerializeField, Foldout("Enemies")]
+    [Tooltip("By default (offset=0), enemies will spawn at 5f")]
+    private float spawnHeightOffset;
     [SerializeField, Foldout("Player")]
     private int currentPoint, maxPoint;
-    [SerializeField, Foldout("Player")]
+    [Foldout("Player")]
     public float playerSpawnRadius;
+    [SerializeField, Foldout("Player")]
+    private GameObject worldCenter;
     [Foldout("UI/UX")]
     public UIManager hudController;
     [SerializeField, Foldout("UI/UX")]
+
     private GameObject waitTxt, loadingDoneTxt, gameCanvas;
    
     private List<GameObject> enemyPool;
-    private GameObject worldCenter;
+    
 
     private bool BossPhase;
     private const int maxEnemiesAtOnce = 32;
@@ -39,6 +46,7 @@ public class GameManager : MonoBehaviour
         }
         private set 
         {
+            if (value == null) return;
             worldCenter = value;
             OnGetWorldCenter?.Invoke(this, new EventArguments(worldCenter.transform.position));
             InitializeSpawns();
@@ -71,8 +79,11 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         instance = this;
-        enemyPool = new List<GameObject>(50);
+        enemyPool = new List<GameObject>(maxEnemies);
         Debug.Log(Random.seed);
+        // Tries adding a default world center
+        if (GameObject.Find("MainMenuController") == null) GetComponent<PlayerInput>().enabled = true; // GameMaster also has itself a "PlayerInput" component, MainMenu will override this
+        if (waitTxt == null || loadingDoneTxt == null) return;
         waitTxt.SetActive(true);
         loadingDoneTxt.SetActive(false);
     }
@@ -113,7 +124,11 @@ public class GameManager : MonoBehaviour
     {
         WorldCenter = center;
     }
-    
+    public void ForcePlacePlayer()
+    {
+        // This method is here in case the player prefab needs to be placed prematurely
+        OnStartGame?.Invoke(this, new EventArguments(true));
+    }
     public void SubtractCurrentEnemies()
     {
         currentEnemies--;
@@ -134,9 +149,9 @@ public class GameManager : MonoBehaviour
             // Sets up spawn location around the "World Center" object
             var randomPos = Random.insideUnitSphere * spawnRadius;
             randomPos += WorldCenter.transform.position;
-            randomPos.y = 5f;
+            randomPos.y = 5f + spawnHeightOffset;
             // Spawns objects            
-            enemyPool.Add(Instantiate(Enemies[Random.Range(0, Enemies.Length - 1)], randomPos, Quaternion.identity));
+            enemyPool.Add(Instantiate(Enemies[Random.Range(0, Enemies.Length - 1)], randomPos, Quaternion.Euler(-35f, 0f, 0f)));
         }
     }
     private IEnumerator SpawnEnemiesWithDelay(float delay)
@@ -162,7 +177,7 @@ public class GameManager : MonoBehaviour
         // Checks if this is the loading screen phase or not
         if (loadingDoneTxt.activeInHierarchy)
         {
-            OnStartGame?.Invoke(this, EventArgs.Empty);
+            OnStartGame?.Invoke(this, new EventArguments(false));
             loadingDoneTxt.SetActive(false);
             gameCanvas.SetActive(true);
             
@@ -184,5 +199,14 @@ public class EventArguments : EventArgs
     public Vector3 GetPosition()
     {
         return position;
+    }
+    private bool _fcsOverride;
+    public EventArguments(bool fcsOverride)
+    {
+        this._fcsOverride = fcsOverride;
+    }
+    public bool OverrideFCSRange()
+    {
+        return _fcsOverride;
     }
 }
