@@ -86,9 +86,6 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         camera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
-        //hudController = GameObject.FindGameObjectWithTag("UICanvas").GetComponent<UIManager>();
-        SetPlane(planeHandler);
-        PlayerID = planeHandler.gameObject.GetInstanceID();
     }
 
     // Update is called once per frame
@@ -105,19 +102,6 @@ public class PlayerController : MonoBehaviour
         gpControls.Gameplay.Disable();
     }
     #endregion
-    private void SetPlane(PlaneHandler plane)
-    {
-        this.planeHandler = plane;
-        autoPilot = plane.GetComponent<AIController>();
-
-        if (hudController != null)
-        {
-            hudController.SetPlane(plane);
-            hudController.SetCamera(camera);
-        }
-
-        //planeCamera.SetPlane(plane);
-    }
     private void HandleInputs()
     {
         if (Input.GetKeyDown(KeyCode.Space)) autoPilot.enabled = !autoPilot.enabled;
@@ -141,6 +125,8 @@ public class PlayerController : MonoBehaviour
         freeLookCam = obj.GetComponentInChildren<CinemachineFreeLook>();
         autoPilot = obj.GetComponent<AIController>();
         hudController = GameManager.instance.hudController;
-
+        hudController.SetPlane(planeHandler);
+        hudController.SetCamera(camera);
+        PlayerID = obj.GetInstanceID();
     }
 }
