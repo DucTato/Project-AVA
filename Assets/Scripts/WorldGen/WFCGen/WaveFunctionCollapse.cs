@@ -63,7 +63,7 @@ public class WaveFunctionCollapse : MonoBehaviour
                 {
                     newCell.GetComponentInChildren<CinemachineFreeLook>().Priority = 2;
                     newCell.gameObject.name = "WorldCenter";
-                    GameManager.instance.SetWorldCenter(newCell.gameObject);
+                    if (GameManager.instance != null)   GameManager.instance.SetWorldCenter(newCell.gameObject);
                 }
                 else
                 {
@@ -212,6 +212,7 @@ public class WaveFunctionCollapse : MonoBehaviour
         Debug.Log("Done building!");
         RaiseWater = true;
         // Done building world, start placing down enemies and updating the ui status
+        if (GameManager.instance == null) return;
         GameManager.instance.StartPlacingEnemies();
         GameManager.instance.UpdateLoadingScreen();
     }
