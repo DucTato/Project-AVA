@@ -25,6 +25,8 @@ public class ACAnimation : MonoBehaviour
 
     private List<Material> acMats, i2dMats, defaulMats;
     private List<Renderer> acBodyRenderers;
+
+    private const float TRANSFORM_TIME = 6f;
     private void Awake()
     {
         
@@ -35,6 +37,11 @@ public class ACAnimation : MonoBehaviour
 #pragma warning restore CS0618 // Type or member is obsolete
         engLightMaxIntensity = engineLight[0].intensity;
 
+        
+        
+    }
+    private void Start()
+    {
         // Handles the materials for body swapping
         if (acBody == null || i2dBody == null) return;
         acMats = new List<Material>();
@@ -49,7 +56,7 @@ public class ACAnimation : MonoBehaviour
             acMats.AddRange(acBodyRenderers[i].materials);
         }
         // applies the "BaseMap" texture of dissolve with the texture from the main aircraft
-        dissolveMat.SetTexture("_BaseMap",defaulMats[0].GetTexture("_MainTex"));
+        dissolveMat.SetTexture("_BaseMap", defaulMats[0].GetTexture("_MainTex"));
         foreach (var renderer in acBodyRenderers)
         {
             defaulMats.AddRange(renderer.materials);
@@ -62,16 +69,15 @@ public class ACAnimation : MonoBehaviour
         foreach (var mat in acMats)
         {
             mat.SetVector("_DissolveDirection", new Vector4(0f, 0f, -1f, 0f));
-            mat.SetVector("_DissolveOffest", new Vector4(0f, 0f, -AC_LENGTH,0f));
+            mat.SetVector("_DissolveOffest", new Vector4(0f, 0f, -AC_LENGTH, 0f));
         }
         foreach (var mat2 in i2dMats)
         {
             mat2.SetVector("_DissolveDirection", new Vector4(0f, 0f, 1f, 0f));
-            mat2.SetVector("_DissolveOffest", new Vector4(0f, 0f, -AC_LENGTH,0f));
+            mat2.SetVector("_DissolveOffest", new Vector4(0f, 0f, -AC_LENGTH, 0f));
         }
-        
+        StartCoroutine(WaitThenTransform(TRANSFORM_TIME / 2f));
     }
-    
     public void SetEnginePowerVisual(float powValue)
     {
         if (i2dBody != null) powValue = 0f; // will not animate the light if the plane is in its I2D form
@@ -97,12 +103,12 @@ public class ACAnimation : MonoBehaviour
         // Starts the transformation
         foreach (var mat in acMats)
         {
-            mat.DOVector(new Vector4(0f, 0f, AC_LENGTH, 0f), "_DissolveOffest", 8f);
-            mat.DOColor(Color.white, "_BaseColor",8f).OnComplete(Reapply);
+            mat.DOVector(new Vector4(0f, 0f, AC_LENGTH, 0f), "_DissolveOffest", TRANSFORM_TIME);
+            mat.DOColor(Color.white, "_BaseColor",TRANSFORM_TIME).OnComplete(Reapply);
         }
         foreach (var mat2 in i2dMats)
         {
-            mat2.DOVector(new Vector4(0f, 0f, AC_LENGTH, 0f), "_DissolveOffest", 8f);
+            mat2.DOVector(new Vector4(0f, 0f, AC_LENGTH, 0f), "_DissolveOffest", TRANSFORM_TIME);
         }        
     }
     private void Reapply()
@@ -112,5 +118,10 @@ public class ACAnimation : MonoBehaviour
             acBodyRenderers[i].material = defaulMats[i];
         }
         Destroy(i2dBody);
+    }
+    private IEnumerator WaitThenTransform(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        StartTransformation();
     }
 }

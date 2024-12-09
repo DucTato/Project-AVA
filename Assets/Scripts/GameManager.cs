@@ -9,8 +9,7 @@ using Random = UnityEngine.Random;
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
-    public event EventHandler<EventArguments> OnGetWorldCenter;
-    public event EventHandler<EventArguments> OnStartGame;
+
     [SerializeField, Foldout("Enemies")]
     private int currentEnemies, maxEnemies;
     [SerializeField, Foldout("Enemies")]
@@ -48,7 +47,7 @@ public class GameManager : MonoBehaviour
         {
             if (value == null) return;
             worldCenter = value;
-            OnGetWorldCenter?.Invoke(this, new EventArguments(worldCenter.transform.position));
+            PlayerTracker.instance.SpawnPlayer(worldCenter);
             InitializeSpawns();
         }
     }
@@ -124,11 +123,7 @@ public class GameManager : MonoBehaviour
     {
         WorldCenter = center;
     }
-    public void ForcePlacePlayer()
-    {
-        // This method is here in case the player prefab needs to be placed prematurely
-        OnStartGame?.Invoke(this, new EventArguments(true));
-    }
+    
     public void SubtractCurrentEnemies()
     {
         currentEnemies--;
@@ -177,7 +172,7 @@ public class GameManager : MonoBehaviour
         // Checks if this is the loading screen phase or not
         if (loadingDoneTxt.activeInHierarchy)
         {
-            OnStartGame?.Invoke(this, new EventArguments(false));
+            PlayerTracker.instance.PlaceDownPlayer(false);
             loadingDoneTxt.SetActive(false);
             gameCanvas.SetActive(true);
             
@@ -191,14 +186,14 @@ public class GameManager : MonoBehaviour
 }
 public class EventArguments : EventArgs
 {
-    private Vector3 position;
-    public EventArguments(Vector3 position)
+    private GameObject point;
+    public EventArguments(GameObject point)
     {
-        this.position = position;
+        this.point = point;
     }
-    public Vector3 GetPosition()
+    public GameObject GetPoint()
     {
-        return position;
+        return point;
     }
     private bool _fcsOverride;
     public EventArguments(bool fcsOverride)
