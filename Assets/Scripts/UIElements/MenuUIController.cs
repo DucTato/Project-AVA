@@ -14,17 +14,21 @@ public class MenuUIController : MonoBehaviour
     private GameObject gamemodePanel, mainmenuPanel, creditPanel, quitPanel, missionModePanel, setupAircraftPanel;
 
     private GameObject prevPanel, currPanel;
-
+    #region CallBacks
     // Start is called before the first frame update
-    void Start()
+    private void Awake()
     {
         switchON.SetActive(false);
         switchOFF.SetActive(true);
-        TransitionManager.Instance.PlayEndHalfTransition(1.2f);
+        
         // Hide that mouse input if a controller is detected
         if (Input.GetJoystickNames().Length > 0 ) Cursor.lockState = CursorLockMode.Locked;
     }
-
+    private void Start()
+    {
+        TransitionManager.Instance.PlayEndHalfTransition(1.2f);
+        
+    }
     // Update is called once per frame
     void Update()
     {
@@ -35,6 +39,7 @@ public class MenuUIController : MonoBehaviour
             currPanel = mainmenuPanel;
         }
     }
+    #endregion
     #region Input Handler
     public void OnStartButton(InputAction.CallbackContext ctx)
     {
@@ -42,6 +47,11 @@ public class MenuUIController : MonoBehaviour
         {
             switchOFF.SetActive(false);
             switchON.SetActive(true);
+            GameManager.instance.SetWorldCenter(GameObject.Find("WorldCenter"));
+
+            // GameMaster also has itself a "PlayerInput" component, MainMenu will override that
+            GameManager.instance.GetComponent<PlayerInput>().enabled = false;
+            GameManager.instance.ForcePlacePlayer();
             currPanel = mainmenuPanel;
         }
     }
