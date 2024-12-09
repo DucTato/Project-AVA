@@ -44,7 +44,7 @@ public class WaveFunctionCollapse : MonoBehaviour
     {
         if (RaiseWater)
         {
-            Water.transform.position = Vector3.MoveTowards(Water.transform.position, new Vector3(110f, 0f, 110f), Time.deltaTime * 5f);
+            Water.transform.position = Vector3.MoveTowards(Water.transform.position, new Vector3(110f, 0f, 110f), Time.deltaTime * 0.7f);
             if (Water.transform.position.y >= 0f) Destroy(gameObject);
         }
     }

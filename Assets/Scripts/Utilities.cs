@@ -145,4 +145,23 @@ public static class Utilities
             return Mathf.Max(-b / (2f * a), 0f); //don't shoot back in time
         }
     }
+    // Spawns things randomly around a set point
+    public static Vector3 SpawnSphereOnEdgeRandomly3D(GameObject point, float radius)
+    {
+        Vector3 randomPos = Random.insideUnitSphere * radius;
+        randomPos += point.transform.position;
+        randomPos.y = 0f;
+
+        Vector3 direction = randomPos - point.transform.position;
+        direction.Normalize();
+
+        float dotProduct = Vector3.Dot(point.transform.forward, direction);
+        float dotProductAngle = Mathf.Acos(dotProduct / point.transform.forward.magnitude * direction.magnitude);
+
+        randomPos.x = Mathf.Cos(dotProductAngle) * radius + point.transform.position.x;
+        randomPos.z = Mathf.Sin(dotProductAngle * (Random.value > 0.5f ? 1f : -1f)) * radius + point.transform.position.z;
+
+        return randomPos;
+
+    }
 }
