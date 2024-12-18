@@ -6,7 +6,6 @@ using UnityEngine.InputSystem;
 using MaskTransitions;
 using UnityEngine.UI;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine.EventSystems;
 
 public class MenuUIController : MonoBehaviour
@@ -14,7 +13,8 @@ public class MenuUIController : MonoBehaviour
     [SerializeField, Foldout("Title Screen")]
     private GameObject switchON, switchOFF;
     [SerializeField, Foldout("Main Menu")]
-    private GameObject environmentPanel, mainmenuPanel, creditPanel, quitPanel, missionModePanel, setupAircraftPanel;
+    private GameObject environmentPanel, mainmenuPanel, creditPanel, quitPanel, optionPanel, missionModePanel, setupAircraftPanel;
+
     [SerializeField, Foldout("Aircraft setups")]
     private int currentAircraft, currentSpecialItem;
     [SerializeField, Foldout("Aircraft setups")]
@@ -23,6 +23,12 @@ public class MenuUIController : MonoBehaviour
     private Image currentAircraftImg, currentSpecialItemImg;
     [SerializeField, Foldout("Aircraft setups")]
     private TextMeshProUGUI currentAircraftName, currentSpecialItemName, aircraftDescription, itemDescription;
+
+    [SerializeField, Foldout("Options")]
+    private GameObject[] subMenus;
+    [SerializeField, Foldout("Options")]
+    private Button[] optionCategories;
+    //private int optionIndex;
 
     private GameObject prevPanel, currPanel;
     #region CallBacks
@@ -37,8 +43,14 @@ public class MenuUIController : MonoBehaviour
     }
     private void Start()
     {
-        TransitionManager.Instance.PlayEndHalfTransition(1.2f);
         
+        TransitionManager.Instance.PlayEndHalfTransition(1.2f);
+        // Adds listeners to option category buttons
+        for (int i = 0; i < optionCategories.Length; i++)
+        {
+            int tempValue = i;
+            optionCategories[i].onClick.AddListener(() => OptionSelect(tempValue));
+        }
     }
     // Update is called once per frame
     void Update()
@@ -86,6 +98,13 @@ public class MenuUIController : MonoBehaviour
         mainmenuPanel.SetActive(!mainmenuPanel.activeInHierarchy);
         environmentPanel.SetActive(true);
         currPanel = environmentPanel;
+        prevPanel = currPanel.GetComponent<Panel>().GetPrevious();
+    }
+    public void OnOptionButton()
+    {
+        mainmenuPanel.SetActive(!mainmenuPanel.activeInHierarchy);
+        optionPanel.SetActive(true);
+        currPanel = optionPanel ;
         prevPanel = currPanel.GetComponent<Panel>().GetPrevious();
     }
     public void OnCreditButton()
@@ -138,7 +157,6 @@ public class MenuUIController : MonoBehaviour
     {
         // Confirms the aircraft setups once upon opening
         ConfirmAircraftSetup();
-        UpdateSelectionInfo();
     }
     public void OnOpenAircraftSetupPanel()
     {
@@ -157,6 +175,7 @@ public class MenuUIController : MonoBehaviour
     {
         // This method will be executed in the On Close() Event
         PlayerTracker.instance.SetAircraft(aircraftPrefabs[currentAircraft], specialItems[currentSpecialItem]);
+        UpdateSelectionInfo();
         
     }
     public void AircraftDropDown(int option)
@@ -181,6 +200,21 @@ public class MenuUIController : MonoBehaviour
     {
         aircraftDescription.text = aircraftPrefabs[currentAircraft].GetComponent<ObjectInfo>().Description();
         itemDescription.text = specialItems[currentSpecialItem].GetComponent<ObjectInfo>().Description();
+    }
+    #endregion
+    #region OPTION Menu
+    public void OnOpenOptionPanel()
+    {
+        OptionSelect(0);
+    }
+    private void OptionSelect(int index)
+    {
+        // Disables all the other submenu except for subMenu[index]
+        for (int i = 0; i < subMenus.Length; i++)
+        {
+            if (i == index) subMenus[i].SetActive(true);
+            else subMenus[i].SetActive(false);
+        }
     }
     #endregion
 }
