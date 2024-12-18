@@ -7,19 +7,30 @@ using UnityEngine.EventSystems;
 public class ButtonDescription : MonoBehaviour, ISelectHandler, IDeselectHandler
 {
     [SerializeField]
-
-    private TextMeshProUGUI descriptionText;
+    private TextMeshProUGUI targetTextBox;
+    [SerializeField]
+    private string descriptionText;
     private void OnEnable()
     {
-        if (EventSystem.current.currentSelectedGameObject == gameObject) descriptionText.enabled = true; 
-        else descriptionText.enabled = false;
+        if (EventSystem.current.currentSelectedGameObject == gameObject) targetTextBox.text = descriptionText;
     }
     public void OnSelect(BaseEventData eventData)
     {
-        descriptionText.enabled = true;
+        if (targetTextBox == null)
+        {
+            Debug.Log(gameObject.name + "doesn't have a description but an event is accessing it!");
+            return; 
+        }
+        
+        targetTextBox.text = descriptionText;
     }
     public void OnDeselect(BaseEventData eventData)
     {
-        descriptionText.enabled = false;
+        if (targetTextBox == null)
+        {
+            Debug.Log(gameObject.name + "doesn't have a description but an event is accessing it!");
+            return;
+        }
+        targetTextBox.text = "";
     }
 }

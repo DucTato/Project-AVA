@@ -14,7 +14,7 @@ public class MenuUIController : MonoBehaviour
     [SerializeField, Foldout("Title Screen")]
     private GameObject switchON, switchOFF;
     [SerializeField, Foldout("Main Menu")]
-    private GameObject gamemodePanel, mainmenuPanel, creditPanel, quitPanel, missionModePanel, setupAircraftPanel;
+    private GameObject environmentPanel, mainmenuPanel, creditPanel, quitPanel, missionModePanel, setupAircraftPanel;
     [SerializeField, Foldout("Aircraft setups")]
     private int currentAircraft, currentSpecialItem;
     [SerializeField, Foldout("Aircraft setups")]
@@ -84,8 +84,8 @@ public class MenuUIController : MonoBehaviour
     public void OnPlayButton()
     {
         mainmenuPanel.SetActive(!mainmenuPanel.activeInHierarchy);
-        gamemodePanel.SetActive(true);
-        currPanel = gamemodePanel;
+        environmentPanel.SetActive(true);
+        currPanel = environmentPanel;
         prevPanel = currPanel.GetComponent<Panel>().GetPrevious();
     }
     public void OnCreditButton()
@@ -117,7 +117,7 @@ public class MenuUIController : MonoBehaviour
     public void OnMissionModeButton()
     {
         missionModePanel.SetActive(true);
-        gamemodePanel.SetActive(!gamemodePanel.activeInHierarchy);
+        environmentPanel.SetActive(!environmentPanel.activeInHierarchy);
         currPanel = missionModePanel;
         prevPanel = currPanel.GetComponent<Panel>().GetPrevious();
     }
