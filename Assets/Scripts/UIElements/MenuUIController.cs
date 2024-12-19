@@ -10,6 +10,7 @@ using UnityEngine.EventSystems;
 
 public class MenuUIController : MonoBehaviour
 {
+    public static MenuUIController instance;
     [SerializeField, Foldout("Title Screen")]
     private GameObject switchON, switchOFF;
     [SerializeField, Foldout("Main Menu")]
@@ -28,18 +29,23 @@ public class MenuUIController : MonoBehaviour
     private GameObject[] subMenus;
     [SerializeField, Foldout("Options")]
     private Button[] optionCategories;
+    [SerializeField, Foldout("Options")]
+    private TMP_InputField nameInput, callsignInput;
+    [SerializeField, Foldout("Options")]
+    private GameObject lastSelection;
     //private int optionIndex;
-
+    [SerializeField]
     private GameObject prevPanel, currPanel;
     #region CallBacks
     // Start is called before the first frame update
     private void Awake()
     {
+        instance = this;
         switchON.SetActive(false);
         switchOFF.SetActive(true);
         
         // Hide that mouse input if a controller is detected
-        if (Input.GetJoystickNames().Length > 0 ) Cursor.lockState = CursorLockMode.Locked;
+        //if (Input.GetJoystickNames().Length > 0 ) Cursor.lockState = CursorLockMode.Locked;
     }
     private void Start()
     {
@@ -83,43 +89,69 @@ public class MenuUIController : MonoBehaviour
     {
         if (ctx.phase == InputActionPhase.Performed)
         {
-            if (currPanel == mainmenuPanel || currPanel == null) return;
-            currPanel.SetActive(false);
-            prevPanel.SetActive(true);
+            
+            // Press B on the main menu to quit
+            if (currPanel == mainmenuPanel)
+            {
+                OnQuitButton();
+                return;
+            }
+            //
+            
+            // Press B on the any panel to return to previous panel
+            if (currPanel == null) return;
+            ClosePanel(currPanel);
+            OpenPanel(prevPanel);
             currPanel = prevPanel;
-            prevPanel = currPanel.GetComponent<Panel>().GetPrevious();
+            SetPreviousPanel(currPanel);
             if (EventSystem.current.isActiveAndEnabled) EventSystem.current.SetSelectedGameObject(currPanel.GetComponent<Panel>().GetFirstOption());
         }
     }
+    private void OpenPanel(GameObject panel)
+    {
+        panel.SetActive(true);
+    }
+    private void ClosePanel(GameObject panel)
+    {
+        panel.GetComponent<Panel>().Close();
+    }
+    private void SetPreviousPanel(GameObject panel)
+    {
+        prevPanel = panel.GetComponent<Panel>().GetPrevious();
+    }
+    
     #endregion
     #region Main Menu
+    public void PanelOverride(GameObject current, GameObject previous)
+    { 
+        currPanel = current;
+        prevPanel = previous;
+    }
     public void OnPlayButton()
     {
-        mainmenuPanel.SetActive(!mainmenuPanel.activeInHierarchy);
-        environmentPanel.SetActive(true);
+        ClosePanel(mainmenuPanel);
+        OpenPanel(environmentPanel);
         currPanel = environmentPanel;
-        prevPanel = currPanel.GetComponent<Panel>().GetPrevious();
+        SetPreviousPanel(currPanel);
     }
     public void OnOptionButton()
     {
-        mainmenuPanel.SetActive(!mainmenuPanel.activeInHierarchy);
-        optionPanel.SetActive(true);
-        currPanel = optionPanel ;
-        prevPanel = currPanel.GetComponent<Panel>().GetPrevious();
+        ClosePanel(mainmenuPanel);
+        OpenPanel(optionPanel);
     }
     public void OnCreditButton()
     {
-        mainmenuPanel.SetActive(!mainmenuPanel.activeInHierarchy);
-        creditPanel.SetActive(true);
+        ClosePanel(mainmenuPanel);
+        OpenPanel(creditPanel);
         currPanel = creditPanel;
-        prevPanel = currPanel.GetComponent<Panel>().GetPrevious();
+        SetPreviousPanel(currPanel);
     }
     public void OnQuitButton()
     {
-        mainmenuPanel.SetActive(!mainmenuPanel.activeInHierarchy);
-        quitPanel.SetActive(true);
+        ClosePanel(mainmenuPanel);
+        OpenPanel(quitPanel);
         currPanel = quitPanel;
-        prevPanel = currPanel.GetComponent<Panel>().GetPrevious();
+        SetPreviousPanel(currPanel);
     }
     public void OnYesQuitButton()
     {
@@ -128,17 +160,17 @@ public class MenuUIController : MonoBehaviour
     public void OnNoQuitButton()
     {
         if (currPanel == null) return;
-        prevPanel = currPanel.GetComponent<Panel>().GetPrevious();
-        currPanel.SetActive(false);
-        prevPanel.SetActive(true);
+        ClosePanel(currPanel);
+        OpenPanel(prevPanel);
         currPanel = prevPanel;
+        SetPreviousPanel(currPanel);
     }
     public void OnMissionModeButton()
     {
-        missionModePanel.SetActive(true);
-        environmentPanel.SetActive(!environmentPanel.activeInHierarchy);
+        OpenPanel(missionModePanel);
+        ClosePanel(environmentPanel);
         currPanel = missionModePanel;
-        prevPanel = currPanel.GetComponent<Panel>().GetPrevious();
+        SetPreviousPanel(currPanel);
     }
     public void OnStartGameButton()
     {
@@ -147,9 +179,9 @@ public class MenuUIController : MonoBehaviour
     }
     public void OnSetupAircraftButton()
     {
-        setupAircraftPanel.SetActive(true);
+        OpenPanel(setupAircraftPanel);
         currPanel = setupAircraftPanel;
-        prevPanel = currPanel.GetComponent<Panel>().GetPrevious();
+        SetPreviousPanel(currPanel);
     }
     #endregion
     #region MISSION Mode Menu
@@ -165,10 +197,10 @@ public class MenuUIController : MonoBehaviour
     public void OnConfirmAircraftButton()
     {
         // Turns off the current panel, returns to previous
-        currPanel.SetActive(false);
-        prevPanel.SetActive(true);
+        ClosePanel(currPanel);
+        OpenPanel(prevPanel);
         currPanel = prevPanel;
-        prevPanel = currPanel.GetComponent<Panel>().GetPrevious();
+        SetPreviousPanel(currPanel);
         EventSystem.current.SetSelectedGameObject(currPanel.GetComponent<Panel>().GetFirstOption());
     }
     public void ConfirmAircraftSetup() 
@@ -203,9 +235,30 @@ public class MenuUIController : MonoBehaviour
     }
     #endregion
     #region OPTION Menu
+    public void OnNameInputButton()
+    {
+        nameInput.interactable = true;
+        lastSelection = EventSystem.current.currentSelectedGameObject;
+        nameInput.Select();
+    }
+    public void OnCallsignInputButton()
+    {
+        callsignInput.interactable = true;
+        lastSelection = EventSystem.current.currentSelectedGameObject;
+        callsignInput.Select();
+    }
+    public void OnDeSelectInputField()
+    {
+        nameInput.interactable = false;
+        callsignInput.interactable = false;
+        EventSystem.current.SetSelectedGameObject(lastSelection);
+    }
     public void OnOpenOptionPanel()
     {
+        // Initial setups 
         OptionSelect(0);
+        nameInput.interactable = false;
+        callsignInput.interactable = false;
     }
     private void OptionSelect(int index)
     {
@@ -215,6 +268,8 @@ public class MenuUIController : MonoBehaviour
             if (i == index) subMenus[i].SetActive(true);
             else subMenus[i].SetActive(false);
         }
+        currPanel = optionPanel;
+        prevPanel = mainmenuPanel;
     }
     #endregion
 }
