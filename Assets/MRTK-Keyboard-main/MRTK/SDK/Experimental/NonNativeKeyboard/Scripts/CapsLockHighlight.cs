@@ -29,13 +29,11 @@ namespace Microsoft.MixedReality.Toolkit.Experimental.UI
         private void Start()
         {
             m_Keyboard = GetComponentInParent<NonNativeKeyboard>();
+            NonNativeKeyboard.Instance.OnKeyboardShifted += Instance_OnKeyboardShifted;
             UpdateState();
         }
 
-        /// <summary>
-        /// Unity update method.
-        /// </summary>
-        private void Update()
+        private void Instance_OnKeyboardShifted(bool obj)
         {
             UpdateState();
         }
@@ -45,15 +43,10 @@ namespace Microsoft.MixedReality.Toolkit.Experimental.UI
         /// </summary>
         private void UpdateState()
         {
-            bool isCapsLock = false;
-            if (m_Keyboard != null)
+            if (m_Keyboard != null && m_Highlight != null)
             {
-                isCapsLock = m_Keyboard.IsCapsLocked;
-            }
-
-            if (m_Highlight != null)
-            {
-                m_Highlight.enabled = isCapsLock;
+                m_Highlight.enabled = m_Keyboard.IsShifted;
+                //Debug.Log(m_Keyboard.IsCapsLocked);
             }
         }
     }

@@ -14,7 +14,7 @@ public class MenuUIController : MonoBehaviour
     [SerializeField, Foldout("Title Screen")]
     private GameObject switchON, switchOFF;
     [SerializeField, Foldout("Main Menu")]
-    private GameObject environmentPanel, mainmenuPanel, creditPanel, quitPanel, optionPanel, missionModePanel, setupAircraftPanel;
+    private GameObject environmentPanel, mainmenuPanel, creditPanel, quitPanel, optionPanel, missionModePanel, setupAircraftPanel, onScreenKeyboard;
 
     [SerializeField, Foldout("Aircraft setups")]
     private int currentAircraft, currentSpecialItem;
@@ -240,12 +240,14 @@ public class MenuUIController : MonoBehaviour
         nameInput.interactable = true;
         lastSelection = EventSystem.current.currentSelectedGameObject;
         nameInput.Select();
+        onScreenKeyboard.SetActive(true);
     }
     public void OnCallsignInputButton()
     {
         callsignInput.interactable = true;
         lastSelection = EventSystem.current.currentSelectedGameObject;
         callsignInput.Select();
+        onScreenKeyboard.SetActive(true);
     }
     public void OnDeSelectInputField()
     {
