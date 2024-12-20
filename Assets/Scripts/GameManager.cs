@@ -90,7 +90,7 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         
-        //CurrentPoint = 0;
+        CurrentPoint = 0;
     }
 
     // Update is called once per frame

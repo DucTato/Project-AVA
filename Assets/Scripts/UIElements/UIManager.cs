@@ -91,6 +91,7 @@ public class UIManager : MonoBehaviour
     AIController aiController;
     Target selfTarget;
     Transform planeTransform;
+    [SerializeField]
     new Camera targetCam;
     Transform cameraTransform;
 
@@ -135,16 +136,16 @@ public class UIManager : MonoBehaviour
     {
         if (planeHandler == null || !IsPlaneActive)
         {
-            //SetPlane(PlayerController.instance.GetPlayerAircraft());
+
             return;
         }
         if (targetCam == null)
         {
-            //SetCamera(GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>());
+
             return;
         }
-
-        float degreesToPixels = targetCam.pixelHeight / targetCam.fieldOfView;
+        
+        //float degreesToPixels = targetCam.pixelHeight / targetCam.fieldOfView;
 
         throttleBar.SetValue(planeHandler.Throttle);
 
@@ -177,6 +178,7 @@ public class UIManager : MonoBehaviour
             UpdateGForce();
             lastUpdateTime = Time.time;
         }
+        
     }
     #endregion
 
@@ -447,6 +449,7 @@ public class UIManager : MonoBehaviour
     public void ToggleCanvas(bool isVisible)
     {
         inGameCanvas.enabled = isVisible;
+        IsPlaneActive = isVisible;
     }
     public void SetPlane(PlaneHandler plane)
     {
