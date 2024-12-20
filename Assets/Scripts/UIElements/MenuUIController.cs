@@ -61,11 +61,15 @@ public class MenuUIController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // Legacy input system, used for debugging purposes
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            switchOFF.SetActive(false);
-            switchON.SetActive(true);
-            currPanel = mainmenuPanel;
+            //switchON.SetActive(true);
+            //switchOFF.SetActive(false);
+            //GameManager.instance.SetWorldCenter(GameObject.Find("WorldCenter"));
+            //PlayerTracker.instance.PlaceDownPlayer(true);
+            //currPanel = mainmenuPanel;
+            PlayerController.instance.playerInput.actions.FindActionMap("Gameplay").Disable();
         }
     }
     #endregion
@@ -76,13 +80,10 @@ public class MenuUIController : MonoBehaviour
         {
             switchON.SetActive(true);
             switchOFF.SetActive(false);
-            
             GameManager.instance.SetWorldCenter(GameObject.Find("WorldCenter"));
-
-            // GameMaster also has itself a "PlayerInput" component, MainMenu will override that
-            GameManager.instance.GetComponent<PlayerInput>().enabled = false;
             PlayerTracker.instance.PlaceDownPlayer(true);
             currPanel = mainmenuPanel;
+            PlayerController.instance.playerInput.actions.FindActionMap("Gameplay").Disable();
         }
     }
     public void OnCancelButton(InputAction.CallbackContext ctx)

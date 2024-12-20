@@ -54,9 +54,11 @@ MonoBehaviour:
   - {fileID: 0}
   spawnRadius: 15
   spawnInterval: 2
+  spawnHeightOffset: 0
   currentPoint: 0
   maxPoint: 0
   playerSpawnRadius: 200
+  worldCenter: {fileID: 0}
   hudController: {fileID: 0}
   waitTxt: {fileID: 0}
   loadingDoneTxt: {fileID: 0}
@@ -79,7 +81,6 @@ MonoBehaviour:
   fireControl: {fileID: 0}
   camera: {fileID: 0}
   freeLookCam: {fileID: 0}
-  controlInput: {x: 0, y: 0, z: 0}
 --- !u!114 &2776392762927458022
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -107,19 +108,67 @@ MonoBehaviour:
       m_Calls: []
   m_ActionEvents:
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 4961987387078398901}
+        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
+        m_MethodName: OnRollPitchInput
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: 286b220f-5f12-48f1-8b9e-91bf7b641e43
     m_ActionName: Gameplay/ACmovement[/XInputControllerWindows/leftStick]
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 4961987387078398901}
+        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
+        m_MethodName: OnMoveCam
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: 781357ee-8172-4e5f-a50f-a7e53e5aa84a
     m_ActionName: Gameplay/moveCam[/XInputControllerWindows/rightStick]
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 4961987387078398901}
+        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
+        m_MethodName: OnYawInput
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: f54342a2-601c-417c-9046-e5bc8d4aebc4
     m_ActionName: Gameplay/ACyaw[/XInputControllerWindows/leftTrigger,/XInputControllerWindows/rightTrigger]
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 4961987387078398901}
+        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
+        m_MethodName: OnThrottleInput
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: 636f1987-e23c-410a-bf20-f560c1dd3d94
     m_ActionName: Gameplay/ACthrottle[/XInputControllerWindows/leftShoulder,/XInputControllerWindows/rightShoulder]
   - m_PersistentCalls:
@@ -127,15 +176,51 @@ MonoBehaviour:
     m_ActionId: 89bb7773-d740-4aa4-b431-6fbebe6884e9
     m_ActionName: Gameplay/toggleCam[/XInputControllerWindows/select]
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 4961987387078398901}
+        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
+        m_MethodName: OnFireMissile
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: 8314f0b9-281f-4709-b34b-62342160d141
     m_ActionName: Gameplay/ACfireMSL[/XInputControllerWindows/buttonEast]
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 4961987387078398901}
+        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
+        m_MethodName: OnFireCannon
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: f49f20d4-9ccb-498e-a727-9218457d9f40
     m_ActionName: Gameplay/ACfireGUN[/XInputControllerWindows/buttonSouth]
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 4961987387078398901}
+        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
+        m_MethodName: OnCycleTarget
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: 1d0b1c9c-a45a-4500-885a-a62be71b3d16
     m_ActionName: Gameplay/ACcycleTgt[/XInputControllerWindows/buttonNorth]
   - m_PersistentCalls:
@@ -170,6 +255,26 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: c0d80506-2788-4d6e-a33b-0967fca6684b
     m_ActionName: UI/FreeLook[/XInputControllerWindows/rightStick]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 1bb96548-3ee3-4e3c-b4fc-1292478b3f78
+    m_ActionName: UI/Point[/Mouse/position]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 361b7e86-6e89-4b91-8c45-de28ba90a60a
+    m_ActionName: UI/Click[/Mouse/leftButton]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: ac0526d6-e3c4-4ad6-8ce5-88bb79c1d4de
+    m_ActionName: UI/scrollWheel[/Mouse/scroll,/XInputControllerWindows/rightStick/up,/XInputControllerWindows/rightStick/down]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: dcfdc90f-d2d4-4303-a721-b7a29822c3d1
+    m_ActionName: UI/MiddleClick[/Mouse/middleButton]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 533a0bfa-ec87-43ef-b9bb-fb2ad5d18c7e
+    m_ActionName: UI/RightClick[/Mouse/rightButton]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: DualStickController
   m_DefaultActionMap: UI

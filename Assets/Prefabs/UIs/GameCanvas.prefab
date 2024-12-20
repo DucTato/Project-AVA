@@ -1731,6 +1731,7 @@ MonoBehaviour:
   deathPanel: {fileID: 2445971087036904501}
   gameInfo: {fileID: 6542116994103390324}
   winPanel: {fileID: 6676661724570347754}
+  inGameCanvas: {fileID: 8700283491702503944}
 --- !u!1 &2863037102960930881
 GameObject:
   m_ObjectHideFlags: 0

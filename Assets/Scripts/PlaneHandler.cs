@@ -108,8 +108,8 @@ public class PlaneHandler : MonoBehaviour
             flapsDeployed = value;
         }
     }
-
-    private void Start()
+    
+    private void Awake()
     {
         rb = GetComponent<Rigidbody>();
         rb.velocity = rb.rotation * new Vector3(0, 0, initialSpeed); // initial speed
@@ -120,6 +120,7 @@ public class PlaneHandler : MonoBehaviour
                 aircraftBody = child.gameObject;
             }
         }
+        Dead = false;
     }
 
     public void SetThrottleInput(float input)

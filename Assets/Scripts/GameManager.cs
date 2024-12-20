@@ -81,7 +81,7 @@ public class GameManager : MonoBehaviour
         enemyPool = new List<GameObject>(maxEnemies);
         Debug.Log(Random.seed);
         // Tries adding a default world center
-        if (GameObject.Find("MainMenuController") == null) GetComponent<PlayerInput>().enabled = true; // GameMaster also has itself a "PlayerInput" component, MainMenu will override this
+        
         if (waitTxt == null || loadingDoneTxt == null) return;
         waitTxt.SetActive(true);
         loadingDoneTxt.SetActive(false);
@@ -90,15 +90,14 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         
-        CurrentPoint = 0;
-     
-        //hudController = GameObject.FindGameObjectWithTag("UICanvas")?.GetComponent<UIManager>();
+        //CurrentPoint = 0;
     }
 
     // Update is called once per frame
     void Update()
     {
         
+        //Debug.Log(PlayerController.instance.playerInput.currentActionMap);
     }
     #endregion
 
@@ -172,7 +171,11 @@ public class GameManager : MonoBehaviour
         // Checks if this is the loading screen phase or not
         if (loadingDoneTxt.activeInHierarchy)
         {
-            PlayerTracker.instance.PlaceDownPlayer(false);
+            PlayerTracker.instance.PlaceDownPlayer(false);  // Places down the player, no FCS override
+            PlayerController.instance.playerInput.actions.FindActionMap("UI").Disable();
+            PlayerController.instance.SetCurrentInputMap("Gameplay");
+            Debug.Log("Switched to gameplay map");
+            hudController.ToggleCanvas(true);
             loadingDoneTxt.SetActive(false);
             gameCanvas.SetActive(true);
             

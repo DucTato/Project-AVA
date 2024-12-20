@@ -82,14 +82,16 @@ public class UIManager : MonoBehaviour
     private TextMeshProUGUI currentTargetInfo;
     [SerializeField, Foldout("Miscs")]
     private GameObject deathPanel, gameInfo, winPanel;
+    [SerializeField, Foldout("Miscs")]
+    private Canvas inGameCanvas;
 
-    private PlaneHandler plane;
+    private PlaneHandler planeHandler;
     private FCS fireControl;
     //Target target;
     AIController aiController;
     Target selfTarget;
     Transform planeTransform;
-    new Camera camera;
+    new Camera targetCam;
     Transform cameraTransform;
 
     GameObject hudCenterGO;
@@ -106,11 +108,14 @@ public class UIManager : MonoBehaviour
     private float HPupTimer, alphaValue;
     private bool hideHP;
 
+
     const float metersToKnots = 1.94384f;
     const float metersToFeet = 3.28084f;
+    public bool IsPlaneActive { get; set; }
     #region CallBacks
-    void Start()
+    private void Awake()
     {
+        ToggleCanvas(false);
         hudCenterGO = hudCenter.gameObject;
         velocityMarkerGO = velocityMarker.gameObject;
         targetBoxGO = targetBox.gameObject;
@@ -128,14 +133,22 @@ public class UIManager : MonoBehaviour
     }
     void LateUpdate()
     {
-        if (plane == null) return;
-        if (camera == null) return;
+        if (planeHandler == null || !IsPlaneActive)
+        {
+            //SetPlane(PlayerController.instance.GetPlayerAircraft());
+            return;
+        }
+        if (targetCam == null)
+        {
+            //SetCamera(GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>());
+            return;
+        }
 
-        float degreesToPixels = camera.pixelHeight / camera.fieldOfView;
+        float degreesToPixels = targetCam.pixelHeight / targetCam.fieldOfView;
 
-        throttleBar.SetValue(plane.Throttle);
+        throttleBar.SetValue(planeHandler.Throttle);
 
-        if (!plane.Dead)
+        if (!planeHandler.Dead)
         {
             UpdateVelocityMarker();
             UpdateHUDCenter();
@@ -167,57 +180,7 @@ public class UIManager : MonoBehaviour
     }
     #endregion
 
-    public void SetPlane(PlaneHandler plane)
-    {
-        this.plane = plane;
-
-        if (plane == null)
-        {
-            planeTransform = null;
-            selfTarget = null;
-        }
-        else
-        {
-            aiController = plane.GetComponent<AIController>();
-            planeTransform = plane.GetComponent<Transform>();
-            selfTarget = plane.GetComponent<Target>();
-            fireControl = plane.GetComponent<FCS>();
-        }
-
-        if (compass != null)
-        {
-            compass.SetPlane(plane);
-        }
-
-        if (pitchLadder != null)
-        {
-            pitchLadder.SetPlane(plane);
-        }
-    }
-
-    public void SetCamera(Camera camera)
-    {
-        this.camera = camera;
-
-        if (camera == null)
-        {
-            cameraTransform = null;
-        }
-        else
-        {
-            cameraTransform = camera.GetComponent<Transform>();
-        }
-
-        if (compass != null)
-        {
-            compass.SetCamera(camera);
-        }
-
-        if (pitchLadder != null)
-        {
-            pitchLadder.SetCamera(camera);
-        }
-    }
+    
     #region Avionics
     public void ToggleAvionics(bool value)
     {
@@ -231,9 +194,9 @@ public class UIManager : MonoBehaviour
     {
         var velocity = planeTransform.forward;
 
-        if (plane.LocalVelocity.sqrMagnitude > 1)
+        if (planeHandler.LocalVelocity.sqrMagnitude > 1)
         {
-            velocity = plane.rb.velocity;
+            velocity = planeHandler.rb.velocity;
         }
 
         var hudPos = TransformToHUDSpace(cameraTransform.position + velocity);
@@ -251,32 +214,32 @@ public class UIManager : MonoBehaviour
 
     private void UpdateAirspeed()
     {
-        var speed = plane.LocalVelocity.z * metersToKnots;
+        var speed = planeHandler.LocalVelocity.z * metersToKnots;
         airspeed.text = string.Format("{0:0}", speed);
     }
 
     private void UpdateAOA()
     {
-        aoaIndicator.text = string.Format("{0:0.0} AOA", plane.AngleOfAttack * Mathf.Rad2Deg);
+        aoaIndicator.text = string.Format("{0:0.0} AOA", planeHandler.AngleOfAttack * Mathf.Rad2Deg);
     }
 
     private void UpdateGForce()
     {
-        var gforce = plane.LocalGForce.y / 9.81f;
+        var gforce = planeHandler.LocalGForce.y / 9.81f;
         gforceIndicator.text = string.Format("{0:0.0} G", gforce);
     }
 
     private void UpdateAltitude()
     {
-        var altitude = plane.rb.position.y * metersToFeet;
+        var altitude = planeHandler.rb.position.y * metersToFeet;
         this.altitude.text = string.Format("{0:0}", altitude);
     }
 
     Vector3 TransformToHUDSpace(Vector3 worldSpace)
     {
         // Not accounting for dynamic resolution scaling
-        var screenSpace = camera.WorldToScreenPoint(worldSpace);
-        return screenSpace - new Vector3(camera.pixelWidth / 2, camera.pixelHeight / 2);
+        var screenSpace = targetCam.WorldToScreenPoint(worldSpace);
+        return screenSpace - new Vector3(targetCam.pixelWidth / 2, targetCam.pixelHeight / 2);
         //var screenSpace = camera.WorldToScreenPoint(worldSpace);
         //var finalSP = new Vector3(screenSpace.x / GetComponent<Canvas>().scaleFactor, screenSpace.y / GetComponent<Canvas>().scaleFactor);
         //return finalSP;
@@ -335,9 +298,9 @@ public class UIManager : MonoBehaviour
         }
 
         //update target box, missile lock
-        var targetDistance = Vector3.Distance(plane.rb.position, fireControl.currTarget.Position);
+        var targetDistance = Vector3.Distance(planeHandler.rb.position, fireControl.currTarget.Position);
         var targetPos = TransformToHUDSpace(fireControl.currTarget.Position);
-        var missileLockPos = fireControl.MissileLocked ? targetPos : TransformToHUDSpace(plane.rb.position + fireControl.MissileLockDirection * targetDistance);
+        var missileLockPos = fireControl.MissileLocked ? targetPos : TransformToHUDSpace(planeHandler.rb.position + fireControl.MissileLockDirection * targetDistance);
 
         if (targetPos.z > 0)
         {
@@ -378,7 +341,7 @@ public class UIManager : MonoBehaviour
         targetRange.text = string.Format("{0:0 m}", targetDistance);
 
         //update target arrow
-        var targetDir = (fireControl.currTarget.Position - plane.rb.position).normalized;
+        var targetDir = (fireControl.currTarget.Position - planeHandler.rb.position).normalized;
         var targetAngle = Vector3.Angle(cameraTransform.forward, targetDir);
 
         if (targetAngle > targetArrowThreshold)
@@ -394,7 +357,7 @@ public class UIManager : MonoBehaviour
         }
 
         //update target lead
-        var leadPos = Utilities.FirstOrderIntercept(plane.rb.position, plane.rb.velocity, bulletSpeed, fireControl.currTarget.Position, fireControl.currTarget.Velocity);
+        var leadPos = Utilities.FirstOrderIntercept(planeHandler.rb.position, planeHandler.rb.velocity, bulletSpeed, fireControl.currTarget.Position, fireControl.currTarget.Velocity);
         var reticlePos = TransformToHUDSpace(leadPos);
 
         if (reticlePos.z > 0 && targetDistance <= cannonRange)
@@ -425,7 +388,7 @@ public class UIManager : MonoBehaviour
         {
             var missilePos = TransformToHUDSpace(incomingMissile.rb.position);
             //
-            var missileDir = (incomingMissile.rb.position - plane.rb.position).normalized;
+            var missileDir = (incomingMissile.rb.position - planeHandler.rb.position).normalized;
             var missileAngle = Vector3.Angle(cameraTransform.forward, missileDir);
             mslWarning.SetActive(true);
             if (missileAngle > missileArrowThreshold)
@@ -481,6 +444,63 @@ public class UIManager : MonoBehaviour
     {
         winPanel.SetActive(value);
     }
+    public void ToggleCanvas(bool isVisible)
+    {
+        inGameCanvas.enabled = isVisible;
+    }
+    public void SetPlane(PlaneHandler plane)
+    {
+
+
+        if (plane == null)
+        {
+            planeTransform = null;
+            selfTarget = null;
+        }
+        else
+        {
+            planeHandler = plane;
+            aiController = planeHandler.GetComponent<AIController>();
+            planeTransform = planeHandler.GetComponent<Transform>();
+            selfTarget = planeHandler.GetComponent<Target>();
+            fireControl = planeHandler.GetComponent<FCS>();
+        }
+
+        if (compass != null)
+        {
+            compass.SetPlane(plane);
+        }
+
+        if (pitchLadder != null)
+        {
+            pitchLadder.SetPlane(plane);
+        }
+    }
+
+    public void SetCamera(Camera camera)
+    {
+
+
+        if (camera == null)
+        {
+            cameraTransform = null;
+        }
+        else
+        {
+            targetCam = camera;
+            cameraTransform = camera.GetComponent<Transform>();
+        }
+
+        if (compass != null)
+        {
+            compass.SetCamera(targetCam);
+        }
+
+        if (pitchLadder != null)
+        {
+            pitchLadder.SetCamera(targetCam);
+        }
+    }
     #endregion
-    
+
 }

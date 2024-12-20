@@ -15,7 +15,7 @@ public class PlayerTracker : MonoBehaviour
     private void Awake()
     {
         instance = this;
-
+        Debug.Log("Tracker Awake");
     }
     private void OnEnable()
     {
@@ -31,7 +31,7 @@ public class PlayerTracker : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
-        
+        Debug.Log("Tracker Started");
     }
 
     // Update is called once per frame
@@ -48,8 +48,8 @@ public class PlayerTracker : MonoBehaviour
         var randomPos = Utilities.SpawnSphereOnEdgeRandomly3D(spawnPoint, GameManager.instance.playerSpawnRadius);
         randomPos.y = 60f + heightOffsetOverride;
         playerPrefab = Instantiate(playerPrefab, randomPos, Quaternion.LookRotation(spawnPoint.transform.position + new Vector3(0f, 60f + heightOffsetOverride, 0f) - randomPos));
-        playerPrefab.SetActive(false);
         PlayerController.instance.SetUpPlayer(playerPrefab);
+        playerPrefab.SetActive(false);
     }
 
     public void PlaceDownPlayer(bool OverrideFCS)

@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 
 public class CameraController : MonoBehaviour
 {
-    private GamepadControls gpControls;
+    
     [SerializeField]
     [Tooltip("An array of transforms containing the camera positions")]
     private Transform[] povs;
@@ -20,32 +20,32 @@ public class CameraController : MonoBehaviour
 
     private void Awake()
     {
-        gpControls = new GamepadControls();
-        stickState = gpControls.Gameplay.moveCam;
+        //gpControls = new GamepadControls();
+        //stickState = gpControls.Gameplay.moveCam;
         rotation = Vector2.zero;
-        gpControls.Gameplay.toggleCam.performed += context =>
-        {
-            // Cycling through the array of POVs
-            camIndex++;
-            if (camIndex >= povs.Length)
-            {
-                camIndex = 0;
-            }
-        };
+        //gpControls.Gameplay.toggleCam.performed += context =>
+        //{
+        //    // Cycling through the array of POVs
+        //    camIndex++;
+        //    if (camIndex >= povs.Length)
+        //    {
+        //        camIndex = 0;
+        //    }
+        //};
 
-        gpControls.Gameplay.moveCam.performed += context => 
-            {
-                stickValue = context.ReadValue<Vector2>();
-            };
-        gpControls.Gameplay.moveCam.canceled += context => stickValue = Vector2.zero;
+        //gpControls.Gameplay.moveCam.performed += context => 
+        //    {
+        //        stickValue = context.ReadValue<Vector2>();
+        //    };
+        //gpControls.Gameplay.moveCam.canceled += context => stickValue = Vector2.zero;
     }
     private void OnEnable()
     {
-        gpControls.Gameplay.Enable();
+        //gpControls.Gameplay.Enable();
     }
     private void OnDisable()
     {
-        gpControls.Gameplay.Disable();
+        //gpControls.Gameplay.Disable();
     }
     // Start is called before the first frame update
     void Start()

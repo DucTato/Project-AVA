@@ -2,218 +2,6 @@
     "name": "PlayerControls",
     "maps": [
         {
-            "name": "Gameplay",
-            "id": "ceb48719-b664-4442-b0c7-d2b4d24d58a9",
-            "actions": [
-                {
-                    "name": "ACmovement",
-                    "type": "PassThrough",
-                    "id": "286b220f-5f12-48f1-8b9e-91bf7b641e43",
-                    "expectedControlType": "Vector2",
-                    "processors": "StickDeadzone",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "moveCam",
-                    "type": "PassThrough",
-                    "id": "781357ee-8172-4e5f-a50f-a7e53e5aa84a",
-                    "expectedControlType": "Vector2",
-                    "processors": "StickDeadzone",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "ACyaw",
-                    "type": "PassThrough",
-                    "id": "f54342a2-601c-417c-9046-e5bc8d4aebc4",
-                    "expectedControlType": "Analog",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
-                },
-                {
-                    "name": "ACthrottle",
-                    "type": "Value",
-                    "id": "636f1987-e23c-410a-bf20-f560c1dd3d94",
-                    "expectedControlType": "Axis",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
-                },
-                {
-                    "name": "toggleCam",
-                    "type": "Button",
-                    "id": "89bb7773-d740-4aa4-b431-6fbebe6884e9",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "ACfireMSL",
-                    "type": "Button",
-                    "id": "8314f0b9-281f-4709-b34b-62342160d141",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "ACfireGUN",
-                    "type": "Button",
-                    "id": "f49f20d4-9ccb-498e-a727-9218457d9f40",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "ACcycleTgt",
-                    "type": "Button",
-                    "id": "1d0b1c9c-a45a-4500-885a-a62be71b3d16",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "Tap,Hold",
-                    "initialStateCheck": false
-                }
-            ],
-            "bindings": [
-                {
-                    "name": "",
-                    "id": "ca8993c0-8f24-4de5-827b-35d7adbabdbc",
-                    "path": "<Gamepad>/leftStick",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";DualStickController",
-                    "action": "ACmovement",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "23e8e495-2180-4bb6-aa19-bcfc71722035",
-                    "path": "<Gamepad>/rightStick",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";DualStickController",
-                    "action": "moveCam",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "1D Axis",
-                    "id": "bf7f4f1b-a769-455a-a174-62a402be7032",
-                    "path": "1DAxis",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "ACyaw",
-                    "isComposite": true,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "negative",
-                    "id": "2be54c3d-1a8d-4b6c-bcf3-6cc26d729b96",
-                    "path": "<Gamepad>/leftTrigger",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";DualStickController",
-                    "action": "ACyaw",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "positive",
-                    "id": "1dd4ec88-97a8-4b6f-bf44-6c4350590ee6",
-                    "path": "<Gamepad>/rightTrigger",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";DualStickController",
-                    "action": "ACyaw",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "1D Axis",
-                    "id": "778b41d3-19c1-4fcf-8e00-1dd1ed0d79bd",
-                    "path": "1DAxis",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "ACthrottle",
-                    "isComposite": true,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "negative",
-                    "id": "346aec30-0af4-4d44-ae71-0322ebae49ef",
-                    "path": "<Gamepad>/leftShoulder",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";DualStickController",
-                    "action": "ACthrottle",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "positive",
-                    "id": "f78bcf33-7076-426f-85df-eef1306a0ddb",
-                    "path": "<Gamepad>/rightShoulder",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";DualStickController",
-                    "action": "ACthrottle",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "",
-                    "id": "c10fbac4-b85f-46f1-91ca-75e2dbfa7619",
-                    "path": "<Gamepad>/select",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";DualStickController",
-                    "action": "toggleCam",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "c471bfc8-affa-472b-94e3-f5f483f4f992",
-                    "path": "<Gamepad>/buttonEast",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";DualStickController",
-                    "action": "ACfireMSL",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "a25669f7-2a9d-4e80-9404-201131947dec",
-                    "path": "<Gamepad>/buttonSouth",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";DualStickController",
-                    "action": "ACfireGUN",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "d367b4e7-6ec1-4dc8-bfca-ddca67a1ec7f",
-                    "path": "<Gamepad>/buttonNorth",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";DualStickController",
-                    "action": "ACcycleTgt",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                }
-            ]
-        },
-        {
             "name": "UI",
             "id": "26e2c436-5613-4f0b-ac76-321d4e4108a1",
             "actions": [
@@ -537,6 +325,198 @@
                     "processors": "",
                     "groups": ";KB&M",
                     "action": "RightClick",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "Gameplay",
+            "id": "ceb48719-b664-4442-b0c7-d2b4d24d58a9",
+            "actions": [
+                {
+                    "name": "ACmovement",
+                    "type": "PassThrough",
+                    "id": "286b220f-5f12-48f1-8b9e-91bf7b641e43",
+                    "expectedControlType": "Vector2",
+                    "processors": "StickDeadzone",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "moveCam",
+                    "type": "PassThrough",
+                    "id": "781357ee-8172-4e5f-a50f-a7e53e5aa84a",
+                    "expectedControlType": "Vector2",
+                    "processors": "StickDeadzone",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "ACyaw",
+                    "type": "PassThrough",
+                    "id": "f54342a2-601c-417c-9046-e5bc8d4aebc4",
+                    "expectedControlType": "Analog",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "ACthrottle",
+                    "type": "Value",
+                    "id": "636f1987-e23c-410a-bf20-f560c1dd3d94",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "ACfireMSL",
+                    "type": "Button",
+                    "id": "8314f0b9-281f-4709-b34b-62342160d141",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "ACfireGUN",
+                    "type": "Button",
+                    "id": "f49f20d4-9ccb-498e-a727-9218457d9f40",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "ACcycleTgt",
+                    "type": "Button",
+                    "id": "1d0b1c9c-a45a-4500-885a-a62be71b3d16",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "Tap,Hold",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "ca8993c0-8f24-4de5-827b-35d7adbabdbc",
+                    "path": "<Gamepad>/leftStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";DualStickController",
+                    "action": "ACmovement",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "23e8e495-2180-4bb6-aa19-bcfc71722035",
+                    "path": "<Gamepad>/rightStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";DualStickController",
+                    "action": "moveCam",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "1D Axis",
+                    "id": "bf7f4f1b-a769-455a-a174-62a402be7032",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ACyaw",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "2be54c3d-1a8d-4b6c-bcf3-6cc26d729b96",
+                    "path": "<Gamepad>/leftTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";DualStickController",
+                    "action": "ACyaw",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "1dd4ec88-97a8-4b6f-bf44-6c4350590ee6",
+                    "path": "<Gamepad>/rightTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";DualStickController",
+                    "action": "ACyaw",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "1D Axis",
+                    "id": "778b41d3-19c1-4fcf-8e00-1dd1ed0d79bd",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ACthrottle",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "346aec30-0af4-4d44-ae71-0322ebae49ef",
+                    "path": "<Gamepad>/leftShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";DualStickController",
+                    "action": "ACthrottle",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "f78bcf33-7076-426f-85df-eef1306a0ddb",
+                    "path": "<Gamepad>/rightShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";DualStickController",
+                    "action": "ACthrottle",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "c471bfc8-affa-472b-94e3-f5f483f4f992",
+                    "path": "<Gamepad>/buttonEast",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";DualStickController",
+                    "action": "ACfireMSL",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a25669f7-2a9d-4e80-9404-201131947dec",
+                    "path": "<Gamepad>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";DualStickController",
+                    "action": "ACfireGUN",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d367b4e7-6ec1-4dc8-bfca-ddca67a1ec7f",
+                    "path": "<Gamepad>/buttonNorth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";DualStickController",
+                    "action": "ACcycleTgt",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
