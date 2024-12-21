@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8547565330433677588}
   - component: {fileID: 1707227161645467402}
   - component: {fileID: 7366810880103102364}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: IndicatorTxt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -976,7 +976,7 @@ GameObject:
   - component: {fileID: 2951510293785585617}
   - component: {fileID: 3473894382123007911}
   - component: {fileID: 9164460744759137638}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: AirSpeed
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1491,7 +1491,7 @@ GameObject:
   - component: {fileID: 3010125327742720586}
   - component: {fileID: 2138417675097266719}
   - component: {fileID: 2891794134793611445}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: IndicatorTxt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1732,6 +1732,7 @@ MonoBehaviour:
   gameInfo: {fileID: 6542116994103390324}
   winPanel: {fileID: 6676661724570347754}
   inGameCanvas: {fileID: 8700283491702503944}
+  targetCam: {fileID: 0}
 --- !u!1 &2863037102960930881
 GameObject:
   m_ObjectHideFlags: 0
@@ -2611,7 +2612,7 @@ GameObject:
   - component: {fileID: 7040561282752867948}
   - component: {fileID: 4091973376916390470}
   - component: {fileID: 6935572179180302668}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: Altitude
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3230,7 +3231,7 @@ GameObject:
   - component: {fileID: 276180368261604467}
   - component: {fileID: 2083904286583389438}
   - component: {fileID: 8200129737209105466}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: AltitudeTxt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3309,7 +3310,7 @@ GameObject:
   - component: {fileID: 5274540745251047673}
   - component: {fileID: 3028433331145690037}
   - component: {fileID: 2197221687338131149}
-  m_Layer: 5
+  m_Layer: 3
   m_Name: SpeedTxt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
