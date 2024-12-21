@@ -81,7 +81,7 @@ public class UIManager : MonoBehaviour
     [SerializeField, Foldout("Miscs")]
     private TextMeshProUGUI currentTargetInfo;
     [SerializeField, Foldout("Miscs")]
-    private GameObject deathPanel, gameInfo, winPanel;
+    private GameObject deathPanel, gameInfo, winPanel, pausePanel;
     [SerializeField, Foldout("Miscs")]
     private Canvas inGameCanvas;
 
@@ -107,11 +107,27 @@ public class UIManager : MonoBehaviour
 
     private float lastUpdateTime;
     private float HPupTimer, alphaValue;
-    private bool hideHP;
+    private bool hideHP,isPaused;
 
 
     const float metersToKnots = 1.94384f;
     const float metersToFeet = 3.28084f;
+    public bool IsPaused
+    {
+        get
+        {
+            return IsPaused;
+        }
+        set
+        {
+            isPaused = value;
+            if (isPaused)   
+                Time.timeScale = 0f;
+            else    
+                Time.timeScale = 1f;
+            pausePanel.SetActive(isPaused);
+        }
+    }
     public bool IsPlaneActive { get; set; }
     #region CallBacks
     private void Awake()
@@ -450,6 +466,10 @@ public class UIManager : MonoBehaviour
     {
         inGameCanvas.enabled = isVisible;
         IsPlaneActive = isVisible;
+    }
+    public void TogglePause()
+    {
+        IsPaused = !IsPaused;
     }
     public void SetPlane(PlaneHandler plane)
     {

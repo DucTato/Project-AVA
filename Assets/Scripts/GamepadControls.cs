@@ -418,6 +418,15 @@ public partial class @GamepadControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": ""Tap,Hold"",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""GamePause"",
+                    ""type"": ""Button"",
+                    ""id"": ""9e775844-133a-42df-8dee-0ea3df576837"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -541,6 +550,17 @@ public partial class @GamepadControls: IInputActionCollection2, IDisposable
                     ""action"": ""ACcycleTgt"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""bfe2be72-3f7a-4fa5-90d2-09ac19c6574e"",
+                    ""path"": ""<Gamepad>/start"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";DualStickController"",
+                    ""action"": ""GamePause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -596,6 +616,7 @@ public partial class @GamepadControls: IInputActionCollection2, IDisposable
         m_Gameplay_ACfireMSL = m_Gameplay.FindAction("ACfireMSL", throwIfNotFound: true);
         m_Gameplay_ACfireGUN = m_Gameplay.FindAction("ACfireGUN", throwIfNotFound: true);
         m_Gameplay_ACcycleTgt = m_Gameplay.FindAction("ACcycleTgt", throwIfNotFound: true);
+        m_Gameplay_GamePause = m_Gameplay.FindAction("GamePause", throwIfNotFound: true);
     }
 
     ~@GamepadControls()
@@ -788,6 +809,7 @@ public partial class @GamepadControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Gameplay_ACfireMSL;
     private readonly InputAction m_Gameplay_ACfireGUN;
     private readonly InputAction m_Gameplay_ACcycleTgt;
+    private readonly InputAction m_Gameplay_GamePause;
     public struct GameplayActions
     {
         private @GamepadControls m_Wrapper;
@@ -799,6 +821,7 @@ public partial class @GamepadControls: IInputActionCollection2, IDisposable
         public InputAction @ACfireMSL => m_Wrapper.m_Gameplay_ACfireMSL;
         public InputAction @ACfireGUN => m_Wrapper.m_Gameplay_ACfireGUN;
         public InputAction @ACcycleTgt => m_Wrapper.m_Gameplay_ACcycleTgt;
+        public InputAction @GamePause => m_Wrapper.m_Gameplay_GamePause;
         public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -829,6 +852,9 @@ public partial class @GamepadControls: IInputActionCollection2, IDisposable
             @ACcycleTgt.started += instance.OnACcycleTgt;
             @ACcycleTgt.performed += instance.OnACcycleTgt;
             @ACcycleTgt.canceled += instance.OnACcycleTgt;
+            @GamePause.started += instance.OnGamePause;
+            @GamePause.performed += instance.OnGamePause;
+            @GamePause.canceled += instance.OnGamePause;
         }
 
         private void UnregisterCallbacks(IGameplayActions instance)
@@ -854,6 +880,9 @@ public partial class @GamepadControls: IInputActionCollection2, IDisposable
             @ACcycleTgt.started -= instance.OnACcycleTgt;
             @ACcycleTgt.performed -= instance.OnACcycleTgt;
             @ACcycleTgt.canceled -= instance.OnACcycleTgt;
+            @GamePause.started -= instance.OnGamePause;
+            @GamePause.performed -= instance.OnGamePause;
+            @GamePause.canceled -= instance.OnGamePause;
         }
 
         public void RemoveCallbacks(IGameplayActions instance)
@@ -911,5 +940,6 @@ public partial class @GamepadControls: IInputActionCollection2, IDisposable
         void OnACfireMSL(InputAction.CallbackContext context);
         void OnACfireGUN(InputAction.CallbackContext context);
         void OnACcycleTgt(InputAction.CallbackContext context);
+        void OnGamePause(InputAction.CallbackContext context);
     }
 }

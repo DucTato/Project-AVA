@@ -396,6 +396,15 @@
                     "processors": "",
                     "interactions": "Tap,Hold",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "GamePause",
+                    "type": "Button",
+                    "id": "9e775844-133a-42df-8dee-0ea3df576837",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -517,6 +526,17 @@
                     "processors": "",
                     "groups": ";DualStickController",
                     "action": "ACcycleTgt",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "bfe2be72-3f7a-4fa5-90d2-09ac19c6574e",
+                    "path": "<Gamepad>/start",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";DualStickController",
+                    "action": "GamePause",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

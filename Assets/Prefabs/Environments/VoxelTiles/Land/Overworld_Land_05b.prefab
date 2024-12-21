@@ -11,32 +11,32 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 9ef4d4c1e151f49479bd984148fff03c,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 3.1250002
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 9ef4d4c1e151f49479bd984148fff03c,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 3.1250002
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 9ef4d4c1e151f49479bd984148fff03c,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 3.1250002
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 9ef4d4c1e151f49479bd984148fff03c,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1235.11
+      value: 1986
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 9ef4d4c1e151f49479bd984148fff03c,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.0000019073486
+      value: 1.1000061
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 9ef4d4c1e151f49479bd984148fff03c,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1554.7673
+      value: 1490
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 9ef4d4c1e151f49479bd984148fff03c,
         type: 3}
@@ -129,9 +129,6 @@ MonoBehaviour:
   - {fileID: 142847021399752002, guid: 571a98c8710a4dc40944986d6ba369f5, type: 3}
   - {fileID: 3487137150865808096, guid: 0dfe18a876346f4458cb975098aa556f, type: 3}
   downNeighbours:
-  - {fileID: 858734404894460424, guid: ef7a9444b8345d942910e706cdf441fc, type: 3}
-  - {fileID: -824216554730249598, guid: 345357d8ec9b2f14292cee1f3eb34f35, type: 3}
-  - {fileID: 2094737262239826461, guid: cf58d530ed0f93248a776f7f1214654d, type: 3}
   - {fileID: 4212450715668823797, guid: d81d9eb5b47315b49a61a16170b49086, type: 3}
   - {fileID: 6893911218824804069, guid: 8aad085eeb56c6a478953a831f1640d4, type: 3}
   - {fileID: 6974356406322801474, guid: f885b70165953974e8c2976aa798038e, type: 3}

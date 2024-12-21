@@ -78,6 +78,7 @@ public class MenuUIController : MonoBehaviour
     {
         if (ctx.phase == InputActionPhase.Performed)
         {
+            if (!switchOFF.activeInHierarchy) return;
             switchON.SetActive(true);
             switchOFF.SetActive(false);
             GameManager.instance.SetWorldCenter(GameObject.Find("WorldCenter"));
