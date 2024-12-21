@@ -16146,7 +16146,7 @@ MonoBehaviour:
   playerPrefab: {fileID: 7648177601348327002, guid: e156218fcb657a0498cc9864915a44b8,
     type: 3}
   specialItemPrefab: {fileID: 0}
-  heightOffsetOverride: 0
+  spawnHeight: 150
 --- !u!114 &269885173972696984
 MonoBehaviour:
   m_ObjectHideFlags: 0

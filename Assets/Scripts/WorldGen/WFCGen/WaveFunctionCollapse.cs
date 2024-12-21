@@ -44,8 +44,8 @@ public class WaveFunctionCollapse : MonoBehaviour
     {
         if (RaiseWater)
         {
-            Water.transform.position = Vector3.MoveTowards(Water.transform.position, new Vector3(110f, 0f, 110f), Time.deltaTime * 0.7f);
-            if (Water.transform.position.y >= 0f) Destroy(gameObject);
+            Water.transform.position = Vector3.MoveTowards(Water.transform.position, new Vector3(3200f, 40f, 3200f), Time.deltaTime * 9.5f);   //40f is water height
+            if (Water.transform.position.y >= 20f) Destroy(gameObject);
         }
     }
     #endregion
@@ -57,7 +57,7 @@ public class WaveFunctionCollapse : MonoBehaviour
         {
             for (int x = 0; x < dimensions; x++)
             {
-                Cell newCell = Instantiate(cellObject, new Vector3(x * 10f, 0, y * 10f), Quaternion.identity);
+                Cell newCell = Instantiate(cellObject, new Vector3(x * 320f, -50, y * 320f), Quaternion.identity);
                 newCell.CreateCell(false, tileObjects);
                 if (x == dimensions / 2 && x == y)
                 {
@@ -222,6 +222,7 @@ public class WaveFunctionCollapse : MonoBehaviour
     {
         yield return new WaitForSeconds(time);
         virtualCam.Priority = 0;
+        GameManager.instance.SetFogValues(5000f, 10000f);
     }
     #endregion
 }

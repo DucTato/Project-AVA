@@ -9,8 +9,8 @@ public class PlayerTracker : MonoBehaviour
     [SerializeField]
     private GameObject playerPrefab, specialItemPrefab;
     [SerializeField]
-    [Tooltip("By default (offset=0), the player will spawn at 60f")]
-    private float heightOffsetOverride;
+    [Tooltip("Base spawn height for the player, will be added on top of world's base height")]
+    private float spawnHeight;
     #region Callbacks
     private void Awake()
     {
@@ -32,6 +32,7 @@ public class PlayerTracker : MonoBehaviour
     private void Start()
     {
         Debug.Log("Tracker Started");
+        
     }
 
     // Update is called once per frame
@@ -43,11 +44,14 @@ public class PlayerTracker : MonoBehaviour
     #region Procedures
     public void SpawnPlayer(GameObject spawnPoint)
     {
+        spawnHeight += GameManager.instance.worldBaseHeight;
         //Spawns a player prefab
         // Sets up spawn location around the "World Center" object
         var randomPos = Utilities.SpawnSphereOnEdgeRandomly3D(spawnPoint, GameManager.instance.playerSpawnRadius);
-        randomPos.y = 60f + heightOffsetOverride;
-        playerPrefab = Instantiate(playerPrefab, randomPos, Quaternion.LookRotation(spawnPoint.transform.position + new Vector3(0f, 60f + heightOffsetOverride, 0f) - randomPos));
+        randomPos.y = spawnHeight;
+        var direction = spawnPoint.transform.position - randomPos;
+        direction.y = spawnHeight;
+        playerPrefab = Instantiate(playerPrefab, randomPos, Quaternion.LookRotation(direction));
         PlayerController.instance.SetUpPlayer(playerPrefab);
         playerPrefab.SetActive(false);
     }

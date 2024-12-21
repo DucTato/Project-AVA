@@ -9,6 +9,8 @@ using Random = UnityEngine.Random;
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
+    [Tooltip("Base height of world, spawnables won't spawn below this value")]
+    public float worldBaseHeight;
 
     [SerializeField, Foldout("Enemies")]
     private int currentEnemies, maxEnemies;
@@ -16,9 +18,7 @@ public class GameManager : MonoBehaviour
     private GameObject[] Enemies;
     [SerializeField, Foldout("Enemies")]
     private float spawnRadius, spawnInterval;
-    [SerializeField, Foldout("Enemies")]
-    [Tooltip("By default (offset=0), enemies will spawn at 5f")]
-    private float spawnHeightOffset;
+    
     [SerializeField, Foldout("Player")]
     private int currentPoint, maxPoint;
     [Foldout("Player")]
@@ -102,6 +102,11 @@ public class GameManager : MonoBehaviour
     #endregion
 
     #region Procedures
+    public void SetFogValues(float startDistance, float endDistance)
+    {
+        RenderSettings.fogStartDistance = startDistance;
+        RenderSettings.fogEndDistance = endDistance;
+    }
     private void SetCurrentProgress()
     {
         hudController.SetProgressBar(CurrentPoint, maxPoint);
@@ -143,7 +148,7 @@ public class GameManager : MonoBehaviour
             // Sets up spawn location around the "World Center" object
             var randomPos = Random.insideUnitSphere * spawnRadius;
             randomPos += WorldCenter.transform.position;
-            randomPos.y = 5f + spawnHeightOffset;
+            randomPos.y = 5f + worldBaseHeight;
             // Spawns objects            
             enemyPool.Add(Instantiate(Enemies[Random.Range(0, Enemies.Length - 1)], randomPos, Quaternion.Euler(-35f, 0f, 0f)));
         }
@@ -178,7 +183,8 @@ public class GameManager : MonoBehaviour
             hudController.ToggleCanvas(true);
             loadingDoneTxt.SetActive(false);
             gameCanvas.SetActive(true);
-            
+            // Sets up new fog value for in-game phase
+            SetFogValues(1000f, 3000f);
         }
         else
         {
