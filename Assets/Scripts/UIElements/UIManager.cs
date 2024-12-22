@@ -169,6 +169,10 @@ public class UIManager : MonoBehaviour
         hideHP = true;
         SetDeathScreen(false);
         SetWinScreen(false);
+        
+    }
+    private void Start()
+    {
         IsPaused = false;
     }
     void LateUpdate()
