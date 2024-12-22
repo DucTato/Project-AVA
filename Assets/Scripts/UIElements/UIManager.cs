@@ -602,6 +602,7 @@ public class UIManager : MonoBehaviour
         SceneManager.LoadScene("MainMenu");
         // Destroy persistent objects
         Destroy(TransitionManager.Instance.gameObject);
+        Destroy(PlayerTracker.instance.gameObject);
     }
 
     /// <summary>
