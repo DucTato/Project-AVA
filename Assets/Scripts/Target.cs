@@ -161,6 +161,14 @@ public class Target : MonoBehaviour
             PlayerController.instance.hudController.DisplayHP();
         }        
     }
+    public void Heal(float ammount)
+    {
+        Health += ammount;
+        if (PlayerController.instance.CheckIsPlayer(gameObject))
+        {
+            PlayerController.instance.hudController.DisplayHP();
+        }
+    }
     public void ApplyBurns()
     {
         

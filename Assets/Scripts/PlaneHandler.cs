@@ -123,35 +123,7 @@ public class PlaneHandler : MonoBehaviour
         Dead = false;
     }
 
-    public void SetThrottleInput(float input)
-    {
-        if (Dead) return;
-        throttleInput = input;
-    }
-
-    public void SetControlInput(Vector3 input)
-    {
-        if (Dead) return;
-        controlInput = input;
-    }
-
-    public void ToggleFlaps()
-    {
-        if (LocalVelocity.z < flapsRetractSpeed)
-        {
-            FlapsDeployed = !FlapsDeployed;
-        }
-    }
-
-
-    public void ToggleDeadState()
-    {
-        throttleInput = 0;
-        Throttle = 0;
-        Dead = true;
-    }
-
-    void UpdateThrottle(float dt)
+    private void UpdateThrottle(float dt)
     {
         float target = 0;
         if (throttleInput > 0) target = 1;
@@ -163,7 +135,7 @@ public class PlaneHandler : MonoBehaviour
         AirbrakeDeployed = Throttle == 0 && throttleInput == -1;
     }
 
-    void UpdateFlaps()
+    private void UpdateFlaps()
     {
         if (LocalVelocity.z > flapsRetractSpeed)
         {
@@ -171,7 +143,7 @@ public class PlaneHandler : MonoBehaviour
         }
     }
 
-    void CalculateAngleOfAttack()
+    private void CalculateAngleOfAttack()
     {
         if (LocalVelocity.sqrMagnitude < 0.1f)
         {
@@ -184,7 +156,7 @@ public class PlaneHandler : MonoBehaviour
         AngleOfAttackYaw = Mathf.Atan2(LocalVelocity.x, LocalVelocity.z);
     }
 
-    void CalculateGForce(float dt)
+    private void CalculateGForce(float dt)
     {
         var invRotation = Quaternion.Inverse(rb.rotation);
         var acceleration = (Velocity - lastVelocity) / dt;
@@ -192,7 +164,7 @@ public class PlaneHandler : MonoBehaviour
         lastVelocity = Velocity;
     }
 
-    void CalculateState(float dt)
+    private void CalculateState(float dt)
     {
         var invRotation = Quaternion.Inverse(rb.rotation);
         Velocity = rb.velocity;
@@ -202,12 +174,12 @@ public class PlaneHandler : MonoBehaviour
         CalculateAngleOfAttack();
     }
 
-    void UpdateThrust()
+    private void UpdateThrust()
     {
         rb.AddRelativeForce(Throttle * maxThrust * Vector3.forward);
     }
 
-    void UpdateDrag()
+    private void UpdateDrag()
     {
         var lv = LocalVelocity;
         var lv2 = lv.sqrMagnitude;  //velocity squared
@@ -229,7 +201,7 @@ public class PlaneHandler : MonoBehaviour
         rb.AddRelativeForce(drag);
     }
 
-    Vector3 CalculateLift(float angleOfAttack, Vector3 rightAxis, float liftPower, AnimationCurve aoaCurve, AnimationCurve inducedDragCurve)
+    private Vector3 CalculateLift(float angleOfAttack, Vector3 rightAxis, float liftPower, AnimationCurve aoaCurve, AnimationCurve inducedDragCurve)
     {
         var liftVelocity = Vector3.ProjectOnPlane(LocalVelocity, rightAxis);    //project velocity onto YZ plane
         var v2 = liftVelocity.sqrMagnitude;                                     //square of velocity
@@ -251,7 +223,7 @@ public class PlaneHandler : MonoBehaviour
         return lift + inducedDrag;
     }
 
-    void UpdateLift()
+    private void UpdateLift()
     {
         if (LocalVelocity.sqrMagnitude < 1f) return;
 
@@ -271,7 +243,7 @@ public class PlaneHandler : MonoBehaviour
         rb.AddRelativeForce(yawForce);
     }
 
-    void UpdateAngularDrag()
+    private void UpdateAngularDrag()
     {
         var av = LocalAngularVelocity;
         var drag = av.sqrMagnitude * -av.normalized;    //squared, opposite direction of angular velocity
@@ -298,7 +270,7 @@ public class PlaneHandler : MonoBehaviour
         ) * 9.81f;
     }
 
-    float CalculateGLimiter(Vector3 controlInput, Vector3 maxAngularVelocity)
+    private float CalculateGLimiter(Vector3 controlInput, Vector3 maxAngularVelocity)
     {
         if (controlInput.magnitude < 0.01f)
         {
@@ -322,14 +294,14 @@ public class PlaneHandler : MonoBehaviour
         return 1;
     }
 
-    float CalculateSteering(float dt, float angularVelocity, float targetVelocity, float acceleration)
+    private float CalculateSteering(float dt, float angularVelocity, float targetVelocity, float acceleration)
     {
         var error = targetVelocity - angularVelocity;
         var accel = acceleration * dt;
         return Mathf.Clamp(error, -accel, accel);
     }
 
-    void UpdateSteering(float dt)
+    private void UpdateSteering(float dt)
     {
         var speed = Mathf.Max(0, LocalVelocity.z);
         var steeringPower = steeringCurve.Evaluate(speed);
@@ -427,4 +399,47 @@ public class PlaneHandler : MonoBehaviour
             Explode();
         }
     }
+    #region Procedures
+
+    public void SetThrottleInput(float input)
+    {
+        if (Dead) return;
+        throttleInput = input;
+    }
+
+    public void SetControlInput(Vector3 input)
+    {
+        if (Dead) return;
+        controlInput = input;
+    }
+
+    public void ToggleFlaps()
+    {
+        if (LocalVelocity.z < flapsRetractSpeed)
+        {
+            FlapsDeployed = !FlapsDeployed;
+        }
+    }
+    public void ToggleDeadState()
+    {
+        throttleInput = 0;
+        Throttle = 0;
+        Dead = true;
+    }
+
+    public void UpgradePerformance(float liftMult, float dragMult)
+    {
+        liftPower *= liftMult;
+        inducedDrag *= dragMult;
+        // Clamps values. Lift power maxes out at x5, Induced Drag maxes out at x1/2
+        liftPower = Mathf.Clamp(liftPower, 50f, 750f);
+        inducedDrag = Mathf.Clamp(inducedDrag, 40f, 200f);
+    }
+    public void UpgradeThrust(float thrustMult)
+    {
+        maxThrust *= thrustMult;
+        // Clamps values. Maximum engine power maxes out at x3. Minimum value was hand tuned (x1/2.5)
+        liftPower = Mathf.Clamp(liftPower, 88964f, 667233f);
+    }
+    #endregion
 }

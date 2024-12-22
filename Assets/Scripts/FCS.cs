@@ -50,7 +50,7 @@ public class FCS : MonoBehaviour
     private string currentTag;
     private bool cannonFiring;
     private float cannonDebounceTimer;
-    private float cannonFiringTimer;
+    private float cannonFiringTimer, cannonDmgMult, cannonRateMult;
     //public Target currTarget { get {return currentTarget; } private set { currentTarget = value; Debug.Log(currentTarget); } }
     public Target currTarget 
     {
@@ -77,6 +77,8 @@ public class FCS : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        cannonDmgMult = 1f;
+        cannonRateMult = 1f;
         switch (targetingBehaviour)
         {
             case TgtBehaviourType.Player_Allies:
@@ -105,7 +107,7 @@ public class FCS : MonoBehaviour
     {
         UpdateWeapons(Time.fixedDeltaTime);        
     }
-    
+    #region FCS functions
     private void UpdateMissleLock(float dt)
     {
         // Default neutral position is forward
@@ -134,7 +136,7 @@ public class FCS : MonoBehaviour
             cannonFiringTimer = 60f / cannonFireRate;
             var spread = Random.insideUnitCircle * cannonSpread;
             var bulletGO = Instantiate(bulletPrefab, cannonSpawnPoint.position, cannonSpawnPoint.rotation * Quaternion.Euler(spread.x, spread.y, 0));
-            bulletGO.GetComponent<Bullet>().Fire(transform.gameObject);
+            bulletGO.GetComponent<Bullet>().Fire(transform.gameObject, cannonDmgMult);
             muzzleFX.Play();
         }
     }
@@ -169,6 +171,38 @@ public class FCS : MonoBehaviour
         }
         if (currTarget == null || currTarget.IsDead) currTarget = FindClosestTarget();
     }
+    private void UpdateWeapons(float dt)
+    {
+        UpdateWeaponCooldown(dt);
+        UpdateMissleLock(dt);
+        UpdateCannon(dt);
+        UpdateFCS(dt, currentTag);
+    }
+    private Target FindClosestTarget()
+    {
+        //GameObject[] GO2s = GameObject.FindGameObjectsWithTag("Enemy mBullet");
+        Target closest = null;
+        float distance = lockRange + 1000f;
+        Vector3 position = transform.position;
+        foreach (GameObject t in targetsList)
+        {
+            if (t == null)
+            {
+                continue;
+            }
+
+            Vector3 diff = t.transform.position - position;
+            float curDistance = diff.magnitude;
+            if (curDistance < distance)
+            {
+                closest = t.GetComponent<Target>();
+                distance = curDistance;
+            }
+        }
+        return closest;
+    }
+    #endregion
+    #region Procedures
     public void TryFireMissile()
     {
         // try all available missile
@@ -190,42 +224,25 @@ public class FCS : MonoBehaviour
     {
         cannonFiring = input;
     }
-    private void UpdateWeapons(float dt)
-    {
-        UpdateWeaponCooldown(dt);
-        UpdateMissleLock(dt);
-        UpdateCannon(dt);
-        UpdateFCS(dt, currentTag);
-    }
+    
     public void CycleTarget()
     {
         List<GameObject> targets = targetsList.ToList();
         if (tgtIndex >= targets.Count) tgtIndex = 0;
         currTarget = targets[tgtIndex++].GetComponent<Target>();
     }
-    private Target FindClosestTarget()
-    {        
-        //GameObject[] GO2s = GameObject.FindGameObjectsWithTag("Enemy mBullet");
-        Target closest = null;
-        float distance = lockRange + 1000f;
-        Vector3 position = transform.position;
-        foreach (GameObject t in targetsList)
-        {
-            if (t == null) 
-            {
-                continue;
-            }
-            
-            Vector3 diff = t.transform.position - position;
-            float curDistance = diff.magnitude;
-            if (curDistance < distance)
-            {
-                closest = t.GetComponent<Target>();
-                distance = curDistance;
-            }
-        }
-        return closest;
+    public void UpgradeGun(float dmgMult, float rateMult)
+    {
+        cannonDmgMult *= dmgMult;
+        cannonRateMult *= rateMult;
+        // Clamps values for both of these rates. Damage maxes out at x2; Fire rate maxes out at x5
+        cannonDmgMult = Mathf.Clamp(cannonDmgMult, 1f, 2f);
+        cannonRateMult = Mathf.Clamp(cannonRateMult, 1f, 5f);
+        cannonFireRate *= cannonRateMult;
+        cannonSpread *= cannonRateMult; // Faster RoF = more Spread
     }
+    
+    #endregion
     public enum TgtBehaviourType
     {
         Player,

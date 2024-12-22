@@ -56,6 +56,14 @@ public class PlayerController : MonoBehaviour
     }
     #endregion
     #region Input Handler
+    public void OnPauseButton(InputAction.CallbackContext ctx)
+    {
+        if (ctx.phase == InputActionPhase.Performed)
+        {
+            Debug.Log("Player Controller called");
+            hudController.TogglePause();
+        }
+    }
     public void OnMoveCam(InputAction.CallbackContext ctx)
     {
         if (ctx.ReadValue<Vector2>() != Vector2.zero)
@@ -169,6 +177,10 @@ public class PlayerController : MonoBehaviour
     public PlaneHandler GetPlayerAircraft()
     {
         return planeHandler;
+    }
+    public FCS GetPlayerFCS()
+    {
+        return fireControl;
     }
     #endregion
 }

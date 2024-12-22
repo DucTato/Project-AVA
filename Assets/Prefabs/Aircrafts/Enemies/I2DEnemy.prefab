@@ -518,7 +518,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4874076080712438879}
   serializedVersion: 4
-  m_Mass: 8164.4
+  m_Mass: 20411
   m_Drag: 0
   m_AngularDrag: 0
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -586,7 +586,7 @@ MonoBehaviour:
   cannonDebounceTime: 0.125
   cannonSpread: 0.25
   cannonSpawnPoint: {fileID: 2823772216997292387}
-  bulletPrefab: {fileID: 8993259690404078279, guid: b730886381d0b5c4fb270843256c18f2,
+  bulletPrefab: {fileID: 8993259690404078279, guid: ef33bfbcae96e6941a104f2520ed56d3,
     type: 3}
   muzzleFX: {fileID: 218004997317652579}
   targetingBehaviour: 0
@@ -671,7 +671,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8acc0274d2fa88489d05c810159c956, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxThrust: 88964.4
+  maxThrust: 222411
   throttleSpeed: 1
   gLimit: 4
   gLimitPitch: 8

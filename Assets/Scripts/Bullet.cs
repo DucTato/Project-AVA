@@ -48,12 +48,12 @@ public class Bullet : MonoBehaviour
             Destroy(gameObject);
         }
     }
-    public void Fire (GameObject owner)
+    public void Fire (GameObject owner, float dmgMult)
     {
         this.owner = owner;
         rb = GetComponent<Rigidbody>();
         startTime = Time.time;
-
+        damage *= dmgMult;
         rb.AddRelativeForce(new Vector3(0, 0, speed), ForceMode.VelocityChange);
         rb.AddForce(owner.GetComponent<Rigidbody>().velocity, ForceMode.VelocityChange);
         lastPosition = rb.position;

@@ -591,7 +591,7 @@ MonoBehaviour:
   throttleSpeed: 1
   gLimit: 4
   gLimitPitch: 8
-  initialSpeed: 100
+  initialSpeed: 200
   liftPower: 150
   liftAOACurve:
     serializedVersion: 2

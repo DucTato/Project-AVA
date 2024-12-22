@@ -1,4 +1,5 @@
 using Cinemachine;
+using DG.Tweening;
 using NaughtyAttributes;
 using System;
 using System.Collections;
@@ -24,8 +25,10 @@ public class WaveFunctionCollapse : MonoBehaviour
     [SerializeField, Foldout("World Gen")]
     private Tile backupTile;
     private int iteration;
-    [SerializeField, Foldout("UI Handler")]
+    [SerializeField, Foldout("UI/UX")]
     private CinemachineVirtualCamera virtualCam;
+    [SerializeField, Foldout("UI/UX")]
+    private Renderer gridPlane;
 
     private bool RaiseWater;
     #region CallBacks
@@ -222,7 +225,10 @@ public class WaveFunctionCollapse : MonoBehaviour
     {
         yield return new WaitForSeconds(time);
         virtualCam.Priority = 0;
+        GameManager.instance.TurnOnFreeLook();
         GameManager.instance.SetFogValues(5000f, 10000f);
+        Material gridPlaneMat = gridPlane.material;
+        gridPlaneMat.DOVector(new Vector4(0.001f, 0.001f, 0f, 0f), "_Tiling", 3f);
     }
     #endregion
 }

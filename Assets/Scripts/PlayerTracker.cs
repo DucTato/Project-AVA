@@ -11,11 +11,16 @@ public class PlayerTracker : MonoBehaviour
     [SerializeField]
     [Tooltip("Base spawn height for the player, will be added on top of world's base height")]
     private float spawnHeight;
+    public int seed;
     #region Callbacks
     private void Awake()
     {
         instance = this;
         Debug.Log("Tracker Awake");
+        if (seed == 0)
+        {
+            seed = Random.Range(-999999, 999999);
+        }
     }
     private void OnEnable()
     {
@@ -49,9 +54,9 @@ public class PlayerTracker : MonoBehaviour
         // Sets up spawn location around the "World Center" object
         var randomPos = Utilities.SpawnSphereOnEdgeRandomly3D(spawnPoint, GameManager.instance.playerSpawnRadius);
         randomPos.y = spawnHeight;
-        var direction = spawnPoint.transform.position - randomPos;
+        var direction = spawnPoint.transform.position;
         direction.y = spawnHeight;
-        playerPrefab = Instantiate(playerPrefab, randomPos, Quaternion.LookRotation(direction));
+        playerPrefab = Instantiate(playerPrefab, randomPos, Quaternion.LookRotation(direction - randomPos));
         PlayerController.instance.SetUpPlayer(playerPrefab);
         playerPrefab.SetActive(false);
     }

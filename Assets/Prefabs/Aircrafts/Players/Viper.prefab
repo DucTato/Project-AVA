@@ -923,7 +923,7 @@ MonoBehaviour:
   throttleSpeed: 1
   gLimit: 4
   gLimitPitch: 8
-  initialSpeed: 100
+  initialSpeed: 200
   liftPower: 150
   liftAOACurve:
     serializedVersion: 2
@@ -2909,7 +2909,7 @@ PrefabInstance:
     - target: {fileID: 8398151129822282921, guid: ff67c161010bbf94eb6d6edbd524d8f0,
         type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8702751867727740261, guid: ff67c161010bbf94eb6d6edbd524d8f0,
         type: 3}

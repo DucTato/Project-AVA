@@ -46,6 +46,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7bd683681b1851645b9fd9f2f0d658e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  worldBaseHeight: 0
   currentEnemies: 0
   maxEnemies: 50
   Enemies:
@@ -54,7 +55,6 @@ MonoBehaviour:
   - {fileID: 0}
   spawnRadius: 15
   spawnInterval: 2
-  spawnHeightOffset: 0
   currentPoint: 0
   maxPoint: 0
   playerSpawnRadius: 200
@@ -63,6 +63,13 @@ MonoBehaviour:
   waitTxt: {fileID: 0}
   loadingDoneTxt: {fileID: 0}
   gameCanvas: {fileID: 0}
+  freeLookTxt: {fileID: 0}
+  gameplayMap:
+    m_Name: Gameplay Map
+    m_Id: b1b58169-a540-47af-9370-64ccb3f3a61e
+    m_Asset: {fileID: 0}
+    m_Actions: []
+    m_Bindings: []
 --- !u!114 &4961987387078398901
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -81,6 +88,7 @@ MonoBehaviour:
   fireControl: {fileID: 0}
   camera: {fileID: 0}
   freeLookCam: {fileID: 0}
+  playerInput: {fileID: 0}
 --- !u!114 &2776392762927458022
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -172,10 +180,6 @@ MonoBehaviour:
     m_ActionId: 636f1987-e23c-410a-bf20-f560c1dd3d94
     m_ActionName: Gameplay/ACthrottle[/XInputControllerWindows/leftShoulder,/XInputControllerWindows/rightShoulder]
   - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 89bb7773-d740-4aa4-b431-6fbebe6884e9
-    m_ActionName: Gameplay/toggleCam[/XInputControllerWindows/select]
-  - m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4961987387078398901}
         m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
@@ -232,7 +236,19 @@ MonoBehaviour:
     m_ActionId: 50d7781d-7ef3-4e95-80cc-dfdd74206019
     m_ActionName: UI/Submit[/XInputControllerWindows/buttonSouth]
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1748400266548983771}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
+        m_MethodName: OnCancelButton
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: 385735c5-3cbd-48fa-8fce-269b0845dc4b
     m_ActionName: UI/Cancel[/XInputControllerWindows/buttonEast]
   - m_PersistentCalls:
@@ -240,7 +256,7 @@ MonoBehaviour:
       - m_Target: {fileID: 1748400266548983771}
         m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
         m_MethodName: OnStartButton
-        m_Mode: 1
+        m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -252,7 +268,19 @@ MonoBehaviour:
     m_ActionId: c474b1ef-55c4-4b4f-b621-9cfe12b9e3ea
     m_ActionName: UI/Start[/XInputControllerWindows/start]
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1748400266548983771}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
+        m_MethodName: OnFreeLook
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: c0d80506-2788-4d6e-a33b-0967fca6684b
     m_ActionName: UI/FreeLook[/XInputControllerWindows/rightStick]
   - m_PersistentCalls:
@@ -275,6 +303,22 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 533a0bfa-ec87-43ef-b9bb-fb2ad5d18c7e
     m_ActionName: UI/RightClick[/Mouse/rightButton]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4961987387078398901}
+        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
+        m_MethodName: OnPauseButton
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 9e775844-133a-42df-8dee-0ea3df576837
+    m_ActionName: Gameplay/GamePause[/XInputControllerWindows/start]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: DualStickController
   m_DefaultActionMap: UI

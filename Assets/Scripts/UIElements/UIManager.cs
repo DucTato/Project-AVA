@@ -1,8 +1,11 @@
+using MaskTransitions;
 using NaughtyAttributes;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
@@ -81,15 +84,22 @@ public class UIManager : MonoBehaviour
     [SerializeField, Foldout("Miscs")]
     private TextMeshProUGUI currentTargetInfo;
     [SerializeField, Foldout("Miscs")]
-    private GameObject deathPanel, gameInfo, winPanel, pausePanel;
+    private GameObject deathPanel, gameInfo, winPanel;
     [SerializeField, Foldout("Miscs")]
     private Canvas inGameCanvas;
+
+    [SerializeField, Foldout("PauseMenu")]
+    private GameObject pausePanel, shopPanel, optionPanel;
+    [SerializeField, Foldout("ShopMenu")]
+    private TextMeshProUGUI pointTxt;
+
+    private GameObject prevPanel, currPanel;
 
     private PlaneHandler planeHandler;
     private FCS fireControl;
     //Target target;
     AIController aiController;
-    Target selfTarget;
+    private Target selfTarget;
     Transform planeTransform;
     [SerializeField]
     new Camera targetCam;
@@ -120,12 +130,24 @@ public class UIManager : MonoBehaviour
         }
         set
         {
+            if (!GameManager.instance.GamePhase) return;    // Can't pause during the loading screen
             isPaused = value;
-            if (isPaused)   
+            if (isPaused)
+            {
                 Time.timeScale = 0f;
-            else    
+                PlayerController.instance.playerInput.actions.FindActionMap("Gameplay").Disable();
+                PlayerController.instance.playerInput.actions.FindActionMap("UI").Enable();
+                //PlayerController.instance.SetCurrentInputMap("UI");
+                OpenPanel(pausePanel);
+            }
+            else
+            {
                 Time.timeScale = 1f;
-            pausePanel.SetActive(isPaused);
+                PlayerController.instance.playerInput.actions.FindActionMap("UI").Disable();
+                PlayerController.instance.playerInput.actions.FindActionMap("Gameplay").Enable();
+                //PlayerController.instance.SetCurrentInputMap("Gameplay");
+                ClosePanel(pausePanel);
+            }
         }
     }
     public bool IsPlaneActive { get; set; }
@@ -147,6 +169,7 @@ public class UIManager : MonoBehaviour
         hideHP = true;
         SetDeathScreen(false);
         SetWinScreen(false);
+        IsPaused = false;
     }
     void LateUpdate()
     {
@@ -469,7 +492,7 @@ public class UIManager : MonoBehaviour
     }
     public void TogglePause()
     {
-        IsPaused = !IsPaused;
+        IsPaused = !isPaused;
     }
     public void SetPlane(PlaneHandler plane)
     {
@@ -524,6 +547,126 @@ public class UIManager : MonoBehaviour
             pitchLadder.SetCamera(targetCam);
         }
     }
-    #endregion
+    /// <summary>
+    /// Handles input. However, this method is here for an easier time to debug. This is mainly for the UI for in-game. Not the UI for Main Menu
+    /// </summary>
+    public void OnEastButton()
+    {
+        // Press B on the any panel to return to previous panel
+        if (currPanel == null) return;
+        if (prevPanel == null) 
+        {
+            TogglePause();     //Press B to unpause
+            return;
+        }
 
+        ClosePanel(currPanel);
+        OpenPanel(prevPanel);
+        currPanel = prevPanel;
+        SetPreviousPanel(currPanel);
+        if (EventSystem.current.isActiveAndEnabled) EventSystem.current.SetSelectedGameObject(currPanel.GetComponent<Panel>().GetFirstOption());
+    }
+    /// <summary>
+    /// General methods. Might com in handy
+    /// </summary>
+    private void OpenPanel(GameObject panel)
+    {
+        panel.SetActive(true);
+        currPanel = panel;
+    }
+    private void ClosePanel(GameObject panel)
+    {
+        panel.GetComponent<Panel>().Close();
+    }
+    private void SetPreviousPanel(GameObject currentPanel)
+    {
+        prevPanel = currentPanel.GetComponent<Panel>().GetPrevious();
+    }
+    #endregion
+    #region PauseMenu
+    /// <summary>
+    /// General methods for the PAUSE MENU
+    /// </summary>
+    public void OnOpenShopButton()
+    {
+        OpenPanel(shopPanel);
+        SetPreviousPanel(shopPanel);
+        ClosePanel(prevPanel);
+        // Updates current points once upon opening the menu
+        UpdateCurrentPoint();
+    }
+    public void OnQuitSessionButton()
+    {
+        // Resets time scale before going back to main menu
+        Time.timeScale = 1f;
+        SceneManager.LoadScene("MainMenu");
+        // Destroy persistent objects
+        Destroy(TransitionManager.Instance.gameObject);
+    }
+
+    /// <summary>
+    /// SHOP MENU functions
+    /// </summary>
+    /// 
+    
+    public void OnGunDmgUpgrade()
+    {
+        if (PayForUpgrade(50)) fireControl.UpgradeGun(1.05f, 1f);
+    }
+    public void OnGunRateUpgrade()
+    {
+        if (PayForUpgrade(65)) fireControl.UpgradeGun(1f, 1.05f);
+        
+    }
+    public void OnMissileRefill()
+    {
+        return;
+    }
+
+    public void OnLiftUpgrade()
+    {
+        if (PayForUpgrade(40)) planeHandler.UpgradePerformance(1.05f, 1f);
+        
+    }
+    public void OnDragUpgrade()
+    {
+        if (PayForUpgrade(70)) planeHandler.UpgradePerformance(1f, 0.95f);
+        
+    }
+    public void OnThrustUpgrade()
+    {
+        if (PayForUpgrade(100)) planeHandler.UpgradeThrust(1.05f);
+        
+    }
+
+    public void OnAuxItemRefill()
+    {
+        return;
+    }
+    public void OnHalfRepair()
+    {
+        if (PayForUpgrade(80)) selfTarget.Heal(50f);
+        
+    }
+    public void OnFullRepair()
+    {
+        if (PayForUpgrade(100)) selfTarget.Heal(100f);
+        
+    }
+    /// General methods for shop menu
+    private bool PayForUpgrade(int cost)
+    {
+        if (GameManager.instance.CurrentPoint >= cost)
+        {
+            GameManager.instance.CurrentPoint -= cost;
+            UpdateCurrentPoint();
+            return true;
+        }
+        else return false;
+    }
+    private void UpdateCurrentPoint()
+    {
+        pointTxt.text = "Current point(s): " + GameManager.instance.CurrentPoint;
+    }
+    #endregion
 }
