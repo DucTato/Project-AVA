@@ -15,7 +15,9 @@ public class GameManager : MonoBehaviour
     public float worldBaseHeight;
 
     [SerializeField, Foldout("Enemies")]
-    private int currentEnemies, maxEnemies;
+    private int currentEnemies, maxEnemies, enemyDefeated;
+    [SerializeField, Foldout("Enemies")]
+    private int maxEnemiesAtOnce = 32;
     [SerializeField, Foldout("Enemies")]
     private GameObject[] Enemies;
     [SerializeField, Foldout("Enemies")]
@@ -38,7 +40,7 @@ public class GameManager : MonoBehaviour
     private InputActionMap gameplayMap;
 
     private bool BossPhase;
-    private const int maxEnemiesAtOnce = 32;
+   
     public bool GamePhase { get; set; }
     public GameObject WorldCenter
     {
@@ -60,23 +62,9 @@ public class GameManager : MonoBehaviour
         set
         {
             currentPoint = value;
-            SetCurrentProgress();
-            if (currentPoint == maxPoint) StartWinProcedure();
         }
     }
-    public int CurrentEnemies
-    {
-        get { return currentEnemies; }
-        private set
-        {
-            currentEnemies = value;
-            if (currentEnemies == 0 && !BossPhase)
-            {
-                // Switch to BOSS phase
-                BossPhase = true;
-            }
-        }
-    }
+
     #region CallBacks
     private void Awake()
     {
@@ -118,11 +106,21 @@ public class GameManager : MonoBehaviour
     }
     private void SetCurrentProgress()
     {
-        hudController.SetProgressBar(CurrentPoint, maxPoint);
+        hudController.SetProgressBar(enemyDefeated, maxEnemies);
     }
     public void AddPoint(int point)
     {
         CurrentPoint += point;
+    }
+    public void AddEnemiesDefeated()
+    {
+        enemyDefeated++;
+        if (enemyDefeated == maxEnemies && !BossPhase)
+        {
+            // Switch to BOSS phase
+            BossPhase = true;
+        }
+        SetCurrentProgress();
     }
     public void StartWinProcedure()
     {
@@ -209,6 +207,7 @@ public class GameManager : MonoBehaviour
                 // Sets up new fog value for in-game phase
                 SetFogValues(1000f, 3000f);
                 GamePhase = true;
+                SetCurrentProgress();
             }
             else if (GamePhase)
             {

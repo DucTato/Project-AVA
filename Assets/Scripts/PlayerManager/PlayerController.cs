@@ -1,4 +1,5 @@
 using Cinemachine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -25,6 +26,8 @@ public class PlayerController : MonoBehaviour
     public PlayerInput playerInput;
     private Vector3 controlInput;
     private AIController autoPilot;
+    private string[] cheatCode;
+    private int codeIndex;
     public int PlayerID { get; private set; }
     #region CallBacks
     private void Awake()
@@ -37,6 +40,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         SetCurrentInputMap("UI");
+        cheatCode = new string[] { "m", "a", "v", "e", "r", "i", "c", "k"};  // the cheat code is: MAVERICK
         //Debug.Log(playerInput.actions.FindActionMap("Gameplay").enabled);
     }
 
@@ -142,8 +146,25 @@ public class PlayerController : MonoBehaviour
     }
     private void HandleInputs()
     {
-        if (Input.GetKeyDown(KeyCode.Space)) autoPilot.enabled = !autoPilot.enabled;
-        
+        // Cheat code detection
+        if (Input.anyKeyDown)
+        {
+            if (Input.GetKeyDown(cheatCode[codeIndex]))
+            {
+                codeIndex++;
+            }
+            else
+            {
+                codeIndex = 0; // If the sequence is interrupted by a wrong input, reset the input sequence
+            }
+            if (codeIndex == cheatCode.Length)
+            {
+                Debug.Log("Cheat Code Activated");
+                autoPilot.enabled = !autoPilot.enabled;
+                codeIndex = 0; // Reset the input sequence
+            }
+        }
+
         if (planeHandler != null)
         {
             if (autoPilot.enabled) return;
