@@ -186,7 +186,7 @@ public class MenuUIController : MonoBehaviour
         SetPreviousPanel(currPanel);
     }
     #endregion
-    #region MISSION Mode Menu
+    #region Pre Mission Menu
     public void OnOpenMissionPanel()
     {
         // Confirms the aircraft setups once upon opening
@@ -208,6 +208,8 @@ public class MenuUIController : MonoBehaviour
     public void ConfirmAircraftSetup() 
     {
         // This method will be executed in the On Close() Event
+        currentAircraft = Mathf.Clamp( currentAircraft, 0, aircraftPrefabs.Length - 1);
+        currentSpecialItem = Mathf.Clamp(currentSpecialItem, 0, specialItems.Length - 1);
         PlayerTracker.instance.SetAircraft(aircraftPrefabs[currentAircraft], specialItems[currentSpecialItem]);
         UpdateSelectionInfo();
         

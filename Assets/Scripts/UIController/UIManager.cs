@@ -18,8 +18,6 @@ public class UIManager : MonoBehaviour
     [SerializeField][Foldout("Avionics")]
     Color lockColor;
     [SerializeField][Foldout("Avionics")]
-    List<GameObject> helpDialogs;
-    [SerializeField][Foldout("Avionics")]
     Compass compass;
     [SerializeField][Foldout("Avionics")]
     PitchLadder pitchLadder;
