@@ -73,6 +73,7 @@ public class WaveFunctionCollapse : MonoBehaviour
                     newCell.transform.parent = transform ;
                 }
                 gridComponents.Add(newCell);
+                //Debug.Log("X:"+ x+ " Y:" + y + "Index: " +(x+y*dimensions)+newCell.transform.position);
             }
         }
         StartCoroutine(CheckEntropy());
@@ -121,18 +122,15 @@ public class WaveFunctionCollapse : MonoBehaviour
                 else
                 {
                     List<Tile> options = new List<Tile>();
-                    foreach (Tile t in tileObjects)
-                    {
-                        options.Add(t);
-                    }
+                    options = tileObjects.ToList();
                     // Go up to check the down neighbours
                     if (y > 0)
                     {
                         Cell up = gridComponents[x + (y - 1) * dimensions];
                         List<Tile> validOptions = new List<Tile>();
-                        foreach (Tile possibleOptions in up.tileOptions)
+                        foreach (Tile possibleOption in up.tileOptions)
                         {
-                            var validOption = Array.FindIndex(tileObjects, obj => obj == possibleOptions);
+                            var validOption = Array.FindIndex(tileObjects, obj => obj == possibleOption);
                             var valid = tileObjects[validOption].downNeighbours;
                             validOptions = validOptions.Concat(valid).ToList();
                         }
@@ -183,6 +181,7 @@ public class WaveFunctionCollapse : MonoBehaviour
                         newTileList[i] = options[i];
                     }
                     newGenCell[index].ReCreateCell(newTileList);
+                    //Debug.Log("X:" + x + " Y:" + y + "Index:" +index + newGenCell[index].transform.position);
                 }
 
             }
@@ -199,8 +198,8 @@ public class WaveFunctionCollapse : MonoBehaviour
     {
         for (int x = optionList.Count - 1; x >= 0; x--)
         {
-            var element = optionList[x];
-            if (!validOption.Contains(element))
+            //var element = optionList[x];
+            if (!validOption.Contains(optionList[x]))
             {
                 optionList.RemoveAt(x);
             }
