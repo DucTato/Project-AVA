@@ -20,7 +20,7 @@ public class Missile : MonoBehaviour
     private LayerMask collisionMask;
     [SerializeField]
 #pragma warning disable CS0108 // Member hides inherited member; missing new keyword
-    private MeshRenderer renderer;
+    private Renderer renderer;
 #pragma warning restore CS0108 // Member hides inherited member; missing new keyword
     [SerializeField]
     private GameObject explosionFX;
@@ -97,8 +97,8 @@ public class Missile : MonoBehaviour
         exploded = true;
         timer = lifeTime;
         rb.isKinematic = true;
-        renderer.enabled = false;
-        
+        if (renderer!= null) renderer.enabled = false;
+
         // Explosion FX
         //Debug.Log("BOOM!");
         explosionFX.SetActive(true);
