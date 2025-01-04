@@ -41,6 +41,7 @@ public class PlayerController : MonoBehaviour
     {
         SetCurrentInputMap("UI");
         cheatCode = new string[] { "m", "a", "v", "e", "r", "i", "c", "k"};  // the cheat code is: MAVERICK
+
         //Debug.Log(playerInput.actions.FindActionMap("Gameplay").enabled);
     }
 
@@ -56,7 +57,7 @@ public class PlayerController : MonoBehaviour
     }
     private void OnDisable()
     {
-        
+        fireControl.AmmoUpdate -= OnAmmoUpdate;
     }
     #endregion
     #region Input Handler
@@ -173,6 +174,10 @@ public class PlayerController : MonoBehaviour
     }
     #endregion
     #region Procedures
+    private void OnAmmoUpdate(object sender, EventArgs e)
+    {
+        hudController.UpdateAmmoHUD(fireControl.CurrentCannonAmmo, fireControl.CurrentMissileAmmo, fireControl.CurrentMissileStorage);
+    }
     public bool CheckIsPlayer(GameObject go)
     {
         if (go.GetInstanceID() == PlayerID) return true;
@@ -181,11 +186,12 @@ public class PlayerController : MonoBehaviour
     public void SetUpPlayer(GameObject obj)
     {
         planeHandler = obj.GetComponent<PlaneHandler>();
-        fireControl = obj.GetComponent<FCS>();
         freeLookCam = obj.GetComponentInChildren<CinemachineFreeLook>();
         autoPilot = obj.GetComponent<AIController>();
         hudController = GameManager.instance.hudController;
         hudController.SetPlane(planeHandler);
+        fireControl = obj.GetComponent<FCS>();
+        fireControl.AmmoUpdate += OnAmmoUpdate;
         hudController.SetCamera(camera);
         PlayerID = obj.GetInstanceID();
     }

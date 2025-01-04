@@ -80,7 +80,7 @@ public class UIManager : MonoBehaviour
     [SerializeField, Foldout("Miscs")]
     private Bar progressBar;
     [SerializeField, Foldout("Miscs")]
-    private TextMeshProUGUI currentTargetInfo;
+    private TextMeshProUGUI currentTargetInfo, ammoInfo;
     [SerializeField, Foldout("Miscs")]
     private GameObject deathPanel, gameInfo, winPanel;
     
@@ -468,6 +468,10 @@ public class UIManager : MonoBehaviour
     }
     #endregion
     #region GameHUD
+    public void UpdateAmmoHUD(int cannon, int missiles, int storedMissiles)
+    {
+        ammoInfo.text = string.Format("{0}\n{1} / {2}", cannon, missiles, storedMissiles);  
+    }
     public void SetProgressBar(float current, float maxValue)
     {
         progressBar.SetValue(current / maxValue);

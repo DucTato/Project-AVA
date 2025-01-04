@@ -486,6 +486,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f3d163e4a9842c47b6f6121a3107f83, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  consumeAmmo: 1
+  cannonVolley: 150
+  storedMissiles: 14
+  missileSalvo: 2
   hardpoints:
   - {fileID: 3428990311419908663}
   - {fileID: 7087607109775228054}
@@ -499,7 +503,7 @@ MonoBehaviour:
   lockSpeed: 30
   lockAngle: 45
   cannonFireRate: 900
-  cannonDebounceTime: 0.125
+  cannonDebounceTime: 1.5
   cannonSpread: 0.25
   cannonSpawnPoint: {fileID: 7828061288883095344}
   bulletPrefab: {fileID: 8993259690404078279, guid: b730886381d0b5c4fb270843256c18f2,

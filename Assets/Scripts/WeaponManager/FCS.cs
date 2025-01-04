@@ -1,11 +1,18 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class FCS : MonoBehaviour
 {
+    public EventHandler<EventArgs> AmmoUpdate;
     [Header("Fire Control System")]
+    [SerializeField]
+    private bool consumeAmmo;
+    [SerializeField]
+    private int cannonVolley, storedMissiles;
     [SerializeField]
     List<Transform> hardpoints;
     [SerializeField]
@@ -41,10 +48,10 @@ public class FCS : MonoBehaviour
 
     private Rigidbody rb;
     
-    private int missileIndex;
+    private int missileIndex, currentMissiles;
     private List<float> missileReloadTimers;
     private HashSet<GameObject> targetsList;
-    private float missileDebounceTimer, fcsUpdateIntervalTimer;
+    private float missileDebounceTimer, fcsUpdateIntervalTimer, cannon;
     private Vector3 missileLockDirection;
 
     private string currentTag;
@@ -52,6 +59,42 @@ public class FCS : MonoBehaviour
     private float cannonDebounceTimer;
     private float cannonFiringTimer, cannonDmgMult, cannonRateMult;
     //public Target currTarget { get {return currentTarget; } private set { currentTarget = value; Debug.Log(currentTarget); } }
+    public int CurrentCannonAmmo
+    {
+        get
+        {
+            return cannonVolley;
+        }
+        private set
+        {
+            cannonVolley = value;
+            AmmoUpdate?.Invoke(this, EventArgs.Empty);
+        }
+    }
+    public int CurrentMissileAmmo
+    {
+        get
+        {
+            return currentMissiles;
+        }
+        set
+        {
+            currentMissiles = value;
+            AmmoUpdate?.Invoke(this, EventArgs.Empty);
+        }
+    }
+    public int CurrentMissileStorage
+    {
+        get
+        {
+            return storedMissiles;
+        }
+        set
+        {
+            storedMissiles = value;
+            AmmoUpdate?.Invoke(this, EventArgs.Empty);
+        }
+    }
     public Target currTarget 
     {
         get
@@ -77,6 +120,7 @@ public class FCS : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        currentMissiles = hardpoints.Count;
         cannonDmgMult = 1f;
         cannonRateMult = 1f;
         switch (targetingBehaviour)
@@ -130,25 +174,52 @@ public class FCS : MonoBehaviour
         //if (MissileLocked) Debug.Log("Target Locked");
     }
     private void UpdateCannon(float dt)
-    {
+    { 
         if (cannonFiring && cannonFiringTimer == 0)
         {
+            if (consumeAmmo && CurrentCannonAmmo <= 0) return;
+            if (consumeAmmo)
+            {
+                CurrentCannonAmmo--;
+            }
             cannonFiringTimer = 60f / cannonFireRate;
+            cannonDebounceTimer = cannonDebounceTime;
             var spread = Random.insideUnitCircle * cannonSpread;
             var bulletGO = Instantiate(bulletPrefab, cannonSpawnPoint.position, cannonSpawnPoint.rotation * Quaternion.Euler(spread.x, spread.y, 0));
             bulletGO.GetComponent<Bullet>().Fire(transform.gameObject, cannonDmgMult);
             muzzleFX.Play();
         }
+        if (!cannonFiring)
+        {
+            if (cannonDebounceTimer > 0)
+            cannonDebounceTimer = Mathf.Max(0, cannonDebounceTimer - dt);
+            else
+            {
+                // Refill the cannon volley after a cannonDebounceTime
+                CurrentCannonAmmo = 150;
+            }
+        }
     }
     private void FireMissile(int index)
     {
-        var missileGO = Instantiate(missilePrefab, hardpoints[index].position, hardpoints[index].rotation);
-        missileGO.GetComponent<Missile>().Launch(transform.gameObject, MissileLocked ? currTarget : null);
+        if (consumeAmmo)
+        {
+            if (CurrentMissileAmmo <= 0) return;
+            var missileGO = Instantiate(missilePrefab, hardpoints[index].position, hardpoints[index].rotation);
+            missileGO.GetComponent<Missile>().Launch(transform.gameObject, MissileLocked ? currTarget : null);
+            CurrentMissileAmmo--;
+        }
+        else
+        {
+            var missileGO = Instantiate(missilePrefab, hardpoints[index].position, hardpoints[index].rotation);
+            missileGO.GetComponent<Missile>().Launch(transform.gameObject, MissileLocked ? currTarget : null);
+        }
+        
     }
     private void UpdateWeaponCooldown(float dt)
     {
         missileDebounceTimer = Mathf.Max(0, missileDebounceTimer - dt);
-        cannonDebounceTimer = Mathf.Max(0, cannonDebounceTimer - dt);
+        
         cannonFiringTimer = Mathf.Max(0, cannonFiringTimer - dt);
 
         for (int i = 0; i < missileReloadTimers.Count; i++)
@@ -157,7 +228,22 @@ public class FCS : MonoBehaviour
             if (missileReloadTimers[i] == 0)
             {
                 //Show missiles under wings
+                Reload();
             }
+        }
+    }
+    private void Reload()
+    {
+        int missile = CurrentMissileAmmo;
+        if (CurrentMissileStorage >= hardpoints.Count - missile)
+        {
+            CurrentMissileAmmo += hardpoints.Count - missile;
+            CurrentMissileStorage -= hardpoints.Count - missile;
+        }
+        else
+        {
+            CurrentMissileAmmo = CurrentMissileStorage;
+            CurrentMissileStorage = 0;
         }
     }
     private void UpdateFCS(float dt, string tag)
@@ -250,5 +336,27 @@ public class FCS : MonoBehaviour
         Enemies
     }
 }
+//public class AmmoUpdateEvent : EventArgs
+//{
+//    private int cannonAmmo, missileAmmo, storedMissiles;
+//    public AmmoUpdateEvent(int cannonAmmo, int missileAmmo, int storedMissiles)
+//    {
+//        this.cannonAmmo = cannonAmmo;
+//        this.missileAmmo = missileAmmo;
+//        this.storedMissiles = storedMissiles;
+//    }
+//    public int GetCannonAmmo()
+//    {
+//        return cannonAmmo;
+//    }
+//    public int GetMissileAmmo()
+//    {
+//        return missileAmmo;
+//    }
+//    public int GetStoredMissiles()
+//    {
+//        return storedMissiles;
+//    }
+//}
 
 
