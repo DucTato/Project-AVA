@@ -11,10 +11,13 @@ public class PlayerTracker : MonoBehaviour
     [SerializeField]
     [Tooltip("Base spawn height for the player, will be added on top of world's base height")]
     private float spawnHeight;
+
+    private bool usePP;
     public int seed;
     #region Callbacks
     private void Awake()
     {
+        usePP = true;
         instance = this;
         Debug.Log("Tracker Awake");
         if (seed == 0)
@@ -73,6 +76,17 @@ public class PlayerTracker : MonoBehaviour
     {
         playerPrefab = aircraft;
         specialItemPrefab = item;
+    }
+    #endregion
+
+    #region PlayerPreferences
+    public void SetPostProcessing(bool value)
+    {
+        usePP = value;
+    }
+    public bool PostProcessing()
+    {
+        return usePP;
     }
     #endregion
 }

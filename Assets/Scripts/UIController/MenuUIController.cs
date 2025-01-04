@@ -7,6 +7,8 @@ using MaskTransitions;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.EventSystems;
+using UnityEngine.Events;
+using UnityEngine.Rendering;
 
 public class MenuUIController : MonoBehaviour
 {
@@ -33,6 +35,12 @@ public class MenuUIController : MonoBehaviour
     private TMP_InputField nameInput, callsignInput;
     [SerializeField, Foldout("Options")]
     private GameObject lastSelection;
+    [SerializeField, Foldout("Options")]
+    private Slider masterSlider, effectSlider, musicSlider;
+    [SerializeField, Foldout("Options")]
+    private TextMeshProUGUI masterText, effectText, musicText;
+    [SerializeField, Foldout("Options")]
+    private Toggle ppToggle;
     //private int optionIndex;
     [SerializeField]
     private GameObject prevPanel, currPanel;
@@ -49,7 +57,11 @@ public class MenuUIController : MonoBehaviour
     }
     private void Start()
     {
-        
+        // First attempt to disable the "Gameplay" Map. It didn't work
+        UnityEvent updateInputMap = new UnityEvent();
+        updateInputMap.AddListener(() => PlayerController.instance.playerInput.actions.FindActionMap("Gameplay").Disable());
+        updateInputMap.Invoke();
+
         TransitionManager.Instance.PlayEndHalfTransition(1.2f);
         // Adds listeners to option category buttons
         for (int i = 0; i < optionCategories.Length; i++)
@@ -84,6 +96,7 @@ public class MenuUIController : MonoBehaviour
             GameManager.instance.SetWorldCenter(GameObject.Find("WorldCenter"));
             PlayerTracker.instance.PlaceDownPlayer(true);
             currPanel = mainmenuPanel;
+            // For some reason, only this call will disable the "Gameplay" Map
             PlayerController.instance.playerInput.actions.FindActionMap("Gameplay").Disable();
         }
     }
@@ -91,7 +104,11 @@ public class MenuUIController : MonoBehaviour
     {
         if (ctx.phase == InputActionPhase.Performed)
         {
-            
+            if (EventSystem.current.currentSelectedGameObject.GetComponent<Slider>() != null)
+            {
+                EventSystem.current.SetSelectedGameObject(lastSelection);
+                return;
+            }
             // Press B on the main menu to quit
             if (currPanel == mainmenuPanel)
             {
@@ -239,19 +256,20 @@ public class MenuUIController : MonoBehaviour
     }
     #endregion
     #region OPTION Menu
+    #region Gameplay Menu
     public void OnNameInputButton()
     {
         nameInput.interactable = true;
         lastSelection = EventSystem.current.currentSelectedGameObject;
         nameInput.Select();
-        onScreenKeyboard.SetActive(true);
+        //onScreenKeyboard.SetActive(true);
     }
     public void OnCallsignInputButton()
     {
         callsignInput.interactable = true;
         lastSelection = EventSystem.current.currentSelectedGameObject;
         callsignInput.Select();
-        onScreenKeyboard.SetActive(true);
+        //onScreenKeyboard.SetActive(true);
     }
     public void OnDeSelectInputField()
     {
@@ -259,6 +277,45 @@ public class MenuUIController : MonoBehaviour
         callsignInput.interactable = false;
         EventSystem.current.SetSelectedGameObject(lastSelection);
     }
+    #endregion
+    #region Audio Menu
+    public void OnMasterButton()
+    {
+        lastSelection = EventSystem.current.currentSelectedGameObject;
+        masterSlider.Select();
+    }
+    public void OnEffectButton()
+    {
+        lastSelection = EventSystem.current.currentSelectedGameObject;
+        effectSlider.Select();
+    }
+    public void OnMusicButton()
+    {
+        lastSelection = EventSystem.current.currentSelectedGameObject;
+        musicSlider.Select();
+    }
+    public void OnUpdateSliderValues()
+    {
+        // Handle values from the sliders
+        masterSlider.value = Mathf.Round(masterSlider.value * 10f) / 10f;   // Rounding to the first decimal point
+        effectSlider.value = Mathf.Round(effectSlider.value * 10f) / 10f;
+        musicSlider.value = Mathf.Round(musicSlider.value * 10f) / 10f;
+        masterText.text = string.Format("{0:0}%", masterSlider.value * 100);    // Formatting Ex: 10%, 20%
+        effectText.text = string.Format("{0:0}%", effectSlider.value * 100);
+        musicText.text = string.Format("{0:0}%", musicSlider.value * 100);
+    }
+    #endregion
+    #region Graphic Menu
+    public void OnPPToggle()
+    {
+        GameObject.FindGameObjectWithTag("PPVolume").GetComponent<Volume>().enabled = ppToggle.isOn;
+        PlayerTracker.instance.SetPostProcessing(ppToggle.isOn);
+    }
+    public void OnUpdatePP()
+    {
+        ppToggle.isOn = GameObject.FindGameObjectWithTag("PPVolume").GetComponent<Volume>().enabled;
+    }
+    #endregion
     public void OnOpenOptionPanel()
     {
         // Initial setups 

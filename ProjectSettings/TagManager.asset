@@ -12,6 +12,7 @@ TagManager:
   - Voxel
   - Terrain
   - PersistWithParent
+  - PPVolume
   layers:
   - Default
   - TransparentFX

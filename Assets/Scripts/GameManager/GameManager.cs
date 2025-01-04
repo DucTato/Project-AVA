@@ -7,6 +7,7 @@ using UnityEngine.InputSystem;
 using DG.Tweening;
 using Random = UnityEngine.Random;
 using UnityEngine.EventSystems;
+using UnityEngine.Rendering;
 
 public class GameManager : MonoBehaviour
 {
@@ -36,8 +37,7 @@ public class GameManager : MonoBehaviour
     private GameObject waitTxt, loadingDoneTxt, gameCanvas, freeLookTxt;
 
     private List<GameObject> enemyPool;
-    [SerializeField]
-    private InputActionMap gameplayMap;
+    
 
     private bool BossPhase;
    
@@ -84,8 +84,8 @@ public class GameManager : MonoBehaviour
         CurrentPoint = 0;
         if (PlayerTracker.instance == null || PlayerTracker.instance.seed == 0) return;
         else Random.InitState(PlayerTracker.instance.seed);
-        gameplayMap = PlayerController.instance.playerInput.actions.FindActionMap("Gameplay");
-        gameplayMap.Disable();
+        
+        UpdatePlayerPrefs();
     }
 
     // Update is called once per frame
@@ -169,7 +169,12 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(delay);
         for (int i = 0; i < enemyPool.Count; i++)
         {
-            if (currentEnemies >= maxEnemiesAtOnce) break;
+            if (currentEnemies >= maxEnemiesAtOnce)
+            {
+                Debug.Log("Break");
+                break; 
+            }
+
             if (!enemyPool[i].activeInHierarchy)
             {
                 enemyPool[i].SetActive(true);
@@ -180,13 +185,21 @@ public class GameManager : MonoBehaviour
 
         StartCoroutine(SpawnEnemiesWithDelay(delay));
     }
+    /// <summary>
+    /// Update all the player's current preferences upon loading a new scene
+    /// </summary>
+    private void UpdatePlayerPrefs()
+    {
+        // Update Graphical Settings
+        GameObject.FindGameObjectWithTag("PPVolume").GetComponent<Volume>().enabled = PlayerTracker.instance.PostProcessing();
+    }
     #endregion
     #region Input Handler
     public void OnFreeLook(InputAction.CallbackContext ctx)
     {
         if (ctx.phase == InputActionPhase.Performed)
         {
-            gameplayMap.Disable();
+            PlayerController.instance.playerInput.actions.FindActionMap("Gameplay").Disable();
         }
     }
     public void OnStartButton(InputAction.CallbackContext ctx)

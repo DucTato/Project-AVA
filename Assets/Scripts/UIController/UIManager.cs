@@ -83,8 +83,7 @@ public class UIManager : MonoBehaviour
     private TextMeshProUGUI currentTargetInfo;
     [SerializeField, Foldout("Miscs")]
     private GameObject deathPanel, gameInfo, winPanel;
-    [SerializeField, Foldout("Miscs")]
-    private Canvas inGameCanvas;
+    
 
     [SerializeField, Foldout("PauseMenu")]
     private GameObject pausePanel, shopPanel, optionPanel;
@@ -133,17 +132,17 @@ public class UIManager : MonoBehaviour
             if (isPaused)
             {
                 Time.timeScale = 0f;
-                PlayerController.instance.playerInput.actions.FindActionMap("Gameplay").Disable();
-                PlayerController.instance.playerInput.actions.FindActionMap("UI").Enable();
-                //PlayerController.instance.SetCurrentInputMap("UI");
+                //PlayerController.instance.playerInput.actions.FindActionMap("Gameplay").Disable();
+                //PlayerController.instance.playerInput.actions.FindActionMap("UI").Enable();
+                Switch2UIMap();
                 OpenPanel(pausePanel);
             }
             else
             {
                 Time.timeScale = 1f;
-                PlayerController.instance.playerInput.actions.FindActionMap("UI").Disable();
-                PlayerController.instance.playerInput.actions.FindActionMap("Gameplay").Enable();
-                //PlayerController.instance.SetCurrentInputMap("Gameplay");
+                //PlayerController.instance.playerInput.actions.FindActionMap("UI").Disable();
+                //PlayerController.instance.playerInput.actions.FindActionMap("Gameplay").Enable();
+                Switch2GameMap();
                 ClosePanel(pausePanel);
             }
         }
@@ -489,7 +488,10 @@ public class UIManager : MonoBehaviour
     }
     public void ToggleCanvas(bool isVisible)
     {
-        inGameCanvas.enabled = isVisible;
+        foreach (Canvas c in GetComponentsInChildren<Canvas>()) 
+        {
+            c.enabled = isVisible;
+        }
         IsPlaneActive = isVisible;
     }
     public void TogglePause()
@@ -549,6 +551,16 @@ public class UIManager : MonoBehaviour
             pitchLadder.SetCamera(targetCam);
         }
     }
+    public void Switch2UIMap()
+    {
+        PlayerController.instance.playerInput.actions.FindActionMap("Gameplay").Disable();
+        PlayerController.instance.SetCurrentInputMap("UI");
+    }
+    public void Switch2GameMap()
+    {
+        PlayerController.instance.playerInput.actions.FindActionMap("UI").Disable();
+        PlayerController.instance.SetCurrentInputMap("Gameplay");
+    }
     /// <summary>
     /// Handles input. However, this method is here for an easier time to debug. This is mainly for the UI for in-game. Not the UI for Main Menu
     /// </summary>
@@ -584,6 +596,7 @@ public class UIManager : MonoBehaviour
     {
         prevPanel = currentPanel.GetComponent<Panel>().GetPrevious();
     }
+
     #endregion
     #region PauseMenu
     /// <summary>
