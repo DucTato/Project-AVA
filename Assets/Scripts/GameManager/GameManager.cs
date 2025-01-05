@@ -171,7 +171,7 @@ public class GameManager : MonoBehaviour
         {
             if (currentEnemies >= maxEnemiesAtOnce)
             {
-                Debug.Log("Break");
+                //Debug.Log("Break");
                 break; 
             }
 

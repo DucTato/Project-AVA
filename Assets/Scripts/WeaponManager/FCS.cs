@@ -48,10 +48,10 @@ public class FCS : MonoBehaviour
 
     private Rigidbody rb;
     
-    private int missileIndex, currentMissiles;
+    private int missileIndex, currentMissiles, emptyIndex;
     private List<float> missileReloadTimers;
     private HashSet<GameObject> targetsList;
-    private float missileDebounceTimer, fcsUpdateIntervalTimer, cannon;
+    private float missileDebounceTimer, fcsUpdateIntervalTimer;
     private Vector3 missileLockDirection;
 
     private string currentTag;
@@ -228,21 +228,20 @@ public class FCS : MonoBehaviour
             if (missileReloadTimers[i] == 0)
             {
                 //Show missiles under wings
-                Reload();
+                if (i == emptyIndex) Reload();
             }
         }
     }
     private void Reload()
     {
-        int missile = CurrentMissileAmmo;
-        if (CurrentMissileStorage >= hardpoints.Count - missile)
+        if (hardpoints.Count < CurrentMissileStorage + CurrentCannonAmmo)
         {
-            CurrentMissileAmmo += hardpoints.Count - missile;
-            CurrentMissileStorage -= hardpoints.Count - missile;
+            CurrentMissileStorage -= hardpoints.Count - CurrentMissileAmmo;
+            CurrentMissileAmmo = hardpoints.Count;
         }
         else
         {
-            CurrentMissileAmmo = CurrentMissileStorage;
+            CurrentMissileAmmo += CurrentMissileStorage;
             CurrentMissileStorage = 0;
         }
     }
@@ -301,7 +300,9 @@ public class FCS : MonoBehaviour
                 missileIndex = (index + 1) % hardpoints.Count;
                 missileReloadTimers[index] = missileReloadTime;
                 missileDebounceTimer = missileDebounceTime;
+                emptyIndex = index;
                 // update animation
+                // TODO
                 break;
             }
         }

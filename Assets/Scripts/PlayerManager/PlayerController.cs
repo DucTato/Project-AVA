@@ -55,7 +55,7 @@ public class PlayerController : MonoBehaviour
     {
         
     }
-    private void OnDisable()
+    private void OnDestroy()
     {
         fireControl.AmmoUpdate -= OnAmmoUpdate;
     }
