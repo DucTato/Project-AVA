@@ -92,6 +92,7 @@ public class FCS : MonoBehaviour
         set
         {
             storedMissiles = value;
+            storedMissiles = Mathf.Clamp(storedMissiles, 0, 14);
             AmmoUpdate?.Invoke(this, EventArgs.Empty);
         }
     }
@@ -328,7 +329,10 @@ public class FCS : MonoBehaviour
         cannonFireRate *= cannonRateMult;
         cannonSpread *= cannonRateMult; // Faster RoF = more Spread
     }
-    
+    public void ReSupplyMissile()
+    {
+        CurrentMissileStorage += 2;
+    }
     #endregion
     public enum TgtBehaviourType
     {

@@ -640,7 +640,7 @@ public class UIManager : MonoBehaviour
     }
     public void OnMissileRefill()
     {
-        return;
+        if (PayForUpgrade(70)) fireControl.ReSupplyMissile();
     }
 
     public void OnLiftUpgrade()

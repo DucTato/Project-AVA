@@ -115,6 +115,7 @@ GameObject:
   m_Component:
   - component: {fileID: 439607002005984126}
   - component: {fileID: 8781371717307959697}
+  - component: {fileID: 4225930504183475054}
   m_Layer: 0
   m_Name: Gruboid
   m_TagString: Untagged
@@ -153,3 +154,26 @@ MonoBehaviour:
   castMask:
     serializedVersion: 2
     m_Bits: 1
+--- !u!114 &4225930504183475054
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7689086809124396657}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 915e71dbf44aacb478a5a402ae6be987, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 0
+  maxHealth: 60
+  name: Gruboid
+  smokeCloudPrefab: {fileID: 100000, guid: ab1112643ee572748b01dede71158272, type: 3}
+  fireCloudPrefab: {fileID: 100000, guid: 756d99540142b5e4a8d174e18a6310d9, type: 3}
+  damagePoints:
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  rewardPoint: 35
