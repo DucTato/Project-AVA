@@ -91,7 +91,7 @@ public class UIManager : MonoBehaviour
     private TextMeshProUGUI pointTxt;
 
     private GameObject prevPanel, currPanel;
-
+    private GameObject noPpLayer;
     private PlaneHandler planeHandler;
     private FCS fireControl;
     //Target target;
@@ -135,6 +135,7 @@ public class UIManager : MonoBehaviour
                 //PlayerController.instance.playerInput.actions.FindActionMap("Gameplay").Disable();
                 //PlayerController.instance.playerInput.actions.FindActionMap("UI").Enable();
                 Switch2UIMap();
+                noPpLayer.SetActive(false);
                 OpenPanel(pausePanel);
             }
             else
@@ -143,6 +144,7 @@ public class UIManager : MonoBehaviour
                 //PlayerController.instance.playerInput.actions.FindActionMap("UI").Disable();
                 //PlayerController.instance.playerInput.actions.FindActionMap("Gameplay").Enable();
                 Switch2GameMap();
+                noPpLayer.SetActive(true);
                 ClosePanel(pausePanel);
             }
         }
@@ -171,6 +173,7 @@ public class UIManager : MonoBehaviour
     private void Start()
     {
         IsPaused = false;
+        noPpLayer = transform.GetChild(0).gameObject;
     }
     void LateUpdate()
     {

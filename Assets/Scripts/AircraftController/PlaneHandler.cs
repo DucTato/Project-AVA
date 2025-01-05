@@ -439,7 +439,9 @@ public class PlaneHandler : MonoBehaviour
     {
         maxThrust *= thrustMult;
         // Clamps values. Maximum engine power maxes out at x3. Minimum value was hand tuned (x1/2.5)
-        liftPower = Mathf.Clamp(liftPower, 88964f, 667233f);
+        maxThrust = Mathf.Clamp(maxThrust, 88964f, 667233f);
+        throttleInput = 0;
+        Throttle = 0;
     }
     #endregion
 }
