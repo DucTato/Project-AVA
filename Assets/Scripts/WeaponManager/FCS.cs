@@ -315,6 +315,11 @@ public class FCS : MonoBehaviour
     
     public void CycleTarget()
     {
+        if (targetsList.Count == 0)
+        {
+            Debug.Log("Target List is empty");
+            return; 
+        }
         List<GameObject> targets = targetsList.ToList();
         if (tgtIndex >= targets.Count) tgtIndex = 0;
         currTarget = targets[tgtIndex++].GetComponent<Target>();

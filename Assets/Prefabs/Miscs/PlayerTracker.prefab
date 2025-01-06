@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2634514105119844967}
   - component: {fileID: 8674465965642489489}
+  - component: {fileID: 5732567129475893377}
   m_Layer: 0
   m_Name: PlayerTracker
   m_TagString: Untagged
@@ -45,4 +46,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerPrefab: {fileID: 1423476808350916755, guid: 94dda5dfe459a5e44b33ece4c071b40b,
+    type: 3}
+  specialItemPrefab: {fileID: 0}
+  spawnHeight: 0
+  seed: 0
+--- !u!114 &5732567129475893377
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2887903787415965763}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2278a74ec7e6b9146802e1c887d68092, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioSource: {fileID: 5243421174058191333, guid: dbddd6ed1a5d39942a8ebea3d0365b03,
     type: 3}
