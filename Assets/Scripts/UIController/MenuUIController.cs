@@ -95,6 +95,7 @@ public class MenuUIController : MonoBehaviour
             switchOFF.SetActive(false);
             GameManager.instance.SetWorldCenter(GameObject.Find("WorldCenter"));
             PlayerTracker.instance.PlaceDownPlayer(true);
+            GameManager.instance.StartPlacingEnemies();
             currPanel = mainmenuPanel;
             // For some reason, only this call will disable the "Gameplay" Map
             PlayerController.instance.playerInput.actions.FindActionMap("Gameplay").Disable();
@@ -193,6 +194,7 @@ public class MenuUIController : MonoBehaviour
     }
     public void OnStartGameButton()
     {
+        PlayerTracker.instance.SetSpawnHeight(2000f);
         // Switches scene
         TransitionManager.Instance.LoadLevel("Mission_Land");
     }

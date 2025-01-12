@@ -679,9 +679,10 @@ public class UIManager : MonoBehaviour
     /// General methods for shop menu
     private bool PayForUpgrade(int cost)
     {
-        if (GameManager.instance.CurrentPoint >= cost)
+        var point = GameManager.instance.CurrentPoint();
+        if (point >= cost)
         {
-            GameManager.instance.CurrentPoint -= cost;
+            GameManager.instance.SubtractPoint(cost);
             UpdateCurrentPoint();
             return true;
         }
@@ -689,7 +690,7 @@ public class UIManager : MonoBehaviour
     }
     private void UpdateCurrentPoint()
     {
-        pointTxt.text = "Current point(s): " + GameManager.instance.CurrentPoint;
+        pointTxt.text = "Current point(s): " + GameManager.instance.CurrentPoint();
     }
     #endregion
 }

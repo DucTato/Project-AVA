@@ -485,6 +485,7 @@ GameObject:
   - component: {fileID: 4117917062883859422}
   - component: {fileID: 4419718576856715708}
   - component: {fileID: 1419070581510786095}
+  - component: {fileID: -2445271117052252477}
   m_Layer: 0
   m_Name: I2DEnemy
   m_TagString: Enemy
@@ -568,6 +569,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f3d163e4a9842c47b6f6121a3107f83, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  consumeAmmo: 0
+  cannonVolley: 0
+  storedMissiles: 0
   hardpoints:
   - {fileID: 743914065830253154}
   - {fileID: 5771281782666715836}
@@ -1024,6 +1028,43 @@ MonoBehaviour:
   acBody: {fileID: 0}
   i2dBody: {fileID: 0}
   dissolveMat: {fileID: 0}
+--- !u!114 &-2445271117052252477
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4874076080712438879}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6ffaf4f02e303a499c13b61df7fada1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnProbability:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0.01277481
+      value: 1
+      inSlope: -1.0129402
+      outSlope: -1.0129402
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: -1.0129402
+      outSlope: -1.0129402
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  rotationOverride: {x: -35, y: 0, z: 0}
 --- !u!1 &5898867092047895167
 GameObject:
   m_ObjectHideFlags: 0

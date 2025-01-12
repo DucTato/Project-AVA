@@ -1653,6 +1653,11 @@ PrefabInstance:
       objectReference: {fileID: 3255637994977946640}
     - target: {fileID: 1748400266548983771, guid: 02ed9c324c5c2de45a23d64747964963,
         type: 3}
+      propertyPath: maxEnemiesAtOnce
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1748400266548983771, guid: 02ed9c324c5c2de45a23d64747964963,
+        type: 3}
       propertyPath: playerSpawnRadius
       value: 100
       objectReference: {fileID: 0}
@@ -1667,6 +1672,27 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 4874076080712438879, guid: 322f5b7a2115d9e4990a7c3d4e241891,
         type: 3}
+    - target: {fileID: 1748400266548983771, guid: 02ed9c324c5c2de45a23d64747964963,
+        type: 3}
+      propertyPath: enemyTypes.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1748400266548983771, guid: 02ed9c324c5c2de45a23d64747964963,
+        type: 3}
+      propertyPath: enemyChances.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1748400266548983771, guid: 02ed9c324c5c2de45a23d64747964963,
+        type: 3}
+      propertyPath: enemyTypes.Array.data[0]
+      value: 
+      objectReference: {fileID: 4874076080712438879, guid: 322f5b7a2115d9e4990a7c3d4e241891,
+        type: 3}
+    - target: {fileID: 1748400266548983771, guid: 02ed9c324c5c2de45a23d64747964963,
+        type: 3}
+      propertyPath: enemyChances.Array.data[0]
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2776392762927458022, guid: 02ed9c324c5c2de45a23d64747964963,
         type: 3}
       propertyPath: m_ActionEvents.Array.size

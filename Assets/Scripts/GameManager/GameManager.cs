@@ -20,12 +20,15 @@ public class GameManager : MonoBehaviour
     [SerializeField, Foldout("Enemies")]
     private int maxEnemiesAtOnce = 32;
     [SerializeField, Foldout("Enemies")]
-    private GameObject[] Enemies;
+    private GameObject[] enemyTypes;
+    [SerializeField, Foldout("Enemies")]
+    [Tooltip("Must correspond to the EnemyTypes table above!\nMin: 0, Max: 1.0")]
+    private float[] enemyChances;
     [SerializeField, Foldout("Enemies")]
     private float spawnRadius, spawnInterval;
 
     [SerializeField, Foldout("Player")]
-    private int currentPoint, maxPoint;
+    private int currentPoint;
     [Foldout("Player")]
     public float playerSpawnRadius;
     [SerializeField, Foldout("Player")]
@@ -35,8 +38,8 @@ public class GameManager : MonoBehaviour
     [SerializeField, Foldout("UI/UX")]
 
     private GameObject waitTxt, loadingDoneTxt, gameCanvas, freeLookTxt;
-
-    private List<GameObject> enemyPool;
+    private Distribution[] enemyDistributions;
+    //private List<GameObject> enemyPool;
     
 
     private bool BossPhase;
@@ -53,25 +56,24 @@ public class GameManager : MonoBehaviour
             if (value == null) return;
             worldCenter = value;
             PlayerTracker.instance.SpawnPlayer(worldCenter);
-            InitializeSpawns();
         }
     }
-    public int CurrentPoint
-    {
-        get { return currentPoint; }
-        set
-        {
-            currentPoint = value;
-        }
-    }
-
+    
     #region CallBacks
     private void Awake()
     {
         instance = this;
-        enemyPool = new List<GameObject>(maxEnemies);
-        Debug.Log(Random.seed);
-        // Tries adding a default world center
+        enemyDistributions = new Distribution[enemyTypes.Length];
+        Debug.Log("Game manager Awake");
+        for (int i = 0; i < enemyTypes.Length; i++)
+        {
+            // Clamps the chance values: 0.0 (0%) -> 1.0 (100%)
+            enemyChances[i] = Mathf.Clamp(enemyChances[i], 0, 1);
+            // Keeps a table of distribution for performance
+            enemyDistributions[i] = enemyTypes[i].GetComponent<Distribution>();
+            //Debug.Log(enemyDistributions[i]);
+        }
+        // Tries updating the text elements
         if (waitTxt == null || loadingDoneTxt == null) return;
         waitTxt.SetActive(true);
         loadingDoneTxt.SetActive(false);
@@ -81,18 +83,10 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         GamePhase = false;
-        CurrentPoint = 0;
+        currentPoint = 0;
         if (PlayerTracker.instance == null || PlayerTracker.instance.seed == 0) return;
         else Random.InitState(PlayerTracker.instance.seed);
-        
         UpdatePlayerPrefs();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-        //Debug.Log(PlayerController.instance.playerInput.currentActionMap);
     }
     #endregion
 
@@ -110,7 +104,19 @@ public class GameManager : MonoBehaviour
     }
     public void AddPoint(int point)
     {
-        CurrentPoint += point;
+        currentPoint += point;
+    }
+    public int CurrentPoint()
+    {
+        return currentPoint;
+    }
+    public void SubtractPoint(int value)
+    {
+        currentPoint -= value;
+    }
+    public void SubtractEnemies()
+    {
+        currentEnemies--;
     }
     public void AddEnemiesDefeated()
     {
@@ -134,11 +140,6 @@ public class GameManager : MonoBehaviour
     {
         WorldCenter = center;
     }
-
-    public void SubtractCurrentEnemies()
-    {
-        currentEnemies--;
-    }
     public void StartPlacingEnemies()
     {
         StartCoroutine(SpawnEnemiesWithDelay(spawnInterval));
@@ -152,37 +153,40 @@ public class GameManager : MonoBehaviour
     {
         freeLookTxt.SetActive(true);
     }
-    private void InitializeSpawns()
+    private void SpawnProcedure()
     {
-        for (int i = 0; i < maxEnemies; i++)
+        for (int i = 0; i < enemyTypes.Length; i++)
         {
-            // Sets up spawn location around the "World Center" object
-            var randomPos = Random.insideUnitSphere * spawnRadius;
-            randomPos += WorldCenter.transform.position;
-            randomPos.y = 5f + worldBaseHeight;
-            // Spawns objects            
-            enemyPool.Add(Instantiate(Enemies[Random.Range(0, Enemies.Length - 1)], randomPos, Quaternion.Euler(-35f, 0f, 0f)));
+            
+            if (enemyDistributions[i].ProbabilityCheck((enemyDefeated / maxEnemies), enemyChances[i]))
+            {
+                
+                // Passed the probability check, spawns enemy type now
+                var randomPos = Random.insideUnitSphere * spawnRadius;
+                randomPos += WorldCenter.transform.position;
+                randomPos.y = 5f + worldBaseHeight;
+                Instantiate(enemyTypes[i], randomPos, enemyDistributions[i].OverrideRotation());
+                currentEnemies++;
+            }
         }
     }
+    
     private IEnumerator SpawnEnemiesWithDelay(float delay)
     {
-        yield return new WaitForSeconds(delay);
-        for (int i = 0; i < enemyPool.Count; i++)
+        if (enemyDefeated < maxEnemies)
         {
-            if (currentEnemies >= maxEnemiesAtOnce)
+            if (currentEnemies < maxEnemiesAtOnce)
             {
-                //Debug.Log("Break");
-                break; 
-            }
-
-            if (!enemyPool[i].activeInHierarchy)
-            {
-                enemyPool[i].SetActive(true);
-                currentEnemies++;
-                enemyPool.Remove(enemyPool[i]);
+                //Start spawn procedure
+                SpawnProcedure();
             }
         }
-
+        else
+        {
+            // Maximum enemies reached, stops the spawning cycle
+            StopCoroutine(SpawnEnemiesWithDelay(delay));
+        }
+        yield return new WaitForSeconds(delay);
         StartCoroutine(SpawnEnemiesWithDelay(delay));
     }
     /// <summary>

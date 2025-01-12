@@ -72,6 +72,10 @@ public class PlayerTracker : MonoBehaviour
             playerPrefab.GetComponent<FCS>().lockRange = Mathf.Infinity;
         }
     }
+    public void SetSpawnHeight(float heightOverride)
+    {
+        spawnHeight = heightOverride;
+    }
     public void SetAircraft(GameObject aircraft, GameObject item)
     {
         playerPrefab = aircraft;

@@ -51,10 +51,6 @@ public class PlayerController : MonoBehaviour
         HandleInputs();
         //playerInput.actions.FindActionMap("Gameplay").Disable();
     }
-    private void OnEnable()
-    {
-        
-    }
     private void OnDestroy()
     {
         fireControl.AmmoUpdate -= OnAmmoUpdate;

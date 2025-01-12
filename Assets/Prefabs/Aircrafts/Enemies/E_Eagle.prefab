@@ -81,6 +81,7 @@ GameObject:
   - component: {fileID: 3648941794331984632}
   - component: {fileID: 325935862805118863}
   - component: {fileID: 2967989792540524822}
+  - component: {fileID: 1158142775607580182}
   m_Layer: 0
   m_Name: E_Eagle
   m_TagString: Enemy
@@ -164,6 +165,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f3d163e4a9842c47b6f6121a3107f83, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  consumeAmmo: 0
+  cannonVolley: 0
+  storedMissiles: 0
   hardpoints:
   - {fileID: 5515973308317149045}
   - {fileID: 6940950767630412320}
@@ -198,7 +202,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: 0
   maxHealth: 100
-  name: Eagle
+  name: Hawk
   smokeCloudPrefab: {fileID: 100000, guid: ab1112643ee572748b01dede71158272, type: 3}
   fireCloudPrefab: {fileID: 100000, guid: 756d99540142b5e4a8d174e18a6310d9, type: 3}
   damagePoints:
@@ -621,6 +625,43 @@ MonoBehaviour:
   acBody: {fileID: 0}
   i2dBody: {fileID: 0}
   dissolveMat: {fileID: 0}
+--- !u!114 &1158142775607580182
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6195147654955020092}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6ffaf4f02e303a499c13b61df7fada1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnProbability:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  rotationOverride: {x: -35, y: 0, z: 0}
 --- !u!1 &6917413322345558959
 GameObject:
   m_ObjectHideFlags: 0
