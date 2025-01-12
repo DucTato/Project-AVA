@@ -139,6 +139,7 @@ public class Target : MonoBehaviour
             // if this is not the player
             // Add points for the player
             GameManager.instance.AddPoint(rewardPoint);
+            GameManager.instance.AddEnemiesDefeated();
         }
         GetComponent<PlaneHandler>()?.ToggleDeadState();
         IsDead = true;

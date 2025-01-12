@@ -4469,7 +4469,7 @@ MonoBehaviour:
   hpUpTime: 5
   aiMessage: {fileID: 1480527135645104400}
   mslWarning: {fileID: 8915006460351322465}
-  avionics: {fileID: 1815015393806845103}
+  avionics: {fileID: 6060204376529637472}
   missileWarningGraphics:
   - {fileID: 2076108394566044732}
   - {fileID: 8506358248988083151}

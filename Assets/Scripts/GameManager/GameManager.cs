@@ -63,6 +63,8 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         instance = this;
+        currentPoint = 0;
+        enemyDefeated = 0;
         enemyDistributions = new Distribution[enemyTypes.Length];
         Debug.Log("Game manager Awake");
         for (int i = 0; i < enemyTypes.Length; i++)
@@ -83,7 +85,6 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         GamePhase = false;
-        currentPoint = 0;
         if (PlayerTracker.instance == null || PlayerTracker.instance.seed == 0) return;
         else Random.InitState(PlayerTracker.instance.seed);
         UpdatePlayerPrefs();
