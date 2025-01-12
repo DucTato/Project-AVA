@@ -194,7 +194,7 @@ public class MenuUIController : MonoBehaviour
     }
     public void OnStartGameButton()
     {
-        PlayerTracker.instance.SetSpawnHeight(2000f);
+        PlayerTracker.instance.SetSpawnHeight(1000f);
         // Switches scene
         TransitionManager.Instance.LoadLevel("Mission_Land");
     }
