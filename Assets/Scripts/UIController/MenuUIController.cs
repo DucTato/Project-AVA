@@ -105,26 +105,27 @@ public class MenuUIController : MonoBehaviour
     {
         if (ctx.phase == InputActionPhase.Performed)
         {
-            if (EventSystem.current.currentSelectedGameObject.GetComponent<Slider>() != null)
+            if (EventSystem.current.currentSelectedGameObject != null && EventSystem.current.currentSelectedGameObject.GetComponent<TMP_InputField>() != null)
             {
-                EventSystem.current.SetSelectedGameObject(lastSelection);
-                return;
+                //Debug.Log("Press B on an Input Field");
+                EventSystem.current.currentSelectedGameObject.GetComponent<TMP_InputField>().onEndEdit?.Invoke(null);
             }
-            // Press B on the main menu to quit
-            if (currPanel == mainmenuPanel)
+            else
             {
-                OnQuitButton();
-                return;
+                // Press B on the main menu to quit
+                if (currPanel == mainmenuPanel)
+                {
+                    OnQuitButton();
+                }
+                //
+                // Press B on the any panel to return to previous panel
+                if (currPanel == null) return;
+                ClosePanel(currPanel);
+                OpenPanel(prevPanel);
+                currPanel = prevPanel;
+                SetPreviousPanel(currPanel);
+                if (EventSystem.current.isActiveAndEnabled) EventSystem.current.SetSelectedGameObject(currPanel.GetComponent<Panel>().GetFirstOption());
             }
-            //
-            
-            // Press B on the any panel to return to previous panel
-            if (currPanel == null) return;
-            ClosePanel(currPanel);
-            OpenPanel(prevPanel);
-            currPanel = prevPanel;
-            SetPreviousPanel(currPanel);
-            if (EventSystem.current.isActiveAndEnabled) EventSystem.current.SetSelectedGameObject(currPanel.GetComponent<Panel>().GetFirstOption());
         }
     }
     private void OpenPanel(GameObject panel)

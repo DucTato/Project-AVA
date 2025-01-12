@@ -87,6 +87,8 @@ public class UIManager : MonoBehaviour
 
     [SerializeField, Foldout("PauseMenu")]
     private GameObject pausePanel, shopPanel, optionPanel;
+    [SerializeField, Foldout("PauseMenu")]
+    private TextMeshProUGUI aptScoreText;
     [SerializeField, Foldout("ShopMenu")]
     private TextMeshProUGUI pointTxt;
 
@@ -626,7 +628,25 @@ public class UIManager : MonoBehaviour
         Destroy(TransitionManager.Instance.gameObject);
         Destroy(PlayerTracker.instance.gameObject);
     }
-
+    public void OnRetryButton()
+    {
+        // Resets time scale before going to the new scene
+        Time.timeScale = 1f;
+        TransitionManager.Instance.LoadLevel(SceneManager.GetActiveScene().name);
+    }
+    public void OnRebootButton()
+    {
+        // Resets time scale before going to the new scene
+        Time.timeScale = 1f;
+        // Resets the seed value to get a new level
+        PlayerTracker.instance.seed = 0;
+        TransitionManager.Instance.LoadLevel(SceneManager.GetActiveScene().name);
+    }
+    public void OnOpenPauseMenu()
+    {
+        // Updates the current point 
+        aptScoreText.text = "Aptitude score: " + GameManager.instance.CurrentPoint();
+    }
     /// <summary>
     /// SHOP MENU functions
     /// </summary>

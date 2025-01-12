@@ -11,7 +11,7 @@ public class PlayerTracker : MonoBehaviour
     [SerializeField]
     [Tooltip("Base spawn height for the player, will be added on top of world's base height")]
     private float spawnHeight;
-
+    private GameObject _player, _specialItem;
     private bool usePP;
     public int seed;
     #region Callbacks
@@ -59,17 +59,17 @@ public class PlayerTracker : MonoBehaviour
         randomPos.y = spawnHeight;
         var direction = spawnPoint.transform.position;
         direction.y = spawnHeight;
-        playerPrefab = Instantiate(playerPrefab, randomPos, Quaternion.LookRotation(direction - randomPos));
-        PlayerController.instance.SetUpPlayer(playerPrefab);
-        playerPrefab.SetActive(false);
+        _player = Instantiate(playerPrefab, randomPos, Quaternion.LookRotation(direction - randomPos));
+        PlayerController.instance.SetUpPlayer(_player);
+        _player.SetActive(false);
     }
 
     public void PlaceDownPlayer(bool OverrideFCS)
     {
-        playerPrefab.SetActive(true);
+        _player.SetActive(true);
         if (OverrideFCS)
         {
-            playerPrefab.GetComponent<FCS>().lockRange = Mathf.Infinity;
+            _player.GetComponent<FCS>().lockRange = Mathf.Infinity;
         }
     }
     public void SetSpawnHeight(float heightOverride)
