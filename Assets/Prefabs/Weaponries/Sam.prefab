@@ -14554,8 +14554,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6d2681a564909e47aa6e1a9ae7176ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lifeTime: 10
-  speed: 200
+  lifeTime: 20
+  speed: 220
   trackingAngle: 90
   damage: 50
   damageRadius: 6
