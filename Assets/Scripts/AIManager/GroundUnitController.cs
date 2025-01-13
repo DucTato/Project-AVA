@@ -6,7 +6,8 @@ using UnityEngine;
 public class GroundUnitController : MonoBehaviour
 {
     [SerializeField, Foldout("Weapons")]
-    private bool canShoot, isShooting;
+    [Tooltip("Whether or not this unit can shoot")]
+    private bool canShoot;
     [SerializeField, Foldout("Weapons")]
     private WeaponType weaponType;
     [SerializeField, Foldout("Weapons")]
@@ -35,8 +36,11 @@ public class GroundUnitController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        StartCoroutine(FindTarget(targetingUpdateInterval));
-        StartCoroutine(TryShoot(shootInterval));
+        if (canShoot)
+        {
+            StartCoroutine(FindTarget(targetingUpdateInterval));
+            StartCoroutine(TryShoot(shootInterval));
+        }
     }
 
     // Update is called once per frame
@@ -49,7 +53,7 @@ public class GroundUnitController : MonoBehaviour
     #region Procedures
     private void UpdateTargeting()
     {
-        if (_currentTarget != null)
+        if (canShoot && _currentTarget != null)
         {
             if (Vector3.Distance(_currentTarget.transform.position, transform.position) > shootRange) _currentTarget = null;
             else
@@ -59,12 +63,6 @@ public class GroundUnitController : MonoBehaviour
             }
         }
     }
-    //private IEnumerator Shoot(float shootInterval)
-    //{
-    //    StartCoroutine(BurstFire(shootVolley));
-    //    yield return new WaitForSeconds(shootInterval);
-    //    canShoot = true;
-    //}
     private IEnumerator BurstFire(int BurstSize)
     {
         switch (weaponType)
@@ -108,7 +106,7 @@ public class GroundUnitController : MonoBehaviour
     }
     private IEnumerator TryShoot(float interval)
     {
-        if (_currentTarget != null) StartCoroutine(BurstFire(shootVolley));
+        if (_currentTarget != null && canShoot) StartCoroutine(BurstFire(shootVolley));
         yield return new WaitForSeconds(interval);
         StartCoroutine(TryShoot(interval));
     }
