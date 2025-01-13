@@ -462,12 +462,15 @@ MonoBehaviour:
     type: 3}
   shootPoint: {fileID: 4760711765902870568}
   weaponSpread: 15
-  shootInterval: 5
+  shootInterval: 25
   fireRate: 1000
   shootVolley: 50
   _currentTarget: {fileID: 0}
-  shootRange: 300
+  shootRange: 500
   targetingUpdateInterval: 10
+  isChasing: 0
+  patrolRadius: 10
+  moveInterval: 20
 --- !u!195 &6617248436551581769
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -478,7 +481,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: -1372625422
   m_Radius: 0.5
-  m_Speed: 3.5
+  m_Speed: 2.7
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
@@ -486,7 +489,7 @@ NavMeshAgent:
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
-  m_Height: 1.2
+  m_Height: 1
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 1

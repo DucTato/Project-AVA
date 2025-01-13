@@ -84,7 +84,7 @@ public class AIController : MonoBehaviour
     private float cannonBurstTimer;
     private float cannonCooldownTimer;
 
-    struct ControlInput
+    private struct ControlInput
     {
         public float time;
         public Vector3 targetPosition;

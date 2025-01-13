@@ -153,6 +153,7 @@ public class Target : MonoBehaviour
         // Increasing drag to make game object fall faster
         rb.drag = -0.2f;
         rb.angularDrag = -0.2f;
+        Utilities.DisableAllScripts(gameObject);
     }
     public void DealDamage(float dmg)
     {

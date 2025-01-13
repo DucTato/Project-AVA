@@ -164,4 +164,11 @@ public static class Utilities
         return randomPos;
 
     }
+    public static void DisableAllScripts(GameObject targetGameObject)
+    {
+        foreach (MonoBehaviour script in targetGameObject.GetComponentsInChildren<MonoBehaviour>())
+        {
+            script.enabled = false;
+        }
+    }
 }

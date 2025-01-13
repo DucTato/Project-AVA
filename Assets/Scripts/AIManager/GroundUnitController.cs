@@ -1,7 +1,9 @@
 using NaughtyAttributes;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class GroundUnitController : MonoBehaviour
 {
@@ -29,18 +31,34 @@ public class GroundUnitController : MonoBehaviour
     private Target _currentTarget;
     [SerializeField, Foldout("Targeting")]
     private float shootRange, targetingUpdateInterval;
+    [SerializeField, Foldout("Pathfinding")]
+    private bool isChasing;
+    [SerializeField, Foldout("Pathfinding")]
+    [Tooltip("The radius which this unit can patrol around itself")]
+    private float patrolRadius;
+    [SerializeField, Foldout("Pathfinding")]
+    [Tooltip("Intervals between each move opportunity, measured in second(s)")]
+    private float moveInterval;
 
-    private Vector3 shootDirection;
+    private NavMeshAgent navAgent;
+    private Vector3 shootDirection, moveDirection;
    
     #region Callbacks
     // Start is called before the first frame update
     void Start()
     {
+        navAgent = GetComponent<NavMeshAgent>();
+        if (navAgent != null)
+        { 
+            // Only check the movement opportunity if this unit can move
+            StartCoroutine(MoveOpportunity(moveInterval));
+        }
         if (canShoot)
         {
             StartCoroutine(FindTarget(targetingUpdateInterval));
             StartCoroutine(TryShoot(shootInterval));
         }
+        isChasing = false;
     }
 
     // Update is called once per frame
@@ -48,6 +66,7 @@ public class GroundUnitController : MonoBehaviour
     {
         // Update the Targeting system before trying to shoot
         UpdateTargeting();
+        UpdatePathfinding();
     }
     #endregion
     #region Procedures
@@ -55,12 +74,19 @@ public class GroundUnitController : MonoBehaviour
     {
         if (canShoot && _currentTarget != null)
         {
-            if (Vector3.Distance(_currentTarget.transform.position, transform.position) > shootRange) _currentTarget = null;
-            else
+            if (Vector3.Distance(_currentTarget.Position, transform.position) < shootRange)
             {
-                shootDirection = _currentTarget.transform.position - transform.position;
+                // Will shoot if within range
+                shootDirection = _currentTarget.Position - transform.position;
                 shootPoint.rotation = Quaternion.LookRotation(shootDirection);
             }
+        }
+    }
+    private void UpdatePathfinding()
+    {
+        if (isChasing)
+        {
+            moveDirection = _currentTarget.Position;
         }
     }
     private IEnumerator BurstFire(int BurstSize)
@@ -110,11 +136,44 @@ public class GroundUnitController : MonoBehaviour
         yield return new WaitForSeconds(interval);
         StartCoroutine(TryShoot(interval));
     }
+    private IEnumerator MoveOpportunity(float interval)
+    {
+        // Each move opportunity has a 1/5 chance to fail (stand still)
+        if (Random.Range(0,5) == 0)
+        {
+            isChasing = false;
+            yield return new WaitForSeconds(interval);
+            StartCoroutine(MoveOpportunity(interval));
+        }
+        else
+        {
+            // Each move opportunity has a 1/2 chance of either chasing the target or patrolling in an area
+            if (Random.Range(0, 2) != 0 && _currentTarget != null)
+            {
+                isChasing = true;
+            }
+            else
+            {
+                isChasing = false;
+                var destination = Utilities.SpawnSphereOnEdgeRandomly3D(gameObject, patrolRadius);
+                destination.y = transform.position.y;
+                moveDirection = destination;
+            }
+            navAgent.destination = moveDirection;
+            yield return new WaitForSeconds(interval);
+            StartCoroutine(MoveOpportunity(interval));
+        }
+    }
     #endregion
     private enum WeaponType
     {
         Bullet,
         Missile,
         Rocket
+    }
+    private struct MoveInput
+    {
+        public Vector3 destinationPosition;
+        public float time;
     }
 }

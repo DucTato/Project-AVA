@@ -14558,8 +14558,8 @@ MonoBehaviour:
   speed: 200
   trackingAngle: 90
   damage: 50
-  damageRadius: 3
-  turningGForce: 2.5
+  damageRadius: 6
+  turningGForce: 3
   collisionMask:
     serializedVersion: 2
     m_Bits: 1

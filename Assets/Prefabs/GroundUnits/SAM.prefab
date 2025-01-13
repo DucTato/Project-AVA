@@ -168,12 +168,15 @@ MonoBehaviour:
     type: 3}
   shootPoint: {fileID: 7312203736680285006}
   weaponSpread: 15
-  shootInterval: 10
+  shootInterval: 45
   fireRate: 10
   shootVolley: 5
   _currentTarget: {fileID: 0}
-  shootRange: 600
+  shootRange: 1000
   targetingUpdateInterval: 15
+  isChasing: 0
+  patrolRadius: 50
+  moveInterval: 20
 --- !u!195 &8296374984149486873
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -184,7 +187,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: -1372625422
   m_Radius: 0.5
-  m_Speed: 3.5
+  m_Speed: 2.5
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
