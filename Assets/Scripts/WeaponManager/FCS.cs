@@ -187,7 +187,7 @@ public class FCS : MonoBehaviour
             cannonDebounceTimer = cannonDebounceTime;
             var spread = Random.insideUnitCircle * cannonSpread;
             var bulletGO = Instantiate(bulletPrefab, cannonSpawnPoint.position, cannonSpawnPoint.rotation * Quaternion.Euler(spread.x, spread.y, 0));
-            bulletGO.GetComponent<Bullet>().Fire(transform.gameObject, cannonDmgMult);
+            bulletGO.GetComponent<Bullet>().Fire(gameObject, cannonDmgMult);
             muzzleFX.Play();
         }
         if (!cannonFiring)
@@ -207,13 +207,13 @@ public class FCS : MonoBehaviour
         {
             if (CurrentMissileAmmo <= 0) return;
             var missileGO = Instantiate(missilePrefab, hardpoints[index].position, hardpoints[index].rotation);
-            missileGO.GetComponent<Missile>().Launch(transform.gameObject, MissileLocked ? currTarget : null);
+            missileGO.GetComponent<Missile>().Launch(gameObject, MissileLocked ? currTarget : null);
             CurrentMissileAmmo--;
         }
         else
         {
             var missileGO = Instantiate(missilePrefab, hardpoints[index].position, hardpoints[index].rotation);
-            missileGO.GetComponent<Missile>().Launch(transform.gameObject, MissileLocked ? currTarget : null);
+            missileGO.GetComponent<Missile>().Launch(gameObject, MissileLocked ? currTarget : null);
         }
         
     }
