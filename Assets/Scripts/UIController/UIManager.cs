@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -86,9 +87,21 @@ public class UIManager : MonoBehaviour
     
 
     [SerializeField, Foldout("PauseMenu")]
-    private GameObject pausePanel, shopPanel, optionPanel;
+    private GameObject pauseScreen, shopPanel, optionPanel;
     [SerializeField, Foldout("PauseMenu")]
     private TextMeshProUGUI aptScoreText;
+    [SerializeField, Foldout("OptionMenu")]
+    private GameObject[] subMenus;
+    [SerializeField, Foldout("OptionMenu")]
+    private Button[] optionCategories;
+    [SerializeField, Foldout("OptionMenu")]
+    private TMP_InputField nameInput, callsignInput;
+    [SerializeField, Foldout("OptionMenu")]
+    private Toggle ppToggle;
+    [SerializeField, Foldout("OptionMenu")]
+    private Slider masterSlider, effectSlider, musicSlider;
+    [SerializeField, Foldout("OptionMenu")]
+    private TextMeshProUGUI masterText, effectText, musicText;
     [SerializeField, Foldout("ShopMenu")]
     private TextMeshProUGUI pointTxt;
 
@@ -113,7 +126,7 @@ public class UIManager : MonoBehaviour
     GameObject reticleGO;
     GameObject targetArrowGO;
     GameObject missileArrowGO;
-
+    private GameObject lastSelection;
     private float lastUpdateTime;
     private float HPupTimer, alphaValue;
     private bool hideHP,isPaused;
@@ -138,7 +151,7 @@ public class UIManager : MonoBehaviour
                 //PlayerController.instance.playerInput.actions.FindActionMap("UI").Enable();
                 Switch2UIMap();
                 noPpLayer.SetActive(false);
-                OpenPanel(pausePanel);
+                OpenPanel(pauseScreen);
             }
             else
             {
@@ -147,7 +160,7 @@ public class UIManager : MonoBehaviour
                 //PlayerController.instance.playerInput.actions.FindActionMap("Gameplay").Enable();
                 Switch2GameMap();
                 noPpLayer.SetActive(true);
-                ClosePanel(pausePanel);
+                ClosePanel(pauseScreen);
             }
         }
     }
@@ -176,6 +189,12 @@ public class UIManager : MonoBehaviour
     {
         IsPaused = false;
         noPpLayer = transform.GetChild(0).gameObject;
+        // Adds listeners to option category buttons
+        for (int i = 0; i < optionCategories.Length; i++)
+        {
+            int tempValue = i;
+            optionCategories[i].onClick.AddListener(() => OptionSelect(tempValue));
+        }
     }
     void LateUpdate()
     {
@@ -575,6 +594,12 @@ public class UIManager : MonoBehaviour
     /// </summary>
     public void OnEastButton()
     {
+        if (EventSystem.current.currentSelectedGameObject.GetComponent<Slider>() != null)
+        {
+            // Press B on the slider to return to previous button
+            EventSystem.current.SetSelectedGameObject(lastSelection);
+            return;
+        }
         // Press B on the any panel to return to previous panel
         if (currPanel == null) return;
         if (prevPanel == null) 
@@ -611,6 +636,12 @@ public class UIManager : MonoBehaviour
     /// <summary>
     /// General methods for the PAUSE MENU
     /// </summary>
+    public void OnOptionButton()
+    {
+        OpenPanel(optionPanel);
+        SetPreviousPanel(optionPanel);
+        ClosePanel(prevPanel);
+    }
     public void OnOpenShopButton()
     {
         OpenPanel(shopPanel);
@@ -642,16 +673,70 @@ public class UIManager : MonoBehaviour
         PlayerTracker.instance.seed = 0;
         TransitionManager.Instance.LoadLevel(SceneManager.GetActiveScene().name);
     }
+    /// <summary>
+    /// OPTION MENU functions
+    /// </summary>
+    #region Audio Menu
+    public void OnMasterButton()
+    {
+        lastSelection = EventSystem.current.currentSelectedGameObject;
+        masterSlider.Select();
+    }
+    public void OnEffectButton()
+    {
+        lastSelection = EventSystem.current.currentSelectedGameObject;
+        effectSlider.Select();
+    }
+    public void OnMusicButton()
+    {
+        lastSelection = EventSystem.current.currentSelectedGameObject;
+        musicSlider.Select();
+    }
+    public void OnUpdateSliderValues()
+    {
+        // Handle values from the sliders
+        masterSlider.value = Mathf.Round(masterSlider.value * 10f) / 10f;   // Rounding to the first decimal point
+        effectSlider.value = Mathf.Round(effectSlider.value * 10f) / 10f;
+        musicSlider.value = Mathf.Round(musicSlider.value * 10f) / 10f;
+        masterText.text = string.Format("{0:0}%", masterSlider.value * 100);    // Formatting Ex: 10%, 20%
+        effectText.text = string.Format("{0:0}%", effectSlider.value * 100);
+        musicText.text = string.Format("{0:0}%", musicSlider.value * 100);
+    }
+    #endregion
     public void OnOpenPauseMenu()
     {
         // Updates the current point 
         aptScoreText.text = "Aptitude score: " + GameManager.instance.CurrentPoint();
     }
+    public void OnOpenOptionPanel()
+    {
+        // Initial setups 
+        OptionSelect(0);
+        nameInput.interactable = false;
+        callsignInput.interactable = false;
+    }
+    public void OnPPToggle()
+    {
+        GameObject.FindGameObjectWithTag("PPVolume").GetComponent<Volume>().enabled = ppToggle.isOn;
+        PlayerTracker.instance.SetPostProcessing(ppToggle.isOn);
+    }
+    private void OptionSelect(int index)
+    {
+        // Disables all the other submenu except for subMenu[index]
+        for (int i = 0; i < subMenus.Length; i++)
+        {
+            if (i == index) subMenus[i].SetActive(true);
+            else subMenus[i].SetActive(false);
+        }
+        currPanel = optionPanel;
+        SetPreviousPanel(currPanel);
+    }
+
     /// <summary>
     /// SHOP MENU functions
     /// </summary>
     /// 
-    
+
     public void OnGunDmgUpgrade()
     {
         if (PayForUpgrade(50)) fireControl.UpgradeGun(1.05f, 1f);

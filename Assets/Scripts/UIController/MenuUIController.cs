@@ -9,6 +9,8 @@ using TMPro;
 using UnityEngine.EventSystems;
 using UnityEngine.Events;
 using UnityEngine.Rendering;
+using Unity.VisualScripting;
+using System.Net;
 
 public class MenuUIController : MonoBehaviour
 {
@@ -116,6 +118,12 @@ public class MenuUIController : MonoBehaviour
                 if (currPanel == mainmenuPanel)
                 {
                     OnQuitButton();
+                }
+                if (EventSystem.current.currentSelectedGameObject.GetComponent<Slider>() != null)
+                {
+                    // Press B on the slider to return to previous button
+                    EventSystem.current.SetSelectedGameObject(lastSelection);
+                    return;
                 }
                 //
                 // Press B on the any panel to return to previous panel
