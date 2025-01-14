@@ -58,7 +58,8 @@ public class BoidController : MonoBehaviour
     {
         var boidInstance = Instantiate(prefab);
 
-        boidInstance.transform.localPosition += new Vector3(Random.Range(-10, 10), Random.Range(-10, 10), Random.Range(-10, 10));
+        //boidInstance.transform.localPosition += new Vector3(Random.Range(-10, 10), Random.Range(-10, 10), Random.Range(-10, 10));
+        boidInstance.transform.localPosition = Utilities.SpawnSphereOnEdgeRandomly3D(gameObject, boidSimulationArea);
         boidInstance.transform.localRotation = Random.rotation;
 
         var boid = boidInstance.GetComponent<Boid>();

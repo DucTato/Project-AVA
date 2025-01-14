@@ -5,40 +5,34 @@ using UnityEngine;
 public class Missile : MonoBehaviour
 {
     [SerializeField]
-    private float lifeTime;
+    protected float lifeTime;
     [SerializeField]
-    private float speed;
+    protected float speed;
     [SerializeField]
-    private float trackingAngle;
+    protected float trackingAngle;
     [SerializeField]
-    private float damage;
+    protected float damage;
     [SerializeField]
-    private float damageRadius;
+    protected float damageRadius;
     [SerializeField]
-    float turningGForce;
+    protected float turningGForce;
     [SerializeField]
-    private LayerMask collisionMask;
+    protected LayerMask collisionMask;
     [SerializeField]
 #pragma warning disable CS0108 // Member hides inherited member; missing new keyword
-    private Renderer renderer;
+    protected Renderer renderer;
 #pragma warning restore CS0108 // Member hides inherited member; missing new keyword
     [SerializeField]
-    private GameObject explosionFX;
+    protected GameObject explosionFX;
     public Target target;
     
 
-    private GameObject owner;
-    private bool exploded;
-    private Vector3 lastPosition;
-    private float timer;
-    public Rigidbody rb { get; private set; }
+    protected GameObject owner;
+    protected bool exploded;
+    protected Vector3 lastPosition;
+    protected float timer;
+    public Rigidbody rb { get; protected set; }
 
-    
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
     // Update is called once per frame
     private void FixedUpdate()
@@ -123,8 +117,7 @@ public class Missile : MonoBehaviour
         var error = currentPosition - lastPosition;
         // ray is pointed in the direction that the missile is flying
         var ray = new Ray(lastPosition, error.normalized);
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, error.magnitude, collisionMask.value))
+        if (Physics.Raycast(ray, out RaycastHit hit, error.magnitude, collisionMask.value))
         {
             Target other = hit.collider.gameObject.GetComponent<Target>();
             if (other == null || other.gameObject != owner)
