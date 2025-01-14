@@ -36,11 +36,16 @@ public class ACAnimation : MonoBehaviour
         abMaxVal = afterBurners[0].startLifetime;
 #pragma warning restore CS0618 // Type or member is obsolete
         engLightMaxIntensity = engineLight[0].intensity;
-        // Handles the materials for body swapping
         if (acBody == null || i2dBody == null) return;
         acMats = new List<Material>();
         i2dMats = new List<Material>();
         defaulMats = new List<Material>();
+    }
+    private void OnEnable()
+    {
+        if (acBody == null || i2dBody == null) return;
+        // Handles the materials for body swapping
+        dissolveMat = i2dBody.GetComponentInChildren<Renderer>().material;
         acBodyRenderers = acBody.GetComponentsInChildren<Renderer>().ToList();
         for (int i = 0; i < acBodyRenderers.Count; i++)
         {
@@ -70,11 +75,6 @@ public class ACAnimation : MonoBehaviour
             mat2.SetVector("_DissolveDirection", new Vector4(0f, 0f, 1f, 0f));
             mat2.SetVector("_DissolveOffest", new Vector4(0f, 0f, -AC_LENGTH, 0f));
         }
-        
-    }
-    private void OnEnable()
-    {
-        if (acBody == null || i2dBody == null) return;
         StartCoroutine(WaitThenTransform(TRANSFORM_TIME / 2f));
     }
     public void SetEnginePowerVisual(float powValue)
