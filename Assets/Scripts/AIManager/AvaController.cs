@@ -83,6 +83,7 @@ public class AvaController : MonoBehaviour
     
     private void UpdateActions()
     {
+        if (_weaponType == WeaponType.Boid) return;
         if (_actions[currentAction].canShoot)
         {
             if (Vector3.Distance(_currentTarget.Position, transform.position) > gunDistance)
@@ -101,7 +102,7 @@ public class AvaController : MonoBehaviour
         // Try stopping all existing coroutines
         StopAllCoroutines();
 
-        currentAction = Random.Range(0, actionSequences.Length);
+        currentAction = Random.Range(0, _actions.Length);
         Debug.Log("Changed Action! Index: " + currentAction);
 
         aggressiveness = _actions[currentAction]._aggressiveness;
@@ -111,14 +112,17 @@ public class AvaController : MonoBehaviour
 
         if (_actions[currentAction].canShoot)
         {
-            StartCoroutine(TryShoot((aggressiveness / 10f) * defaultInterval));
+            StartCoroutine(TryShoot((10f - aggressiveness)/ 10f * defaultInterval));        // Higher aggressiveness = more frequent checks
         }
         if (_actions[currentAction].canMove)
         {
-            StartCoroutine(MoveOpportunity((aggressiveness / 10f) * defaultInterval));
+            StartCoroutine(MoveOpportunity((10f - aggressiveness) / 10f * defaultInterval));
             navAgent.speed = _actions[currentAction].moveSpeed;
         }
-        
+        if (_actions[currentAction].canUseBoids)
+        {
+            StartCoroutine(TryBoids((10f - aggressiveness) / 10f * defaultInterval));
+        }
         StartCoroutine(DoActionInDuration(_actions[currentAction].actionDuration));
     }
     /// <summary>
@@ -130,7 +134,7 @@ public class AvaController : MonoBehaviour
         // Try stopping all existing coroutines
         StopAllCoroutines();
         Debug.Log("Force-Changed Action!");
-        currentAction = Random.Range(0, actionSequences.Length);
+        currentAction = Random.Range(0, _actions.Length);
 
         aggressiveness = _actions[currentAction]._aggressiveness;
         aggressiveness = Mathf.Clamp(aggressiveness, 1f, 9.9f);
@@ -139,11 +143,15 @@ public class AvaController : MonoBehaviour
 
         if (_actions[currentAction].canShoot)
         {
-            StartCoroutine(TryShoot((aggressiveness / 10f) * defaultInterval));
+            StartCoroutine(TryShoot((10f - aggressiveness) / 10f * defaultInterval));
         }
         if (_actions[currentAction].canMove)
         {
-            StartCoroutine(MoveOpportunity((aggressiveness / 10f) * defaultInterval));
+            StartCoroutine(MoveOpportunity((10f - aggressiveness) / 10f * defaultInterval));
+        }
+        if (_actions[currentAction].canUseBoids)
+        {
+            StartCoroutine(TryBoids((10f - aggressiveness) / 10f * defaultInterval));
         }
         StartCoroutine(DoActionInDuration(_actions[currentAction].actionDuration));
     }
@@ -183,6 +191,23 @@ public class AvaController : MonoBehaviour
         navAgent.destination = moveDirection;
         yield return new WaitForSeconds(interval);
     }
+    private IEnumerator TryBoids(float interval)
+    {
+        // Try to use Boids base on aggressiveness
+        if (Random.Range(0, 10) < Mathf.RoundToInt(aggressiveness))
+        {
+            _weaponType = WeaponType.Boid;
+            Debug.Log("Using boids");
+            if (!_actions[currentAction].canShoot)
+            {
+                StopCoroutine(BurstFire(42));   // Try stopping the old coroutine before shooting again
+
+                StartCoroutine(BurstFire(42));   // 42 is the answer :>
+            }
+        }
+        yield return new WaitForSeconds(interval);
+        StartCoroutine(TryBoids(interval));
+    }
     private IEnumerator BurstFire(int BurstSize)
     {
         switch (_weaponType)
@@ -210,16 +235,16 @@ public class AvaController : MonoBehaviour
                     yield return new WaitForSeconds(60f / _actions[currentAction].missileRate);
                 }
                 break;
-                //case WeaponType.Boid:
-                //    // Rocket is non-guided missile
-                //    for (int i = 0; i < BurstSize; i++)
-                //    {
-                //        var spread = Random.insideUnitCircle * weaponSpread;
-                //        var missileGO = Instantiate(missilePrefab, shootPoint.position, shootPoint.rotation * Quaternion.Euler(spread.x, spread.y, 0f));
-                //        missileGO.GetComponent<Missile>().Launch(gameObject, null);
-                //        yield return new WaitForSeconds(60f / fireRate);
-                //    }
-                //    break;
+            case WeaponType.Boid:
+                // Boid is guided missile that can be shot down
+                // Aggressiveness decides the number of loops that can be called
+                for (int i = 0; i < Mathf.FloorToInt(aggressiveness); i++)
+                {
+                    GetComponent<BoidController>().LaunchBoids(_currentTarget);
+                    yield return new WaitForSeconds(60f / 70f);
+                }
+                _weaponType = WeaponType.Laser; //Reset the weapon type after using boids
+                break;
         }
     }
         #endregion
@@ -229,7 +254,7 @@ public class AvaController : MonoBehaviour
         [Header("Action")]
         public bool canMove, canShoot, canUseBoids;
         public float actionDuration, moveSpeed, aimSpeed, fireRate, missileRate;
-        [Tooltip("High aggressiveness = Frequent opportunity rolls")]
+        [Tooltip("High aggressiveness = Frequent opportunity rolls\nMin: 1.0, Max: 10.0")]
         public float _aggressiveness;
         public int shootVolley;
         public GameObject bulletPrefab, missilePrefab;

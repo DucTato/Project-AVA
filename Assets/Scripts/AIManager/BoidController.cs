@@ -4,19 +4,24 @@ using UnityEngine;
 
 public class BoidController : MonoBehaviour
 {
-    public Boid boidPrefab;
-    public Boid boidPrefab2;
-    public Boid boidPrefab3;
-
-    public int spawnBoids = 30;
-    public float boidSpeed = 10f;
-    public float boidSteeringSpeed = 100f;
-    public float boidNoClumpingArea = 10f;
-    public float boidLocalArea = 10f;
-    public float boidSimulationArea;
-
+    [SerializeField]
+    private Boid boidPrefab, boidPrefab2, boidPrefab3;
+    [SerializeField]
+    private int spawnBoids = 30;
+    [SerializeField]
+    private float boidSpeed = 10f;
+    [SerializeField]
+    private float boidSteeringSpeed = 100f;
+    [SerializeField]
+    private float boidNoClumpingArea = 10f;
+    [SerializeField]
+    private float boidLocalArea = 10f;
+    [SerializeField]
+    private float boidSimulationArea;
+    [SerializeField]
+    private int boidReloadCount = 5;
     private List<Boid> _boids;
-
+    
     private void Start()
     {
         _boids = new List<Boid>();
@@ -53,7 +58,31 @@ public class BoidController : MonoBehaviour
             //boid.transform.position = boidPos;
         }
     }
-
+    public void LaunchBoids(Target target)
+    {
+        if (_boids.Count == 0 && boidReloadCount > 0) 
+        {
+            for (int i = 0; i < spawnBoids; i++)
+            {
+                SpawnBoid(boidPrefab.gameObject, 0);
+            }
+            for (int i = 0; i < spawnBoids; i++)
+            {
+                SpawnBoid(boidPrefab2.gameObject, 1);
+            }
+            for (int i = 0; i < spawnBoids; i++)
+            {
+                SpawnBoid(boidPrefab3.gameObject, 2);
+            }
+            // Uses up reserve
+            boidReloadCount--;
+            return; 
+        }
+        Debug.Log("Boid launched");
+        var index = Random.Range(0, _boids.Count);
+        _boids[index].GetComponent<Boid>().Launch(target);
+        _boids.RemoveAt(index);
+    }
     private void SpawnBoid(GameObject prefab, int swarmIndex)
     {
         var boidInstance = Instantiate(prefab);

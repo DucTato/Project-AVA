@@ -103,4 +103,11 @@ public class Boid : MonoBehaviour
         //move 
         transform.position += transform.TransformDirection(new Vector3(0, 0, Speed)) * time;
     }
+    public void Launch(Target _target)
+    {
+        GetComponent<Rigidbody>().useGravity = true;
+        GetComponent<VariableTrackingMissile>().enabled = true;
+        GetComponent<VariableTrackingMissile>().Launch(gameObject, _target);
+        GetComponent<Boid>().enabled = false;
+    }
 }
