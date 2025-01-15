@@ -46,17 +46,16 @@ public class AvaController : MonoBehaviour
         currentSequence = 0;
         _actions = actionSequences[currentSequence].actionsOfThisSequence;
         selfTarget = GetComponent<Target>();
-        
+        selfTarget.onHealthChange += GetDamaged;
     }
     private void OnEnable()
     {
         // Update the progress bar to use as health bar
-
+        if (GameManager.instance != null)
+        {
+            GameManager.instance.SetBossHealthBar(selfTarget.Health, selfTarget.MaxHealth);
+        }
         ChangeAction();
-    }
-    private void OnDisable()
-    {
-        // Trigger win conditions
     }
     private void Update()
     {
@@ -65,12 +64,39 @@ public class AvaController : MonoBehaviour
     }
     #endregion
     #region Procedures
+    private void GetDamaged(object sender, HealthChangeEvent e)
+    {
+        //Debug.Log("Got hit! current: " + e.Health + " max: " + e.MaxHealth);
+        if (GameManager.instance != null)
+        {
+            GameManager.instance.SetBossHealthBar(selfTarget.Health, selfTarget.MaxHealth);
+        }
+        if (e.Health <= actionSequences[currentSequence].healthThreshold)
+        {
+            Debug.Log("Switched to phase 2");
+            currentSequence++;
+        }
+        if (e.Health <= 0)
+        {
+            StopAllCoroutines();
+            gameObject.layer = 0;
+            var rigidbody = GetComponent<Rigidbody>();
+            rigidbody.useGravity = true;
+            rigidbody.constraints = RigidbodyConstraints.None;
+            navAgent.enabled = false;
+            // Trigger win conditions
+            if (GameManager.instance != null)
+            {
+                GameManager.instance.StartWinProcedure();
+            }
+        }
+    }
     private void UpdateTargeting()
     {
         if (_currentTarget != null)
         {
 
-            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation((_currentTarget.Position - transform.position).normalized), lookSpeed * Time.deltaTime);
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation((_currentTarget.Position - transform.position).normalized), lookSpeed * Time.deltaTime);
             if (isChasing)
             {
                 moveDirection = _currentTarget.Position - navObject.transform.position;
@@ -85,6 +111,7 @@ public class AvaController : MonoBehaviour
     private void UpdateActions()
     {
         if (_weaponType == WeaponType.Boid) return;
+        if (_currentTarget == null) return;
         if (_actions[currentAction].canShoot)
         {
             if (Vector3.Distance(_currentTarget.Position, transform.position) > gunDistance)

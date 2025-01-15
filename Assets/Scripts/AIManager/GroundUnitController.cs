@@ -84,7 +84,7 @@ public class GroundUnitController : MonoBehaviour
             {
                 // Will shoot if within range
                 shootDirection = _currentTarget.Position - transform.position;
-                shootPoint.rotation = Quaternion.LookRotation(shootDirection);
+                shootPoint.rotation = Quaternion.LookRotation(shootDirection.normalized);
             }
         }
     }

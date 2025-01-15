@@ -61,6 +61,13 @@ public class BoidController : MonoBehaviour
             //boid.transform.position = boidPos;
         }
     }
+    private void OnDisable()
+    {
+        for (int i = 0; i < _boids.Count; i++)
+        {
+            _boids[i].enabled = false;
+        }
+    }
     public void LaunchBoids(Target target)
     {
         if (_boids.Count == 0 && boidReloadCount > 0) 

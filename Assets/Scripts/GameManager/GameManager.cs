@@ -95,6 +95,7 @@ public class GameManager : MonoBehaviour
     }
     private void OnDestroy()
     {
+        StopAllCoroutines();
         playerTarget.onDeathEvent -= DeathEventHandler;
     }
     #endregion
@@ -153,6 +154,7 @@ public class GameManager : MonoBehaviour
     public void StartWinProcedure()
     {
         hudController.SetWinScreen(true);
+        StartCoroutine(WaitThenReturnMainMenu(10f));
     }
     public void StartDeathProcedure()
     {
@@ -214,7 +216,11 @@ public class GameManager : MonoBehaviour
             }
         }
     }
-    
+    private IEnumerator WaitThenReturnMainMenu(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        hudController.OnQuitSessionButton();
+    }
     private IEnumerator SpawnEnemiesWithDelay(float delay)
     {
         if (enemyDefeated < maxEnemies)

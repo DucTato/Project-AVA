@@ -187,7 +187,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 6
-  lifeTime: 8
+  lifeTime: 20
   speed: 1000
   collisionMask:
     serializedVersion: 2
