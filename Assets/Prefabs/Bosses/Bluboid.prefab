@@ -9687,7 +9687,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   castMask:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 449
+  index: 0
+  _parent: {fileID: 0}
 --- !u!114 &-7599908197108116347
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9775,11 +9777,11 @@ MonoBehaviour:
   speed: 120
   trackingAngle: 360
   damage: 35
-  damageRadius: 2
+  damageRadius: 9
   turningGForce: 20
   collisionMask:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 65
   renderer: {fileID: 5036510210122758575}
   explosionFX: {fileID: 8769828477169653787}
   target: {fileID: 0}
@@ -9938,10 +9940,10 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8769828477169653787}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1297.91, y: -100.56, z: -1540.4957}
-  m_LocalScale: {x: 0.099999994, y: 0.099999994, z: 0.099999994}
-  m_ConstrainProportionsScale: 1
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1741470475302404377}
   - {fileID: 8247808595108954605}

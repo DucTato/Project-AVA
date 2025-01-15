@@ -1,10 +1,13 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using Random = UnityEngine.Random;
 
 public class Target : MonoBehaviour
 {
+    public EventHandler<HealthChangeEvent> onHealthChange;
+    public EventHandler<DeathEvent> onDeathEvent;
     [SerializeField]
     private float health, maxHealth;
     [SerializeField]
@@ -43,22 +46,25 @@ public class Target : MonoBehaviour
         private set
         {
             health = Mathf.Clamp(value, 0, maxHealth);
-            
             if (health == 0 && maxHealth != 0 && !IsDead)
             {
                 Die();
             }
+            onHealthChange?.Invoke(this, new HealthChangeEvent(health, maxHealth));
         }
     }
     private Rigidbody rb;
     private List<Missile> incomingMissiles;
     #region CallBacks
-    // Start is called before the first frame update
-    void Start()
+    private void Awake()
     {
         rb = GetComponent<Rigidbody>();
         health = maxHealth;
         incomingMissiles = new List<Missile>();
+    }
+    // Start is called before the first frame update
+    void Start()
+    {
         // Generate random position for a maximum of 4 damage points
         for (int i = 0; i < damagePoints.Length; i++)
         {
@@ -86,7 +92,6 @@ public class Target : MonoBehaviour
                 // Object is dead and is staying still on the ground
                 // Disable script and physic updates
                 rb.isKinematic = true;
-                this.enabled = false;
             }
         }
     }
@@ -127,21 +132,10 @@ public class Target : MonoBehaviour
     }
     private void Die()
     {
-        if (PlayerController.instance.CheckIsPlayer(gameObject))
-        {
-            // if this is the player
-            // Disable the plane HUD
-            PlayerController.instance.hudController.ToggleAvionics(false);
-            GameManager.instance.StartDeathProcedure();
-        }
-        else
-        {
-            // if this is not the player
-            // Add points for the player
-            GameManager.instance.AddPoint(rewardPoint);
-            GameManager.instance.AddEnemiesDefeated();
-        }
-        GetComponent<PlaneHandler>()?.ToggleDeadState();
+        //Broadcast a death event 
+        onDeathEvent?.Invoke(this, new DeathEvent(gameObject));
+
+        
         IsDead = true;
         GameObject smokeFX = Instantiate(smokeCloudPrefab, transform.position + damagePoints[Random.Range(0, damagePoints.Length)], transform.rotation, transform);
         GameObject fireFX = Instantiate(fireCloudPrefab, transform.position + damagePoints[Random.Range(0, damagePoints.Length)], transform.rotation, transform);
@@ -153,23 +147,16 @@ public class Target : MonoBehaviour
         // Increasing drag to make game object fall faster
         rb.drag = -0.2f;
         rb.angularDrag = -0.2f;
+        GetComponent<PlaneHandler>()?.ToggleDeadState();
         Utilities.DisableAllScripts(gameObject);
     }
     public void DealDamage(float dmg)
     {
-        Health -= dmg;
-        if (PlayerController.instance.CheckIsPlayer(gameObject))
-        {
-            PlayerController.instance.hudController.DisplayHP();
-        }        
+        Health -= dmg;      
     }
     public void Heal(float ammount)
     {
         Health += ammount;
-        if (PlayerController.instance.CheckIsPlayer(gameObject))
-        {
-            PlayerController.instance.hudController.DisplayHP();
-        }
     }
     public void ApplyBurns()
     {
@@ -193,5 +180,38 @@ public class Target : MonoBehaviour
         firePS.simulationSpace = ParticleSystemSimulationSpace.Local;
         firePS.stopAction = ParticleSystemStopAction.Destroy;
         fire.GetComponent<ParticleSystem>().Play();
+    }
+}
+public class HealthChangeEvent : EventArgs
+{
+    private float health;
+    private float maxHealth;
+    public HealthChangeEvent(float health, float maxHealth)
+    {
+        this.health = health;
+        this.maxHealth = maxHealth;
+    }   
+    public float Health
+    {
+        get { return health; }
+        set { health = value; }
+    }
+    public float MaxHealth
+    {
+        get { return maxHealth; }
+        set { maxHealth = value; }
+    }
+}
+public class DeathEvent : EventArgs
+{
+    private GameObject deadObject;
+    public DeathEvent(GameObject deadObject)
+    {
+        this.deadObject = deadObject;
+    }
+    public GameObject BroadcastedObject
+    {
+        get { return deadObject; }
+        set { deadObject = value; }
     }
 }

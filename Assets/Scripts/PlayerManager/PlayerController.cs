@@ -187,7 +187,9 @@ public class PlayerController : MonoBehaviour
         hudController = GameManager.instance.hudController;
         hudController.SetPlane(planeHandler);
         fireControl = obj.GetComponent<FCS>();
+        //
         fireControl.AmmoUpdate += OnAmmoUpdate;
+        //
         hudController.SetCamera(camera);
         PlayerID = obj.GetInstanceID();
     }

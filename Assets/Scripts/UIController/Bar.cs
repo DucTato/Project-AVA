@@ -49,4 +49,8 @@ public class Bar : MonoBehaviour
             img.color = new Color (img.color.r, img.color.g, img.color.b, value);
         }
     }
+    public void SetDirection(FillDirection direction)
+    {
+        fillDirection = direction;
+    }
 }

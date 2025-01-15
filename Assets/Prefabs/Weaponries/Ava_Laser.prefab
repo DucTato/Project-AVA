@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5414805092590213875}
   - component: {fileID: 7857020971695991523}
   - component: {fileID: 7781052672761500384}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Ava_Laser
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -187,9 +187,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 6
-  lifeTime: 5
+  lifeTime: 8
   speed: 1000
   collisionMask:
     serializedVersion: 2
-    m_Bits: 1
-  width: 4
+    m_Bits: 449
+  width: 5

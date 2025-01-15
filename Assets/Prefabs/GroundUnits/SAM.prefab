@@ -88,7 +88,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 122
   m_CollisionDetection: 0
 --- !u!65 &-2811513889489700631
 BoxCollider:
@@ -148,6 +148,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   rotationOverride: {x: 0, y: 0, z: 0}
+  positionOverride: {x: 0, y: 0, z: 0}
 --- !u!114 &-213606933984673792
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -662,6 +662,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   rotationOverride: {x: -35, y: 0, z: 0}
+  positionOverride: {x: 0, y: 10, z: 0}
 --- !u!1 &6917413322345558959
 GameObject:
   m_ObjectHideFlags: 0

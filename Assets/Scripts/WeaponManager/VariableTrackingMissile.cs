@@ -25,19 +25,19 @@ public class VariableTrackingMissile : Missile
         TrackTarget(Time.fixedDeltaTime);
 
     }
-    public void Launch(GameObject owner, Target target)
-    {
-        this.owner = owner;
-        this.target = target;
-        rb = GetComponent<Rigidbody>();
-        lastPosition = rb.position;
-        timer = lifeTime;
-        // Notify the target
-        if (target != null)
-        {
-            target.NotifyMissileLaunched(this, true);
-        }
-    }
+    //public void Launch(GameObject owner, Target target)
+    //{
+    //    this.owner = owner;
+    //    this.target = target;
+    //    rb = GetComponent<Rigidbody>();
+    //    lastPosition = rb.position;
+    //    timer = lifeTime;
+    //    // Notify the target
+    //    if (target != null)
+    //    {
+    //        target.NotifyMissileLaunched(this, true);
+    //    }
+    //}
     private void TrackTarget(float dt)
     {
         if (target == null) return;

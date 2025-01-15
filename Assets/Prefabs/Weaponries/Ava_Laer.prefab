@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2192018834016745664}
   - component: {fileID: 2192018834035107754}
   - component: {fileID: 2192018834037127950}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: FX_Explosion_Fire
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4833,7 +4833,7 @@ GameObject:
   - component: {fileID: 2192018834016801988}
   - component: {fileID: 2192018834035164600}
   - component: {fileID: 2192018834037143572}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: FX_Explosion_Rubble
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9594,7 +9594,7 @@ GameObject:
   - component: {fileID: 2192018834016784780}
   - component: {fileID: 2192018834035179162}
   - component: {fileID: 2192018834035050492}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: FX_Explosion_Smoke
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14407,7 +14407,7 @@ GameObject:
   - component: {fileID: 2448596098910077618}
   - component: {fileID: 6443370250103094225}
   - component: {fileID: 6122547034315933822}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Ava_Laer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14478,7 +14478,7 @@ MonoBehaviour:
   turningGForce: 20
   collisionMask:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 449
   renderer: {fileID: 0}
   explosionFX: {fileID: 2192018834017049962}
   target: {fileID: 0}
@@ -14516,7 +14516,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6025213465541500257}
   - component: {fileID: 8638734490277319598}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Trail
   m_TagString: Untagged
   m_Icon: {fileID: 0}

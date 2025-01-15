@@ -10,16 +10,29 @@ public class Boid : MonoBehaviour
     public float Speed { get; set; }
     public float SteeringSpeed { get; set; }
     public LayerMask castMask;
+    public int index;
+    public BoidController _parent;
     #region Callbacks
     private void OnEnable()
     {
         Transform child = transform.GetChild(0);
         child.rotation = Random.rotation;
     }
+    private void OnDisable()
+    {
+        if (index != -1)
+        {
+            GetComponent<Rigidbody>().useGravity = true;
+            index= -1;
+            //_parent.RemoveBoidAtIndex(index);
+            gameObject.layer = 0;
+        }
+    }
     #endregion
 
     public void SimulateMovement(List<Boid> other, float time, Vector3 center)
     {
+        if (index == -1) return;
         //default vars
         var steering = Vector3.zero;
 
@@ -105,9 +118,14 @@ public class Boid : MonoBehaviour
     }
     public void Launch(Target _target)
     {
+        index = -1;
         GetComponent<Rigidbody>().useGravity = true;
         GetComponent<VariableTrackingMissile>().enabled = true;
         GetComponent<VariableTrackingMissile>().Launch(gameObject, _target);
         GetComponent<Boid>().enabled = false;
+    }
+    public void SetParent(BoidController parent)
+    {
+        _parent = parent;
     }
 }

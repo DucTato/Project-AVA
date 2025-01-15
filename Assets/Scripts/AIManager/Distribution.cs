@@ -9,6 +9,9 @@ public class Distribution : MonoBehaviour
     [SerializeField]
     [Tooltip("Overrides the default rotation if needed")]
     private Vector3 rotationOverride;
+    [SerializeField]
+    [Tooltip("Overrides the default position if needed")]
+    private Vector3 positionOverride;
 
     public bool ProbabilityCheck(float currentEnemyPercentage, float chance)
     {
@@ -39,5 +42,12 @@ public class Distribution : MonoBehaviour
             return Quaternion.Euler(rotationOverride);
         else
             return Quaternion.identity;
+    }
+    public Vector3 PositionBuffer(Vector3 origin)
+    {
+        if (positionOverride != Vector3.zero)
+            return origin + positionOverride;
+        else
+            return origin;
     }
 }

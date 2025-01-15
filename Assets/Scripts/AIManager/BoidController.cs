@@ -21,8 +21,7 @@ public class BoidController : MonoBehaviour
     [SerializeField]
     private int boidReloadCount = 5;
     private List<Boid> _boids;
-    
-    private void Start()
+    private void Awake()
     {
         _boids = new List<Boid>();
 
@@ -43,9 +42,13 @@ public class BoidController : MonoBehaviour
     private void Update()
     {
 
-        foreach (Boid boid in _boids)
+        for (int i = 0; i < _boids.Count; i++)
         {
-            boid.SimulateMovement(_boids, Time.deltaTime, transform.position);
+            _boids[i].SimulateMovement(_boids, Time.deltaTime, transform.position);
+            if (_boids[i].index == -1)
+            {
+                _boids.RemoveAt(i);
+            }
             //var boidPos = boid.transform.position;
 
             //if (Vector3.Distance(boidPos, transform.position) > boidSimulationArea)
@@ -97,7 +100,13 @@ public class BoidController : MonoBehaviour
         boid.SteeringSpeed = boidSteeringSpeed;
         boid.LocalAreaRadius = boidLocalArea;
         boid.NoClumpingRadius = boidNoClumpingArea;
-
         _boids.Add(boid);
+        boid.index = _boids.IndexOf(boid);
+        boid.SetParent(this);
+    }
+    public void RemoveBoidAtIndex(int index)
+    {
+        _boids.RemoveAt(index);
+        Debug.Log("Current boid count: " + _boids.Count);
     }
 }

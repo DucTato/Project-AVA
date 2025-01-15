@@ -3136,6 +3136,7 @@ MonoBehaviour:
   progressBar: {fileID: 1694561624952892970}
   currentTargetInfo: {fileID: 138978899538582039}
   ammoInfo: {fileID: 8196683817335188177}
+  progressText: {fileID: 3272340223660746202}
   deathPanel: {fileID: 7150266095169469883}
   gameInfo: {fileID: 7765920751113903006}
   winPanel: {fileID: 208382030311600782}

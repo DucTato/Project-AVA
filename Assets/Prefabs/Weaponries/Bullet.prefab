@@ -182,5 +182,5 @@ MonoBehaviour:
   speed: 1000
   collisionMask:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 449
   width: 2.5

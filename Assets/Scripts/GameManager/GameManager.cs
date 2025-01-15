@@ -6,24 +6,27 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using DG.Tweening;
 using Random = UnityEngine.Random;
-using UnityEngine.EventSystems;
 using UnityEngine.Rendering;
+using Unity.VisualScripting;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
-    [Tooltip("Base height of world, spawnables won't spawn below this value")]
+    [HideInInspector]
     public float worldBaseHeight;
-
+    [SerializeField, Foldout("Miscs")]
+    private GameObject groundFloor;
     [SerializeField, Foldout("Enemies")]
     private int currentEnemies, maxEnemies, enemyDefeated;
     [SerializeField, Foldout("Enemies")]
     private int maxEnemiesAtOnce = 32;
     [SerializeField, Foldout("Enemies")]
-    private GameObject[] enemyTypes;
+    private GameObject[]  enemyTypes;
     [SerializeField, Foldout("Enemies")]
     [Tooltip("Must correspond to the EnemyTypes table above!\nMin: 0, Max: 1.0")]
     private float[] enemyChances;
+    [SerializeField, Foldout("Enemies")]
+    private GameObject[] bossTypes;
     [SerializeField, Foldout("Enemies")]
     private float spawnRadius, spawnInterval;
 
@@ -40,8 +43,8 @@ public class GameManager : MonoBehaviour
     private GameObject waitTxt, loadingDoneTxt, gameCanvas, freeLookTxt;
     private Distribution[] enemyDistributions;
     //private List<GameObject> enemyPool;
-    
 
+    private Target playerTarget;
     private bool BossPhase;
    
     public bool GamePhase { get; set; }
@@ -63,6 +66,7 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         instance = this;
+        worldBaseHeight = groundFloor.transform.position.y;
         currentPoint = 0;
         enemyDefeated = 0;
         enemyDistributions = new Distribution[enemyTypes.Length];
@@ -89,6 +93,10 @@ public class GameManager : MonoBehaviour
         else Random.InitState(PlayerTracker.instance.seed);
         UpdatePlayerPrefs();
     }
+    private void OnDestroy()
+    {
+        playerTarget.onDeathEvent -= DeathEventHandler;
+    }
     #endregion
 
     #region Procedures
@@ -98,6 +106,18 @@ public class GameManager : MonoBehaviour
         DOTween.To(() => RenderSettings.fogStartDistance, x => RenderSettings.fogStartDistance = x, startDistance, 5f);
         DOTween.To(() => RenderSettings.fogEndDistance, x => RenderSettings.fogEndDistance = x, endDistance, 5f);
 
+    }
+    private void SpawnBoss()
+    {
+        var spawnPosition = worldCenter.transform.position;
+        spawnPosition.y = worldBaseHeight;
+        var boss = Instantiate(bossTypes[Random.Range(0, bossTypes.Length)], spawnPosition, Quaternion.identity);
+        // Set the name of the current boss to the progress bar
+        hudController.SwapProgressBar(boss.GetComponent<Target>().Name);
+    }
+    public void SetBossHealthBar(float currentHealth, float maxHealth)
+    {
+        hudController.SetProgressBar(currentHealth, maxHealth); 
     }
     private void SetCurrentProgress()
     {
@@ -124,8 +144,9 @@ public class GameManager : MonoBehaviour
         enemyDefeated++;
         if (enemyDefeated == maxEnemies && !BossPhase)
         {
-            // Switch to BOSS phase
+            // Switch to BOSS phase and spawn the boss 
             BossPhase = true;
+            SpawnBoss();
         }
         SetCurrentProgress();
     }
@@ -154,6 +175,28 @@ public class GameManager : MonoBehaviour
     {
         freeLookTxt.SetActive(true);
     }
+    public void SetPlayerSelfTarget(Target playerTarget)
+    {
+        this.playerTarget = playerTarget;
+        this.playerTarget.onDeathEvent += DeathEventHandler;
+    }
+    private void DeathEventHandler(object sender, DeathEvent e)
+    {
+        if (PlayerController.instance.CheckIsPlayer(e.BroadcastedObject))
+        {
+            // if this is the player
+            // Disable the plane HUD
+            PlayerController.instance.hudController.ToggleAvionics(false);
+            StartDeathProcedure();
+        }
+        else
+        {
+            // if this is not the player
+            // Add points for the player
+            AddPoint(e.BroadcastedObject.GetComponent<Target>().rewardPoint);
+            AddEnemiesDefeated();
+        }
+    }
     private void SpawnProcedure()
     {
         for (int i = 0; i < enemyTypes.Length; i++)
@@ -165,8 +208,8 @@ public class GameManager : MonoBehaviour
                 // Passed the probability check, spawns enemy type now
                 var randomPos = Random.insideUnitSphere * spawnRadius;
                 randomPos += WorldCenter.transform.position;
-                randomPos.y = 5f + worldBaseHeight;
-                Instantiate(enemyTypes[i], randomPos, enemyDistributions[i].OverrideRotation());
+                randomPos.y = worldBaseHeight;
+                Instantiate(enemyTypes[i], enemyDistributions[i].PositionBuffer(randomPos), enemyDistributions[i].OverrideRotation());
                 currentEnemies++;
             }
         }

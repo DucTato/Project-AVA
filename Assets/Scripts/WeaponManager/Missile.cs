@@ -102,6 +102,7 @@ public class Missile : MonoBehaviour
             Target other = hit.gameObject.GetComponent<Target>();
             if (other != null && other.gameObject != owner)
             {
+                Debug.Log("Hit " + other.gameObject.name);
                 // Deal damage
                 other.DealDamage(damage);
                 other.ApplyBurns();

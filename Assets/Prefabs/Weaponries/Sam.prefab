@@ -14558,11 +14558,11 @@ MonoBehaviour:
   speed: 220
   trackingAngle: 90
   damage: 50
-  damageRadius: 6
+  damageRadius: 10
   turningGForce: 3
   collisionMask:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 449
   renderer: {fileID: 3976721191267399524}
   explosionFX: {fileID: 2192018834017049962}
   target: {fileID: 0}

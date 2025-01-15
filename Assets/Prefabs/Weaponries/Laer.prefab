@@ -14478,7 +14478,7 @@ MonoBehaviour:
   turningGForce: 5
   collisionMask:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 449
   renderer: {fileID: 0}
   explosionFX: {fileID: 2192018834017049962}
   target: {fileID: 0}

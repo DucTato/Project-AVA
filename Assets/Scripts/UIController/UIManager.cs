@@ -1,5 +1,6 @@
 using MaskTransitions;
 using NaughtyAttributes;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -11,6 +12,7 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
+    public Target selfTarget;
     [Header("AVIONICS")]
     [SerializeField] [Foldout("Avionics")]
     float updateRate;
@@ -81,7 +83,7 @@ public class UIManager : MonoBehaviour
     [SerializeField, Foldout("Miscs")]
     private Bar progressBar;
     [SerializeField, Foldout("Miscs")]
-    private TextMeshProUGUI currentTargetInfo, ammoInfo;
+    private TextMeshProUGUI currentTargetInfo, ammoInfo, progressText;
     [SerializeField, Foldout("Miscs")]
     private GameObject deathPanel, gameInfo, winPanel;
     
@@ -109,9 +111,8 @@ public class UIManager : MonoBehaviour
     private GameObject noPpLayer;
     private PlaneHandler planeHandler;
     private FCS fireControl;
-    //Target target;
     AIController aiController;
-    private Target selfTarget;
+    
     Transform planeTransform;
     [SerializeField]
     new Camera targetCam;
@@ -244,17 +245,17 @@ public class UIManager : MonoBehaviour
         }
         
     }
+    private void OnDestroy()
+    {
+        selfTarget.onHealthChange -= HealthBarUpdate;
+    }
     #endregion
 
-    
+
     #region Avionics
     public void ToggleAvionics(bool value)
     {
         avionics.SetActive(value);
-    }
-    public void DisplayHP()
-    {
-        HPupTimer = hpUpTime;
     }
     private void UpdateVelocityMarker()
     {
@@ -492,9 +493,17 @@ public class UIManager : MonoBehaviour
     }
     #endregion
     #region GameHUD
+    private void HealthBarUpdate(object sender, HealthChangeEvent e)
+    {
+        HPupTimer = hpUpTime;
+    }
     public void UpdateAmmoHUD(int cannon, int missiles, int storedMissiles)
     {
         ammoInfo.text = string.Format("{0}\n{1} / {2}", cannon, missiles, storedMissiles);  
+    }
+    public void SwapProgressBar(string bossName)
+    {
+        progressText.text = bossName;
     }
     public void SetProgressBar(float current, float maxValue)
     {
@@ -541,6 +550,9 @@ public class UIManager : MonoBehaviour
             aiController = planeHandler.GetComponent<AIController>();
             planeTransform = planeHandler.GetComponent<Transform>();
             selfTarget = planeHandler.GetComponent<Target>();
+            GameManager.instance.SetPlayerSelfTarget(selfTarget);
+            // subscribe to the healthchange event
+            selfTarget.onHealthChange += HealthBarUpdate;
             fireControl = planeHandler.GetComponent<FCS>();
         }
 

@@ -69,7 +69,8 @@ public class AvaController : MonoBehaviour
     {
         if (_currentTarget != null)
         {
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(_currentTarget.Position - transform.position), lookSpeed * Time.deltaTime);
+
+            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation((_currentTarget.Position - transform.position).normalized), lookSpeed * Time.deltaTime);
             if (isChasing)
             {
                 moveDirection = _currentTarget.Position - navObject.transform.position;

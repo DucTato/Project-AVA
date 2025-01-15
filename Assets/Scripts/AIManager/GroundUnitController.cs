@@ -68,6 +68,12 @@ public class GroundUnitController : MonoBehaviour
         UpdateTargeting();
         UpdatePathfinding();
     }
+    private void OnDisable()
+    {
+        StopAllCoroutines();
+        navAgent.enabled = false;
+        GetComponent<Rigidbody>().isKinematic = true;
+    }
     #endregion
     #region Procedures
     private void UpdateTargeting()
@@ -87,6 +93,7 @@ public class GroundUnitController : MonoBehaviour
         if (isChasing)
         {
             moveDirection = _currentTarget.Position;
+            moveDirection.y = transform.position.y;
         }
     }
     private IEnumerator BurstFire(int BurstSize)
