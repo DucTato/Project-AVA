@@ -108,7 +108,7 @@ public class PlayerController : MonoBehaviour
             else
             {
                 if (fireControl.currTarget == null) return;
-                freeLookCam.gameObject.SetActive(true);
+                //freeLookCam.gameObject.SetActive(true);
                 freeLookCam.Priority = 100;
                 freeLookCam.m_LookAt = fireControl.currTarget.transform;
                 //Debug.Log("Following current target");
@@ -117,7 +117,7 @@ public class PlayerController : MonoBehaviour
         if (ctx.phase == InputActionPhase.Canceled)
         {
             freeLookCam.Priority = 0;
-            freeLookCam.gameObject.SetActive(false);
+            //freeLookCam.gameObject.SetActive(false);
             freeLookCam.m_LookAt = transform;
         }
     }

@@ -120,7 +120,8 @@ public class GameManager : MonoBehaviour
         // Set the name of the current boss to the progress bar
         hudController.SwapProgressBar(boss.GetComponent<Target>().Name);
         //
-        StopCoroutine(SpawnEnemiesWithDelay(spawnInterval));
+        //StopCoroutine(SpawnEnemiesWithDelay(spawnInterval));
+        StopAllCoroutines();
     }
     public void SetBossHealthBar(float currentHealth, float maxHealth)
     {
@@ -201,7 +202,10 @@ public class GameManager : MonoBehaviour
             // if this is not the player
             // Add points for the player
             AddPoint(go.GetComponent<Target>().rewardPoint);
+            // doesn't need to check for enemies defeated during boss phase
+            if (BossPhase) return;
             AddEnemiesDefeated();
+            SubtractEnemies();
         }
     }
     private void SpawnProcedure()
