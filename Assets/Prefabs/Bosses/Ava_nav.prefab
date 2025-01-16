@@ -14,8 +14,8 @@ GameObject:
   - component: {fileID: 2483970346812825690}
   - component: {fileID: 8971498158190180095}
   - component: {fileID: 5894600291504589544}
-  - component: {fileID: 85356295844772109}
-  m_Layer: 8
+  - component: {fileID: 4103647481545706764}
+  m_Layer: 7
   m_Name: Ava
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -31,7 +31,7 @@ Transform:
   m_GameObject: {fileID: 1490024139701901148}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 30, z: 0}
+  m_LocalPosition: {x: 0, y: 120, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -82,11 +82,11 @@ MonoBehaviour:
   boidPrefab3: {fileID: 3713500474058195421, guid: 78f54a90b193de4458bc0417d6036661,
     type: 3}
   spawnBoids: 30
-  boidSpeed: 10
+  boidSpeed: 50
   boidSteeringSpeed: 100
   boidNoClumpingArea: 20
   boidLocalArea: 5
-  boidSimulationArea: 100
+  boidSimulationArea: 800
   boidReloadCount: 2
 --- !u!114 &2483970346812825690
 MonoBehaviour:
@@ -252,8 +252,8 @@ MonoBehaviour:
         type: 3}
     healthThreshold: 0
   defaultInterval: 15
---- !u!136 &85356295844772109
-CapsuleCollider:
+--- !u!65 &4103647481545706764
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -270,10 +270,8 @@ CapsuleCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 4
-  m_Height: 1
-  m_Direction: 1
+  serializedVersion: 3
+  m_Size: {x: 100, y: 100, z: 100}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1790347192684269232
 GameObject:
@@ -284,7 +282,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6793056683962471747}
-  m_Layer: 8
+  m_Layer: 7
   m_Name: shootPoint (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -300,7 +298,7 @@ Transform:
   m_GameObject: {fileID: 1790347192684269232}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 2, z: -0}
+  m_LocalPosition: {x: 0, y: 40, z: -0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -316,7 +314,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2686290280166829242}
   - component: {fileID: 8432468863375228871}
-  m_Layer: 8
+  m_Layer: 7
   m_Name: Ava_nav
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -372,7 +370,7 @@ GameObject:
   - component: {fileID: 7410336007068420383}
   - component: {fileID: 8829522852786453796}
   - component: {fileID: 2912530570217117308}
-  m_Layer: 8
+  m_Layer: 7
   m_Name: 1000
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -455,7 +453,7 @@ GameObject:
   - component: {fileID: 6448223485353487997}
   - component: {fileID: 6215687962753026826}
   - component: {fileID: 2474813418883215105}
-  m_Layer: 8
+  m_Layer: 7
   m_Name: Core
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -572,7 +570,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2458763956990013013}
-  m_Layer: 8
+  m_Layer: 7
   m_Name: Shell
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -604,7 +602,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3837063130883034802}
-  m_Layer: 8
+  m_Layer: 7
   m_Name: shootPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -620,7 +618,7 @@ Transform:
   m_GameObject: {fileID: 8291529720365118988}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -2, y: 0, z: -0}
+  m_LocalPosition: {x: -40, y: 0, z: -0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -635,7 +633,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4524885646341794672}
-  m_Layer: 8
+  m_Layer: 7
   m_Name: shootPoint (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -651,7 +649,7 @@ Transform:
   m_GameObject: {fileID: 8760586959029143236}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 2, y: 0, z: -0}
+  m_LocalPosition: {x: 40, y: 0, z: -0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -668,7 +666,7 @@ GameObject:
   - component: {fileID: 547266178129702693}
   - component: {fileID: 1276233200848880285}
   - component: {fileID: 6829765525560416244}
-  m_Layer: 8
+  m_Layer: 7
   m_Name: 1000
   m_TagString: Untagged
   m_Icon: {fileID: 0}

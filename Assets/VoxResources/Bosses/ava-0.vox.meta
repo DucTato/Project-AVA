@@ -12,7 +12,7 @@ ScriptedImporter:
     values: []
   opaqueEdgeShift: 0
   transparentEdgeShift: 0
-  scale: 0.5
+  scale: 5
   indexFormat: 0
   generateLightmapUV: 1
   generateColliders: 1

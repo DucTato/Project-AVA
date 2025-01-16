@@ -15,8 +15,8 @@ public class PlayerController : MonoBehaviour
     private PlaneHandler planeHandler;
     [SerializeField]
     private HeliHandler heliHandler;
-    [SerializeField]
-    private FCS fireControl;
+    
+    public FCS fireControl;
     
     [SerializeField]
     private new Camera camera;

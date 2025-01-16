@@ -118,7 +118,7 @@ public class GameManager : MonoBehaviour
         spawnPosition.y = worldBaseHeight;
         var boss = Instantiate(bossTypes[Random.Range(0, bossTypes.Length)], spawnPosition, Quaternion.identity);
         // Set the name of the current boss to the progress bar
-        hudController.SwapProgressBar(boss.GetComponent<Target>().Name);
+        hudController.SwapProgressBar(boss.GetComponentInChildren<Target>().Name);
         //
         //StopCoroutine(SpawnEnemiesWithDelay(spawnInterval));
         StopAllCoroutines();
@@ -202,6 +202,8 @@ public class GameManager : MonoBehaviour
             // if this is not the player
             // Add points for the player
             AddPoint(go.GetComponent<Target>().rewardPoint);
+            // Cycles target upon defeating an enemy
+            PlayerController.instance.fireControl.CycleTarget();
             // doesn't need to check for enemies defeated during boss phase
             if (BossPhase) return;
             AddEnemiesDefeated();
@@ -210,6 +212,11 @@ public class GameManager : MonoBehaviour
     }
     private void SpawnProcedure()
     {
+        if (BossPhase) 
+        { 
+            StopCoroutine(SpawnEnemiesWithDelay(spawnInterval));
+            return;
+        }
         for (int i = 0; i < enemyTypes.Length; i++)
         {
             
@@ -222,6 +229,7 @@ public class GameManager : MonoBehaviour
                 randomPos.y = worldBaseHeight;
                 Instantiate(enemyTypes[i], enemyDistributions[i].PositionBuffer(randomPos), enemyDistributions[i].OverrideRotation());
                 currentEnemies++;
+                break;
             }
         }
     }
@@ -233,21 +241,22 @@ public class GameManager : MonoBehaviour
     }
     private IEnumerator SpawnEnemiesWithDelay(float delay)
     {
-        if (enemyDefeated < maxEnemies)
+        if (enemyDefeated < maxEnemies-1)
         {
             if (currentEnemies < maxEnemiesAtOnce)
             {
                 //Start spawn procedure
                 SpawnProcedure();
             }
+            yield return new WaitForSeconds(delay);
+            StartCoroutine(SpawnEnemiesWithDelay(delay));
         }
         else
         {
             // Maximum enemies reached, stops the spawning cycle
             StopCoroutine(SpawnEnemiesWithDelay(delay));
         }
-        yield return new WaitForSeconds(delay);
-        StartCoroutine(SpawnEnemiesWithDelay(delay));
+        
     }
     /// <summary>
     /// Update all the player's current preferences upon loading a new scene

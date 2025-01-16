@@ -9666,8 +9666,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 1297.91, y: 100.56, z: 1540.3557}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 10, y: 10, z: 10}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 5205272499241505360}
   - {fileID: 551472882854641039}
@@ -9687,7 +9687,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   castMask:
     serializedVersion: 2
-    m_Bits: 449
+    m_Bits: 385
   index: 0
   _parent: {fileID: 0}
 --- !u!114 &-7599908197108116347
