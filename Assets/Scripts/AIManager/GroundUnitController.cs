@@ -15,7 +15,7 @@ public class GroundUnitController : MonoBehaviour
     [SerializeField, Foldout("Weapons")]
     private GameObject bulletPrefab, missilePrefab;
     [SerializeField, Foldout("Weapons")]
-    private Transform shootPoint;
+    private Transform shootPoint, turret;
     [SerializeField, Foldout("Weapons")]
     private float weaponSpread;
     [SerializeField, Foldout("Weapons")]
@@ -42,11 +42,13 @@ public class GroundUnitController : MonoBehaviour
 
     private NavMeshAgent navAgent;
     private Vector3 shootDirection, moveDirection;
+    private Rigidbody rb;
    
     #region Callbacks
     // Start is called before the first frame update
     void Start()
     {
+        rb = GetComponent<Rigidbody>();
         navAgent = GetComponent<NavMeshAgent>();
         if (navAgent != null)
         { 
@@ -67,6 +69,7 @@ public class GroundUnitController : MonoBehaviour
         // Update the Targeting system before trying to shoot
         UpdateTargeting();
         UpdatePathfinding();
+        rb.velocity = navAgent.velocity;
     }
     private void OnDisable()
     {
@@ -84,7 +87,7 @@ public class GroundUnitController : MonoBehaviour
             {
                 // Will shoot if within range
                 shootDirection = _currentTarget.Position - transform.position;
-                shootPoint.rotation = Quaternion.LookRotation(shootDirection.normalized);
+                turret.rotation = Quaternion.LookRotation(shootDirection.normalized);
             }
         }
     }

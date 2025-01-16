@@ -22,7 +22,7 @@ public class PlayerController : MonoBehaviour
     private new Camera camera;
     [SerializeField]
     private CinemachineFreeLook freeLookCam;
-    [SerializeField]
+    
     public PlayerInput playerInput;
     private Vector3 controlInput;
     private AIController autoPilot;
@@ -61,7 +61,7 @@ public class PlayerController : MonoBehaviour
     {
         if (ctx.phase == InputActionPhase.Performed)
         {
-            Debug.Log("Player Controller called");
+            //Debug.Log("Player Controller called");
             hudController.TogglePause();
         }
     }
@@ -161,7 +161,12 @@ public class PlayerController : MonoBehaviour
                 codeIndex = 0; // Reset the input sequence
             }
         }
-
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            //Debug.Log("Toggle UI");
+            //Toggle UI with space
+            hudController.ToggleCanvas();
+        }
         if (planeHandler != null)
         {
             if (autoPilot.enabled) return;

@@ -148,6 +148,7 @@ public class UIManager : MonoBehaviour
             if (isPaused)
             {
                 Time.timeScale = 0f;
+                ToggleCanvas(true);
                 //PlayerController.instance.playerInput.actions.FindActionMap("Gameplay").Disable();
                 //PlayerController.instance.playerInput.actions.FindActionMap("UI").Enable();
                 Switch2UIMap();
@@ -530,6 +531,13 @@ public class UIManager : MonoBehaviour
             c.enabled = isVisible;
         }
         IsPlaneActive = isVisible;
+    }
+    public void ToggleCanvas()
+    {
+        foreach (Canvas c in GetComponentsInChildren<Canvas>())
+        {
+            c.enabled = !c.enabled;
+        }
     }
     public void TogglePause()
     {

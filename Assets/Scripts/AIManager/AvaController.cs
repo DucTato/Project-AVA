@@ -38,10 +38,12 @@ public class AvaController : MonoBehaviour
     private float lookSpeed, aggressiveness;
     private WeaponType _weaponType;
     private Vector3 moveDirection;
+    
     #region CallBacks
     private void Awake()
     {
         isChasing = false;
+        
         navAgent = navObject.GetComponent<NavMeshAgent>();
         currentSequence = 0;
         _actions = actionSequences[currentSequence].actionsOfThisSequence;
@@ -61,6 +63,7 @@ public class AvaController : MonoBehaviour
     {
         UpdateTargeting();
         UpdateActions();
+        selfTarget.Velocity = navAgent.velocity;
     }
     #endregion
     #region Procedures
@@ -71,7 +74,7 @@ public class AvaController : MonoBehaviour
         {
             GameManager.instance.SetBossHealthBar(selfTarget.Health, selfTarget.MaxHealth);
         }
-        if (e.Health <= actionSequences[currentSequence].healthThreshold)
+        if (e.Health <= actionSequences[currentSequence].healthThreshold && e.Health > 0)
         {
             Debug.Log("Switched to phase 2");
             currentSequence++;

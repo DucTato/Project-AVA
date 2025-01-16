@@ -7,7 +7,7 @@ using Random = UnityEngine.Random;
 public class Target : MonoBehaviour
 {
     public EventHandler<HealthChangeEvent> onHealthChange;
-    public EventHandler<DeathEvent> onDeathEvent;
+    //public EventHandler<DeathEvent> onDeathEvent;
     [SerializeField]
     private float health, maxHealth;
     [SerializeField]
@@ -21,7 +21,7 @@ public class Target : MonoBehaviour
     public int rewardPoint;
     public bool IsDead { get; private set; }
     public Vector3 Position {get { return rb.position; } }
-    public Vector3 Velocity {get { return rb.velocity; } }
+    public Vector3 Velocity { get { return rb.velocity; } set { rb.velocity = value; } }
 
     public string Name
     {
@@ -133,8 +133,11 @@ public class Target : MonoBehaviour
     private void Die()
     {
         //Broadcast a death event 
-        onDeathEvent?.Invoke(this, new DeathEvent(gameObject));
-
+        //onDeathEvent?.Invoke(this, new DeathEvent(gameObject));
+        if (GameManager.instance!= null)
+        {
+            GameManager.instance.DeathEventHandler(gameObject);
+        }
         
         IsDead = true;
         GameObject smokeFX = Instantiate(smokeCloudPrefab, transform.position + damagePoints[Random.Range(0, damagePoints.Length)], transform.rotation, transform);
@@ -202,16 +205,16 @@ public class HealthChangeEvent : EventArgs
         set { maxHealth = value; }
     }
 }
-public class DeathEvent : EventArgs
-{
-    private GameObject deadObject;
-    public DeathEvent(GameObject deadObject)
-    {
-        this.deadObject = deadObject;
-    }
-    public GameObject BroadcastedObject
-    {
-        get { return deadObject; }
-        set { deadObject = value; }
-    }
-}
+//public class DeathEvent : EventArgs
+//{
+//    private GameObject deadObject;
+//    public DeathEvent(GameObject deadObject)
+//    {
+//        this.deadObject = deadObject;
+//    }
+//    public GameObject BroadcastedObject
+//    {
+//        get { return deadObject; }
+//        set { deadObject = value; }
+//    }
+//}

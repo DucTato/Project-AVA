@@ -96,7 +96,6 @@ public class GameManager : MonoBehaviour
     private void OnDestroy()
     {
         StopAllCoroutines();
-        playerTarget.onDeathEvent -= DeathEventHandler;
     }
     #endregion
 
@@ -110,11 +109,18 @@ public class GameManager : MonoBehaviour
     }
     private void SpawnBoss()
     {
+        if (bossTypes.Length <= 0)
+        {
+            // This wave doesn't have a Boss enemy and should trigget win conditions
+            StartWinProcedure();
+        }
         var spawnPosition = worldCenter.transform.position;
         spawnPosition.y = worldBaseHeight;
         var boss = Instantiate(bossTypes[Random.Range(0, bossTypes.Length)], spawnPosition, Quaternion.identity);
         // Set the name of the current boss to the progress bar
         hudController.SwapProgressBar(boss.GetComponent<Target>().Name);
+        //
+        StopCoroutine(SpawnEnemiesWithDelay(spawnInterval));
     }
     public void SetBossHealthBar(float currentHealth, float maxHealth)
     {
@@ -180,11 +186,10 @@ public class GameManager : MonoBehaviour
     public void SetPlayerSelfTarget(Target playerTarget)
     {
         this.playerTarget = playerTarget;
-        this.playerTarget.onDeathEvent += DeathEventHandler;
     }
-    private void DeathEventHandler(object sender, DeathEvent e)
+    public void DeathEventHandler(GameObject go)
     {
-        if (PlayerController.instance.CheckIsPlayer(e.BroadcastedObject))
+        if (PlayerController.instance.CheckIsPlayer(go))
         {
             // if this is the player
             // Disable the plane HUD
@@ -195,7 +200,7 @@ public class GameManager : MonoBehaviour
         {
             // if this is not the player
             // Add points for the player
-            AddPoint(e.BroadcastedObject.GetComponent<Target>().rewardPoint);
+            AddPoint(go.GetComponent<Target>().rewardPoint);
             AddEnemiesDefeated();
         }
     }
@@ -219,6 +224,7 @@ public class GameManager : MonoBehaviour
     private IEnumerator WaitThenReturnMainMenu(float delay)
     {
         yield return new WaitForSeconds(delay);
+        // Reuse the return to menu procedure from UIManager 
         hudController.OnQuitSessionButton();
     }
     private IEnumerator SpawnEnemiesWithDelay(float delay)

@@ -461,7 +461,8 @@ MonoBehaviour:
     type: 3}
   missilePrefab: {fileID: 3176959281366231767, guid: 678eac077bb5ed74eafaf714ef8d18bf,
     type: 3}
-  shootPoint: {fileID: 4760711765902870568}
+  shootPoint: {fileID: 4330697236518637557}
+  turret: {fileID: 4760711765902870568}
   weaponSpread: 2.2
   shootInterval: 25
   fireRate: 1000
@@ -494,6 +495,37 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 1
+--- !u!1 &8917377639120122269
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4330697236518637557}
+  m_Layer: 0
+  m_Name: shootPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4330697236518637557
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8917377639120122269}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4760711765902870568}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8923824842038989091
 GameObject:
   m_ObjectHideFlags: 0
@@ -504,7 +536,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4760711765902870568}
   m_Layer: 0
-  m_Name: shootPoint
+  m_Name: turret
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -522,6 +554,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 4330697236518637557}
   m_Father: {fileID: 1231619431296628780}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
