@@ -172,7 +172,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BindingMode: 3
-  m_FollowOffset: {x: 0, y: 3.48, z: -2.78}
+  m_FollowOffset: {x: 0, y: 1.77, z: -8.1}
   m_XDamping: 0
   m_YDamping: 0
   m_ZDamping: 0
@@ -279,7 +279,7 @@ Transform:
   m_GameObject: {fileID: 905805487483104532}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 3.4799957, z: -2.7800293}
+  m_LocalPosition: {x: 0, y: -1.5800018, z: -2.7800293}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -328,8 +328,8 @@ MonoBehaviour:
         m_Calls: []
   m_LegacyBlendHint: 0
   m_YAxis:
-    Value: 1
-    m_SpeedMode: 0
+    Value: 0.5
+    m_SpeedMode: 1
     m_MaxSpeed: 0.5
     m_AccelTime: 0.05
     m_DecelTime: 0.1
@@ -537,7 +537,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BindingMode: 3
-  m_FollowOffset: {x: 0, y: 3.48, z: -2.78}
+  m_FollowOffset: {x: 0, y: 1.77, z: -8.1}
   m_XDamping: 0
   m_YDamping: 0
   m_ZDamping: 0
@@ -821,14 +821,13 @@ MonoBehaviour:
   consumeAmmo: 1
   cannonVolley: 150
   storedMissiles: 14
-  missileSalvo: 2
   hardpoints:
   - {fileID: 3491539844666920220}
   - {fileID: 934725515904946827}
   missileReloadTime: 5
   fcsUpdateInterval: 3
   missileDebounceTime: 0.125
-  missilePrefab: {fileID: 3176959281366231767, guid: dfd5db799a3fef14dbdca5529c682ea1,
+  missilePrefab: {fileID: 3176959281366231767, guid: ab44609efa5737047ad2059d7f4d0688,
     type: 3}
   currentTarget: {fileID: 0}
   lockRange: 2000
@@ -1319,7 +1318,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5150371254464224156}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0.25554112, y: 0.000000032213734, z: 0.000000008514634, w: 0.96679825}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1449,7 +1448,7 @@ MonoBehaviour:
   m_LegacyBlendHint: 0
   m_YAxis:
     Value: 0.5
-    m_SpeedMode: 0
+    m_SpeedMode: 1
     m_MaxSpeed: 0.5
     m_AccelTime: 0.05
     m_DecelTime: 0.1
@@ -1538,7 +1537,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5643460383196019339}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.43350214, y: 0, z: 0, w: 0.90115255}
+  m_LocalRotation: {x: -0.25554112, y: 0.000000032213734, z: 0.000000008514634, w: 0.96679825}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1807,8 +1806,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6931309450429807562}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.43350214, y: 0, z: 0, w: 0.90115255}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 5.0599976, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2078,7 +2077,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BindingMode: 3
-  m_FollowOffset: {x: 0, y: 3.48, z: -2.78}
+  m_FollowOffset: {x: 0, y: 1.77, z: -8.1}
   m_XDamping: 0
   m_YDamping: 0
   m_ZDamping: 0
@@ -2310,7 +2309,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8981605969298774926}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.10736009, y: 0, z: 0, w: 0.99422026}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0

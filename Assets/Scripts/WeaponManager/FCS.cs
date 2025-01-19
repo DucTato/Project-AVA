@@ -207,7 +207,10 @@ public class FCS : MonoBehaviour
         {
             if (CurrentMissileAmmo <= 0) return;
             var missileGO = Instantiate(missilePrefab, hardpoints[index].position, hardpoints[index].rotation);
-            missileGO.GetComponent<Missile>().Launch(gameObject, MissileLocked ? currTarget : null);
+            if (missileGO.GetComponent<Missile>() != null)
+                missileGO.GetComponent<Missile>().Launch(gameObject, MissileLocked ? currTarget : null);
+            else
+                missileGO.GetComponent<CinemaWinder>().Launch(gameObject, MissileLocked ? currTarget : null);
             CurrentMissileAmmo--;
         }
         else
