@@ -287,10 +287,10 @@
                 {
                     "name": "left",
                     "id": "e9e59747-b09e-4458-a248-a902618a5d65",
-                    "path": "",
+                    "path": "<Gamepad>/rightStick/left",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": ";DualStickController",
                     "action": "scrollWheel",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -298,10 +298,10 @@
                 {
                     "name": "right",
                     "id": "e8cf4566-8a98-4d4d-bf09-0e6a35ac09a3",
-                    "path": "",
+                    "path": "<Gamepad>/rightStick/right",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": ";DualStickController",
                     "action": "scrollWheel",
                     "isComposite": false,
                     "isPartOfComposite": true

@@ -9,8 +9,7 @@ using TMPro;
 using UnityEngine.EventSystems;
 using UnityEngine.Events;
 using UnityEngine.Rendering;
-using Unity.VisualScripting;
-using System.Net;
+
 
 public class MenuUIController : MonoBehaviour
 {
@@ -18,7 +17,7 @@ public class MenuUIController : MonoBehaviour
     [SerializeField, Foldout("Title Screen")]
     private GameObject switchON, switchOFF;
     [SerializeField, Foldout("Main Menu")]
-    private GameObject environmentPanel, mainmenuPanel, creditPanel, quitPanel, optionPanel, missionModePanel, setupAircraftPanel, onScreenKeyboard;
+    private GameObject environmentPanel, mainmenuPanel, creditPanel, quitPanel, optionPanel, missionModePanel, setupAircraftPanel, onScreenKeyboard, mainMenu;
 
     [SerializeField, Foldout("Aircraft setups")]
     private int currentAircraft, currentSpecialItem;
@@ -28,7 +27,10 @@ public class MenuUIController : MonoBehaviour
     private Image currentAircraftImg, currentSpecialItemImg;
     [SerializeField, Foldout("Aircraft setups")]
     private TextMeshProUGUI currentAircraftName, currentSpecialItemName, aircraftDescription, itemDescription;
-
+    [SerializeField, Foldout("Environments")]
+    private Button[] environmentSelections;
+    [SerializeField, Foldout("Environments")]
+    private Scrollbar environmentScroll;
     [SerializeField, Foldout("Options")]
     private GameObject[] subMenus;
     [SerializeField, Foldout("Options")]
@@ -88,6 +90,18 @@ public class MenuUIController : MonoBehaviour
     }
     #endregion
     #region Input Handler
+    public void OnEnvironmentSelections()
+    {
+        for (int i = 0; i < environmentSelections.Length; i++)
+        {
+            if (EventSystem.current.currentSelectedGameObject == environmentSelections[i].gameObject)
+            {
+                environmentScroll.value = (float)i / environmentSelections.Length;
+                if (i == environmentSelections.Length - 1) environmentScroll.value = 1f;
+                break;
+            }
+        }
+    }
     public void OnStartButton(InputAction.CallbackContext ctx)
     {
         if (ctx.phase == InputActionPhase.Performed)
