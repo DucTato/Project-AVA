@@ -157,7 +157,7 @@ public class PlayerController : MonoBehaviour
             if (codeIndex == cheatCode.Length)
             {
                 Debug.Log("Cheat Code Activated");
-                autoPilot.enabled = !autoPilot.enabled;
+                ToggleAi();
                 codeIndex = 0; // Reset the input sequence
             }
         }
@@ -197,6 +197,14 @@ public class PlayerController : MonoBehaviour
         //
         hudController.SetCamera(camera);
         PlayerID = obj.GetInstanceID();
+    }
+    public void ToggleAi()
+    {
+        autoPilot.enabled = !autoPilot.enabled;
+    }
+    public void ToggleAi(bool value)
+    {
+        autoPilot.enabled = value;
     }
     public void SetCurrentInputMap(string actionMapName)
     {

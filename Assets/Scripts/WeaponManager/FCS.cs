@@ -311,6 +311,10 @@ public class FCS : MonoBehaviour
             }
         }
     }
+    public void ToggleInfiniteAmmo(bool value)
+    {
+        consumeAmmo = value;
+    }
     public void FireCannon(bool input)
     {
         cannonFiring = input;

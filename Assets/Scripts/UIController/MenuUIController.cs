@@ -31,6 +31,8 @@ public class MenuUIController : MonoBehaviour
     private Button[] environmentSelections;
     [SerializeField, Foldout("Environments")]
     private Scrollbar environmentScroll;
+    [SerializeField, Foldout("Environments")]
+    private TutorialManager tutorialScript;
     [SerializeField, Foldout("Options")]
     private GameObject[] subMenus;
     [SerializeField, Foldout("Options")]
@@ -214,6 +216,20 @@ public class MenuUIController : MonoBehaviour
         ClosePanel(environmentPanel);
         currPanel = missionModePanel;
         SetPreviousPanel(currPanel);
+    }
+    public void OnTutorialButton()
+    {
+        // Start the Tutorial 
+        tutorialScript.enabled = true;
+        // Turn off main menu canvas
+        mainMenu.SetActive(false);
+        // Turn on game canvas
+        PlayerController.instance.hudController.ToggleCanvas(true);
+        // Switch current input map
+        PlayerController.instance.playerInput.actions.FindActionMap("UI").Disable();
+        PlayerController.instance.SetCurrentInputMap("Gameplay");
+        PlayerController.instance.SetUpPlayer(PlayerTracker.instance.GetPlayer());
+        GameManager.instance.SetCurrentProgress();
     }
     public void OnStartGameButton()
     {

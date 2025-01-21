@@ -127,7 +127,7 @@ public class GameManager : MonoBehaviour
     {
         hudController.SetProgressBar(currentHealth, maxHealth); 
     }
-    private void SetCurrentProgress()
+    public void SetCurrentProgress()
     {
         hudController.SetProgressBar(enemyDefeated, maxEnemies);
     }

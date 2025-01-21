@@ -63,7 +63,10 @@ public class PlayerTracker : MonoBehaviour
         PlayerController.instance.SetUpPlayer(_player);
         _player.SetActive(false);
     }
-
+    public GameObject GetPlayer()
+    {
+        return _player;
+    }
     public void PlaceDownPlayer(bool OverrideFCS)
     {
         _player.SetActive(true);
